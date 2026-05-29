@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'Prioritized Requests - Kitchen365 Portal')
+@section('title', 'Your Drafts - FourSquareDesign Portal')
 @section('content')
 <div class="page-header-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <a href="{{ route('portal.submit-request') }}" style="text-decoration: none;">

@@ -1,0 +1,606 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --primary: #f59e0b; /* Amber 500 */
+        --primary-glow: rgba(245, 158, 11, 0.4);
+        --accent: #06b6d4; /* Cyan 500 for the glow effect */
+        --accent-glow: rgba(6, 182, 212, 0.15);
+        --bg-deep: #020617; /* Slate 950 */
+        --bg-surface: #0f172a; /* Slate 900 */
+        --text-main: #f8fafc; /* Slate 50 */
+        --text-muted: #94a3b8; /* Slate 400 */
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans antialiased bg-slate-950 text-slate-50;
+        background-color: var(--bg-deep);
+        color: var(--text-main);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-serif tracking-tight text-white transition-all duration-500;
+    }
+
+    /* Custom Selection */
+    ::selection {
+        @apply bg-amber-500/30 text-white;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-slate-950;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-slate-800 rounded-full hover:bg-amber-500/50 transition-colors;
+    }
+}
+
+@layer components {
+    /* Signature Glow Effect */
+    .cyan-glow {
+        position: relative;
+    }
+    .cyan-glow::before {
+        content: '';
+        position: absolute;
+        inset: -100px;
+        background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 70%);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .btn-gold {
+        @apply bg-amber-500 text-slate-950 px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-500 hover:bg-white hover:shadow-[0_0_50px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex items-center justify-center gap-3;
+    }
+
+    .btn-outline {
+        @apply border border-white/20 text-white px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-500 hover:bg-white hover:text-slate-950 hover:border-white hover:-translate-y-1 flex items-center justify-center gap-3 backdrop-blur-xl;
+    }
+
+    .nav-link {
+        @apply text-[10px] font-black uppercase tracking-[0.3em] text-white/60 transition-all duration-300 hover:text-amber-500 relative py-2;
+    }
+    .nav-link.active {
+        @apply text-amber-500;
+    }
+    .nav-link.active::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-full h-[1px] bg-amber-500 transition-all;
+    }
+
+    .glass-card {
+        @apply bg-white/5 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] transition-all duration-500 hover:bg-white/10 hover:border-white/10;
+    }
+
+    .serif-italic {
+        @apply font-serif italic;
+    }
+
+    .text-glow-amber {
+        text-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+}
+
+@layer utilities {
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .animate-slow-zoom {
+        animation: slow-zoom 30s infinite alternate linear;
+    }
+    @keyframes slow-zoom {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.15); }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.8s ease-out both;
+    }
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .bg-grid {
+        background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+        background-size: 60px 60px;
+    }
+}
+
+
+/* ================================================================
+   THREE.JS PARTICLE CANVAS
+================================================================ */
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+/* ================================================================
+   CUSTOM CURSOR
+================================================================ */
+#custom-cursor {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid rgba(245,158,11,0.55);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: width .35s cubic-bezier(.25,.46,.45,.94),
+                height .35s cubic-bezier(.25,.46,.45,.94),
+                border-color .3s,
+                background .3s;
+    will-change: transform;
+}
+
+#custom-cursor.is-hover {
+    width: 60px;
+    height: 60px;
+    border-color: #f59e0b;
+    background: rgba(245,158,11,0.08);
+}
+
+#cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #f59e0b;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 10px rgba(245,158,11,0.6);
+    will-change: transform;
+}
+
+/* ================================================================
+   3D CARD TILT — shine overlay
+================================================================ */
+.tilt-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 10;
+    transition: background .08s;
+}
+
+/* Ensure cards that get tilt can show the shine */
+.glass-card,
+.portfolio-card {
+    transform-style: preserve-3d;
+}
+
+/* ================================================================
+   GLASS CARD — animated bottom bar + border glow
+================================================================ */
+.glass-card {
+    position: relative;
+    transition: box-shadow .4s ease;
+}
+
+.glass-card:hover {
+    box-shadow: 0 0 0 1px rgba(245,158,11,0.2),
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 40px rgba(245,158,11,0.06);
+}
+
+/* ================================================================
+   PORTFOLIO CARD — 3D depth on hover
+================================================================ */
+.portfolio-card {
+    transition: box-shadow .4s ease;
+}
+
+.portfolio-card:hover {
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6),
+                0 0 0 1px rgba(245,158,11,0.15);
+}
+
+/* ================================================================
+   SCROLL REVEAL — perspective wrapper
+================================================================ */
+section {
+    transform-style: preserve-3d;
+}
+
+/* ================================================================
+   ANIMATED GRADIENT BORDER on pricing "Recommended" card
+================================================================ */
+@keyframes border-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(245,158,11,0.15), 0 0 60px rgba(245,158,11,0.08); }
+    50%       { box-shadow: 0 0 35px rgba(245,158,11,0.3),  0 0 80px rgba(245,158,11,0.15); }
+}
+
+[class*="shadow-\[0_0_60px_rgba\(245,158,11"] {
+    animation: border-glow 3.5s ease-in-out infinite;
+}
+
+/* ================================================================
+   NAV LOGO perspective
+================================================================ */
+header a.group {
+    transform-style: preserve-3d;
+    transition: transform .4s ease;
+}
+
+/* ================================================================
+   FOOTER SOCIAL ICONS perspective
+================================================================ */
+footer a[class*="w-12 h-12"] {
+    transform-style: preserve-3d;
+    transition: transform .35s ease;
+}
+
+/* ================================================================
+   AMBIENT GLOW ORBS — base transform-style
+================================================================ */
+[class*="blur-[150px]"],
+[class*="blur-[180px]"],
+[class*="blur-[120px]"] {
+    will-change: transform, opacity;
+}
+
+/* ================================================================
+   BUTTON — 3D depth press effect
+================================================================ */
+.btn-gold:active {
+    transform: scale(0.97) translateY(1px) !important;
+}
+.btn-outline:active {
+    transform: scale(0.97) translateY(1px) !important;
+}
+
+/* ================================================================
+   HERO scroll indicator pulse
+================================================================ */
+@keyframes pulse-amber {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1; }
+}
+
+section:first-of-type [class*="bottom-10"] span {
+    animation: pulse-amber 2.5s ease-in-out infinite;
+}
+
+/* ================================================================
+   TEXT GLOW on hover for headings
+================================================================ */
+h2:hover {
+    text-shadow: 0 0 30px rgba(245,158,11,0.15);
+    transition: text-shadow .4s ease;
+}
+
+/* ================================================================
+   BEFORE/AFTER SLIDER — 3D shadow
+================================================================ */
+#compare-slider {
+    transition: box-shadow .4s ease, transform .4s ease;
+}
+#compare-slider:hover {
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,158,11,0.12);
+}
+
+/* ================================================================
+   SCROLLBAR — amber accent
+================================================================ */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(245,158,11,0.6) !important;
+    box-shadow: 0 0 10px rgba(245,158,11,0.4);
+}
+
+/* ================================================================
+   MOBILE: hide cursor elements
+================================================================ */
+@media (max-width: 768px) {
+    #custom-cursor,
+    #cursor-dot { display: none; }
+    #particle-canvas { opacity: 0.4; }
+}
+
+/* ================================================================
+   HERO TEXT — contrast shadows for legibility over bright images
+================================================================ */
+.hero-eyebrow {
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+.hero-heading {
+    text-shadow:
+        0 2px 8px  rgba(0, 0, 0, 0.95),
+        0 4px 24px rgba(0, 0, 0, 0.8),
+        0 8px 60px rgba(0, 0, 0, 0.6);
+}
+
+.hero-sub {
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9), 0 2px 20px rgba(0, 0, 0, 0.7);
+}
+
+/* ================================================================
+   BRAND LOGOS MARQUEE
+================================================================ */
+.marquee-wrapper {
+    overflow: hidden;
+    position: relative;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.marquee-inner {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: marquee-scroll 40s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-inner {
+    animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ── Logo images: rendered white, shift to amber on hover ── */
+.marquee-logo-img {
+    filter: brightness(0) invert(1);
+    opacity: 0.5;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.marquee-logo-img:hover {
+    opacity: 1;
+    /* white → sepia → saturate → hue-rotate produces a warm amber/gold */
+    filter: brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(5deg);
+}
+
+/* ── Text fallback when image fails to load ── */
+.marquee-logo-text {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.3s ease;
+}
+
+.marquee-logo-text:hover {
+    color: rgba(245, 158, 11, 0.85);
+}
+
+
+/* ================================================================
+   BENTO CARDS
+================================================================ */
+.bento-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.bento-card:hover {
+    border-color: rgba(245, 158, 11, 0.14);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(245, 158, 11, 0.07);
+}
+
+/* ================================================================
+   EXPERTISE CARDS — glass + 3D tilt
+================================================================ */
+.expertise-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    transform-style: preserve-3d;
+    overflow: hidden;
+    will-change: transform;
+}
+
+.expertise-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.7), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 999px;
+}
+
+.expertise-card:hover::after {
+    opacity: 1;
+}
+
+.expertise-card:hover {
+    border-color: rgba(245, 158, 11, 0.18);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(245, 158, 11, 0.08);
+}
+
+.expertise-card-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.875rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.expertise-card:hover .expertise-card-icon {
+    background: rgba(245, 158, 11, 0.16);
+    border-color: rgba(245, 158, 11, 0.35);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.12);
+}
+
+.expertise-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: rgb(148, 163, 184);
+    font-weight: 300;
+}
+
+.expertise-list-item::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.65);
+    flex-shrink: 0;
+}
+
+.expertise-card-glow {
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.expertise-card:hover .expertise-card-glow {
+    opacity: 1;
+}
+
+/* ================================================================
+   PROCESS FEATURE ITEMS
+================================================================ */
+.process-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1.25rem;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.process-feature-item:hover {
+    border-color: rgba(245, 158, 11, 0.14);
+    background: rgba(245, 158, 11, 0.02);
+}
+
+.process-feature-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.875rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   TESTIMONIAL GLASS CARD
+================================================================ */
+.testimonial-glass-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 2rem;
+    padding: 2.5rem 3rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+}
+
+.testimonial-glass-card:hover {
+    border-color: rgba(245, 158, 11, 0.14);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+    .testimonial-glass-card {
+        padding: 1.75rem 1.5rem;
+    }
+}
+
+/* ================================================================
+   WORKFLOW STEP CARDS
+================================================================ */
+.workflow-step-card {
+    padding: 2rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden;
+}
+
+.workflow-step-card:hover {
+    border-color: rgba(245, 158, 11, 0.18);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 158, 11, 0.07);
+}
+
+/* ================================================================
+   CTA GLASS CARD
+================================================================ */
+.cta-glass-card {
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0.02) 50%,
+        rgba(245, 158, 11, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 2.5rem;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.cta-glass-card:hover {
+    border-color: rgba(245, 158, 11, 0.12);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4),
+                0 0 80px rgba(245, 158, 11, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}

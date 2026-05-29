@@ -1,0 +1,936 @@
+@extends('layouts.portal')
+
+@section('title', 'View Request #CAB-2026-' . $request->id . ' - Four Square Design Portal')
+
+@section('content')
+<div class="view-request-container">
+    <!-- Header Section -->
+    <div class="view-header">
+        <div class="header-main">
+            <div class="project-info">
+                <h1 class="project-title">{{ $request->title }}</h1>
+                <div class="request-meta">
+                    <span class="request-id">Request #CAB-2026-{{ $request->id }}</span>
+                    <span class="meta-divider">|</span>
+                    <span class="company-name">{{ $request->client->name ?? 'Unknown Client' }}</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="status-badge" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700;">● {{ $request->status }}</span>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-edit"></i> EDIT</button>
+            </div>
+        </div>
+        <div class="header-dates">
+            <div class="date-item">
+                <span class="date-label">Created on:</span>
+                <span class="date-value">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+            </div>
+            <div class="date-item">
+                <span class="date-label">Due Date:</span>
+                <span class="date-value">{{ $request->expected_date ? $request->expected_date->format('d M, Y') : 'Not Set' }}</span>
+            </div>
+            <div class="date-item">
+                <span class="date-label">Last Updated:</span>
+                <span class="date-value">{{ $request->updated_at->format('d M, Y h:i A') }}</span>
+            </div>
+            <div class="rev-v">#1</div>
+        </div>
+    </div>
+
+    @if(session('success'))
+    <div class="alert-success-banner">
+        <i class="fas fa-check-circle"></i> {{ session('success') }}
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert-error-banner">
+        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+    </div>
+    @endif
+
+    @php
+        $revisionCount = $request->comments->where('type', 'revision')->count();
+        $statusMeta = [
+            'Open'             => ['label' => 'Open',             'bg' => '#f3f4f6', 'color' => '#6b7280'],
+            'Assigned'         => ['label' => 'Assigned',         'bg' => '#ede9fe', 'color' => '#7c3aed'],
+            'WIP'              => ['label' => 'In Progress',      'bg' => '#eff6ff', 'color' => '#3b82f6'],
+            'Needs Information'=> ['label' => 'Needs Information','bg' => '#fffbeb', 'color' => '#d97706'],
+            'Needs Approval'   => ['label' => 'Needs Approval',   'bg' => '#ecfdf5', 'color' => '#059669'],
+            'Closed'           => ['label' => 'Closed',           'bg' => '#fef2f2', 'color' => '#dc2626'],
+            'Draft'            => ['label' => 'Draft',            'bg' => '#f9fafb', 'color' => '#9ca3af'],
+        ];
+        $sm = $statusMeta[$request->status] ?? ['label' => $request->status, 'bg' => '#f3f4f6', 'color' => '#6b7280'];
+        $userRole = Auth::user()->role->name ?? '';
+        $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin']);
+    @endphp
+
+    @if($canChangeStatus)
+    <div class="req-status-section">
+        <h3 class="req-status-heading">Request Status</h3>
+        <div class="req-status-stats">
+            <div class="req-stat-col">
+                <span class="req-stat-label">Current Status</span>
+                <span class="req-status-pill" style="background:{{ $sm['bg'] }}; color:{{ $sm['color'] }};">
+                    <span class="req-status-dot" style="background:{{ $sm['color'] }};"></span>
+                    {{ $sm['label'] }}
+                </span>
+            </div>
+            <div class="req-stat-col">
+                <span class="req-stat-label">Revisions</span>
+                <span class="req-stat-val">{{ $revisionCount }}</span>
+            </div>
+            <div class="req-stat-col">
+                <span class="req-stat-label">Revision Due To Design Error</span>
+                <span class="req-stat-val">0</span>
+            </div>
+        </div>
+
+        <div class="req-change-status">
+            <span class="req-stat-label" style="display:block; margin-bottom:0.75rem;">Change Status</span>
+            <form action="{{ route('portal.requests.update-status', $request->id) }}" method="POST" id="statusUpdateForm">
+                @csrf
+                <input type="hidden" name="status" id="statusHiddenInput" value="">
+                <div class="cstm-select-wrap" id="cstmSelect">
+                    <div class="cstm-select-trigger" id="cstmTrigger">
+                        <span id="cstmLabel">Select</span>
+                        <i class="fas fa-chevron-down cstm-chevron"></i>
+                    </div>
+                    <ul class="cstm-options" id="cstmOptions">
+                        <li class="cstm-opt cstm-opt-header" data-value="">Select</li>
+                        <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
+                        <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                        <li class="cstm-opt" data-value="WIP">To be Continued</li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    <!-- Details Grid -->
+    <div class="details-grid-wrapper">
+        <div class="details-card main-details">
+            <div class="card-header">
+                <h3><i class="fas fa-info-circle"></i> Request Details</h3>
+            </div>
+            <div class="details-content">
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Request Type</span>
+                        <span class="detail-value">{{ $request->request_type ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Cabinet Brand</span>
+                        <span class="detail-value">{{ $request->cabinet_brand ?? 'N/A' }}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Ceiling Height</span>
+                        <span class="detail-value">{{ $request->ceiling_height ?? 'N/A' }} inches</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Wall Cabinet Height</span>
+                        <span class="detail-value">{{ $request->wall_cabinet_height ?? 'N/A' }} inches</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Designer</span>
+                        <span class="detail-value">{{ $request->designer->name ?? 'Unassigned' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Soffits</span>
+                        <span class="detail-value">{{ ($request->additional_info['soffits'] ?? false) ? 'Yes' : 'No' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-card assets-card">
+            <div class="card-header">
+                <h3><i class="fas fa-paperclip"></i> Measurements & Assets</h3>
+            </div>
+            <div class="assets-content">
+                @if(!empty($request->additional_info['attachments']))
+                    @foreach($request->additional_info['attachments'] as $file)
+                        <div class="asset-item">
+                            <div class="asset-preview">
+                                @php
+                                    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                                    $icon = match($ext) {
+                                        'pdf' => 'fa-file-pdf',
+                                        'xls', 'xlsx', 'csv' => 'fa-file-excel',
+                                        'doc', 'docx' => 'fa-file-word',
+                                        'jpg', 'jpeg', 'png', 'webp' => 'fa-file-image',
+                                        default => 'fa-file',
+                                    };
+                                @endphp
+                                <i class="fas {{ $icon }}"></i>
+                            </div>
+                            <div class="asset-info">
+                                <span class="asset-name">{{ $file['name'] }}</span>
+                                <a href="{{ asset('storage/' . $file['path']) }}" target="_blank" class="asset-download"><i class="fas fa-download"></i></a>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 1rem;">No files uploaded yet.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Info Sections -->
+    <div class="form-section active" style="margin-top: 2rem;">
+        <div class="section-header">
+            <div class="section-title-group">
+                <div class="status-icon"><i class="fas fa-list-check"></i></div>
+                <div>
+                    <h2 class="section-title">Additional Information</h2>
+                    <p class="section-subtitle">Molding, Appliances, Storage, and Notes</p>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="info-grid">
+                <div class="info-group">
+                    <h4>Molding & Doors</h4>
+                    <ul class="info-list">
+                        @if(!empty($request->additional_info['molding']))
+                            @foreach($request->additional_info['molding'] as $key => $value)
+                                @if($value)
+                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li style="font-style: italic;">None selected</li>
+                        @endif
+                    </ul>
+                </div>
+                <div class="info-group">
+                    <h4>Standard Appliances</h4>
+                    <ul class="info-list">
+                        @if(!empty($request->additional_info['appliances']))
+                            @foreach($request->additional_info['appliances'] as $key => $value)
+                                @if($value)
+                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li style="font-style: italic;">None selected</li>
+                        @endif
+                    </ul>
+                </div>
+                <div class="info-group">
+                    <h4>Storage & Organizer</h4>
+                    <ul class="info-list">
+                        @if(!empty($request->additional_info['storage']))
+                            @foreach($request->additional_info['storage'] as $key => $value)
+                                @if($value)
+                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li style="font-style: italic;">None selected</li>
+                        @endif
+                    </ul>
+                </div>
+                <div class="info-group full-width" style="margin-top: 1rem;">
+                    <h4>Additional Notes</h4>
+                    <div class="notes-content">
+                        <p>{{ $request->additional_notes ?? 'No additional notes provided.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Communication Pipeline -->
+    <div class="communications-section">
+        <div class="card-header">
+            <h3><i class="fas fa-comments"></i> Communications & Activity</h3>
+        </div>
+        <div class="timeline">
+            <!-- Initial Request Entry -->
+            <div class="timeline-item">
+                <div class="timeline-icon user-icon">
+                    @php
+                        $names = explode(' ', $request->client->name ?? 'U');
+                        $initials = '';
+                        foreach ($names as $name) {
+                            $initials .= strtoupper(substr($name, 0, 1));
+                        }
+                        echo substr($initials, 0, 2);
+                    @endphp
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
+                        <span class="timestamp">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p><strong>Initial Request Submitted:</strong> {{ $request->title }}</p>
+                    </div>
+                </div>
+            </div>
+
+            @foreach($request->comments as $comment)
+            <div class="timeline-item {{ $comment->type === 'revision' ? 'revision-item' : '' }}">
+                <div class="timeline-icon {{ $comment->type === 'revision' ? 'status-icon' : 'user-icon' }}" style="{{ $comment->type === 'comment' ? 'background: #3b82f6; color: white;' : '' }}">
+                    @if($comment->type === 'revision')
+                        <i class="fas fa-sync-alt"></i>
+                    @else
+                        @php
+                            $names = explode(' ', $comment->user->name ?? 'U');
+                            $initials = '';
+                            foreach ($names as $name) {
+                                $initials .= strtoupper(substr($name, 0, 1));
+                            }
+                            echo substr($initials, 0, 2);
+                        @endphp
+                    @endif
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
+                        <span class="timestamp">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p>{!! nl2br(e($comment->message)) !!}</p>
+                        @if(!empty($comment->attachments))
+                        <div class="timeline-attachments">
+                            @foreach($comment->attachments as $file)
+                                <a href="{{ asset('storage/' . $file['path']) }}" target="_blank" class="attachment-chip">
+                                    <i class="fas fa-paperclip"></i> {{ $file['name'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Add Comment Section -->
+    <form action="{{ route('portal.comments.store', $request->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="add-comment-section">
+            <div class="card-header">
+                <h3><i class="fas fa-plus"></i> Add Comment</h3>
+            </div>
+            <div class="comment-input-wrapper">
+                <textarea name="message" placeholder="Write your comment here..." rows="4" class="form-input" required></textarea>
+                <div class="comment-actions">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label class="attachment-btn" style="margin: 0;">
+                            <i class="fas fa-paperclip"></i> ATTACH FILE
+                            <input type="file" name="attachments[]" multiple style="display: none;">
+                        </label>
+                        <span id="file-count" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+                    </div>
+                    <div class="comment-meta-switches">
+                        <button type="submit" class="btn btn-save" style="border-radius: 6px; padding: 0.6rem 1.5rem;">POST COMMENT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @php $currentRole = Auth::user()->role->name ?? ''; @endphp
+
+    {{-- Status Update panel (Designer, Manager, Admin only) --}}
+    @if(in_array($currentRole, ['Designer', 'Manager', 'Admin']))
+    <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="margin-top: 2rem;">
+        @csrf
+        <div class="add-comment-section" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.5rem 2rem;">
+            <div style="flex-shrink: 0;">
+                <h3 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; margin: 0;">
+                    <i class="fas fa-exchange-alt" style="color: var(--primary-color);"></i> Update Status
+                </h3>
+            </div>
+            <select name="status" class="form-input" style="flex: 1; min-width: 200px; max-width: 280px; padding: 0.6rem 1rem; font-size: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color);">
+                @foreach(['Open','Assigned','WIP','Needs Information','Needs Approval','Closed'] as $s)
+                    <option value="{{ $s }}" {{ $request->status === $s ? 'selected' : '' }}>{{ $s }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-save" style="border-radius: 6px; padding: 0.6rem 1.5rem; white-space: nowrap;">UPDATE STATUS</button>
+        </div>
+    </form>
+    @endif
+
+    <div class="view-footer" style="margin-top: 1.5rem;">
+        <a href="{{ url()->previous() }}" class="btn btn-outline">BACK</a>
+        @if($currentRole === 'Client' && $request->status === 'Needs Approval')
+        <div class="action-group">
+            <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center; font-style: italic;">
+                Post a comment below to approve or request revisions.
+            </span>
+        </div>
+        @endif
+    </div>
+</div>
+
+@section('scripts')
+<script>
+    document.querySelector('input[name="attachments[]"]').addEventListener('change', function(e) {
+        const count = e.target.files.length;
+        document.getElementById('file-count').textContent = count > 0 ? `${count} file(s) selected` : '';
+    });
+
+    (function () {
+        const wrap    = document.getElementById('cstmSelect');
+        const trigger = document.getElementById('cstmTrigger');
+        const options = document.getElementById('cstmOptions');
+        const label   = document.getElementById('cstmLabel');
+        const hidden  = document.getElementById('statusHiddenInput');
+        const form    = document.getElementById('statusUpdateForm');
+
+        if (!wrap) return;
+
+        trigger.addEventListener('click', function (e) {
+            e.stopPropagation();
+            wrap.classList.toggle('open');
+        });
+
+        options.querySelectorAll('.cstm-opt:not(.cstm-opt-header)').forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                const val = opt.dataset.value;
+                label.textContent = opt.textContent.trim();
+                hidden.value = val;
+                wrap.classList.remove('open');
+                form.submit();
+            });
+        });
+
+        document.addEventListener('click', function () {
+            wrap.classList.remove('open');
+        });
+    })();
+</script>
+@endsection
+
+<style>
+    .view-request-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 5rem;
+    }
+
+    .view-header {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1.5rem;
+    }
+
+    .project-title {
+        font-size: 2rem;
+        font-family: var(--font-heading);
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .request-meta {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .company-name {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .header-dates {
+        display: flex;
+        gap: 3rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        flex-wrap: wrap;
+    }
+
+    .date-label {
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-right: 0.5rem;
+    }
+
+    .rev-v {
+        margin-left: auto;
+        font-weight: 900;
+        background: #f1f5f9;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        color: var(--secondary-color);
+    }
+
+    .details-grid-wrapper {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    .details-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.1rem;
+        font-family: var(--font-body);
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-header i {
+        color: var(--primary-color);
+    }
+
+    .detail-row {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-item {
+        flex: 1;
+    }
+
+    .detail-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+    }
+
+    .assets-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .asset-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #f8fafc;
+        padding: 0.75rem;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .asset-preview {
+        width: 48px;
+        height: 48px;
+        background: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #ef4444;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .asset-preview.img-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .asset-info {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .asset-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+    }
+
+    .asset-download {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    .info-group h4 {
+        font-size: 0.9rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: var(--secondary-color);
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .info-list li {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-list li i {
+        color: #10b981;
+        font-size: 0.8rem;
+    }
+
+    .notes-content {
+        background: #fff9f0;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .communications-section {
+        margin-top: 2rem;
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #f1f5f9;
+    }
+
+    .timeline-item {
+        position: relative;
+    }
+
+    .timeline-icon {
+        position: absolute;
+        left: -2.35rem;
+        top: 0;
+        width: 32px;
+        height: 32px;
+        background: #fff;
+        border: 2px solid #f1f5f9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 800;
+        z-index: 1;
+    }
+
+    .user-icon {
+        background: #00e0c6;
+        color: #fff;
+        border-color: #00e0c6;
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .sender-name {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--secondary-color);
+    }
+
+    .timestamp {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .timeline-body {
+        font-size: 0.95rem;
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    .timeline-attachments {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .attachment-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #eff6ff;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #1e40af;
+        text-decoration: none;
+        border: 1px solid #dbeafe;
+    }
+
+    .attachment-chip i {
+        font-size: 1rem;
+    }
+
+    .revision-item .timeline-icon {
+        background: #fef3c7;
+        color: #92400e;
+        border-color: #fde68a;
+    }
+
+    .revision-instructions {
+        margin: 1rem 0 0 1.5rem;
+        color: #92400e;
+        font-weight: 600;
+    }
+
+    .add-comment-section {
+        margin-top: 2rem;
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .comment-input-wrapper {
+        margin-top: 1rem;
+    }
+
+    .comment-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .attachment-btn {
+        background: #f1f5f9;
+        border: 1px dashed var(--border-color);
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .attachment-btn:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .view-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .action-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    @media (max-width: 992px) {
+        .details-grid-wrapper {
+            grid-template-columns: 1fr;
+        }
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ── Alert banners ── */
+    .alert-success-banner, .alert-error-banner {
+        padding: 0.85rem 1.25rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+    }
+    .alert-success-banner { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .alert-error-banner   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+    /* ── Request Status Section ── */
+    .req-status-section {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,.05);
+    }
+    .req-status-heading {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--primary-color);
+        display: inline-block;
+    }
+    .req-status-stats {
+        display: flex;
+        gap: 4rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+    }
+    .req-stat-col { display: flex; flex-direction: column; gap: 0.5rem; }
+    .req-stat-label {
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+    }
+    .req-stat-val {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+    .req-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+    .req-status-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    /* ── Custom Select ── */
+    .req-change-status { max-width: 260px; }
+    .cstm-select-wrap {
+        position: relative;
+        user-select: none;
+    }
+    .cstm-select-trigger {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        transition: border-color 0.15s;
+    }
+    .cstm-select-trigger:hover { border-color: var(--primary-color); }
+    .cstm-chevron { font-size: 0.75rem; color: #6b7280; transition: transform 0.2s; }
+    .cstm-select-wrap.open .cstm-chevron { transform: rotate(180deg); }
+    .cstm-options {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0; right: 0;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+        z-index: 100;
+        list-style: none;
+        padding: 0; margin: 0;
+    }
+    .cstm-select-wrap.open .cstm-options { display: block; }
+    .cstm-opt {
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: var(--secondary-color);
+        font-weight: 500;
+    }
+    .cstm-opt:hover { background: #f1f5f9; }
+    .cstm-opt-header {
+        background: #1e40af;
+        color: #fff !important;
+        font-weight: 700;
+        cursor: default;
+    }
+    .cstm-opt-header:hover { background: #1e40af; }
+</style>
+@endsection

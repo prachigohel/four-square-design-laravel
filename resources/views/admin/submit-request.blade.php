@@ -1,9 +1,10 @@
 @extends('layouts.portal')
 
-@section('title', 'Submit New Request - Kitchen365 Portal')
+@section('title', 'Submit New Request - Four Square Design Portal')
 
 @section('content')
-<div class="submit-request-container">
+<form class="submit-request-container" method="POST" action="{{ route('portal.submit-request.store') }}" enctype="multipart/form-data">
+    @csrf
     <div class="form-section active" id="requiredInfoSection">
         <div class="section-header" id="requiredInfoHeader">
             <div class="section-title-group">
@@ -13,27 +14,32 @@
                     <p class="section-subtitle">Request Type, Cabinet brand, Door style, Ceiling height, Digital assets</p>
                 </div>
             </div>
-            <button class="toggle-section-btn" id="requiredInfoToggle"><i class="fas fa-minus"></i></button>
+            <button type="button" class="toggle-section-btn" id="requiredInfoToggle"><i class="fas fa-minus"></i></button>
         </div>
         
         <div class="section-body" id="requiredInfoBody">
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label>Request Title <span class="required-star">*</span></label>
-                    <input type="text" placeholder="Enter request title" class="form-input">
+                    <input type="text" name="title" placeholder="Enter request title" class="form-input" required>
                 </div>
                 
                 <div class="form-group">
                     <label>Select Request Type <span class="required-star">*</span></label>
-                    <select class="form-input">
-                        <option>Select</option>
+                    <select name="request_type" class="form-input">
+                        <option value="">Select</option>
+                        <option value="Kitchen Design">Kitchen Design</option>
+                        <option value="Bath Design">Bath Design</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Select Cabinet Brand <span class="required-star">*</span></label>
-                    <select class="form-input">
-                        <option>Select</option>
+                    <select name="cabinet_brand" class="form-input">
+                        <option value="">Select</option>
+                        <option value="Brand A">Brand A</option>
+                        <option value="Brand B">Brand B</option>
                     </select>
                 </div>
 
@@ -41,14 +47,14 @@
                     <div class="form-group">
                         <label>Ceiling Height</label>
                         <div class="input-with-label">
-                            <input type="text" placeholder="Size" class="form-input small">
+                            <input type="text" name="ceiling_height" placeholder="Size" class="form-input small">
                             <span>inches</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Wall Cabinet Height</label>
                         <div class="input-with-label">
-                            <input type="text" placeholder="Size" class="form-input small">
+                            <input type="text" name="wall_cabinet_height" placeholder="Size" class="form-input small">
                             <span>inches</span>
                         </div>
                     </div>
@@ -57,8 +63,10 @@
                 <div class="form-group full-width">
                     <label>Measurements <span class="required-star">*</span></label>
                     <p class="field-info">Accepted file types are jpg, jpeg, png, webp, heic, pdf, xls, xlsx, csv, tsv, ppt, pptx, doc, docx, .KIT and dsg file</p>
-                    <div class="file-upload-area">
+                    <div class="file-upload-area" id="uploadArea" style="cursor: pointer; position: relative;">
+                        <input type="file" name="attachments[]" id="fileInput" multiple style="display: none;">
                         <div class="upload-plus">+</div>
+                        <div id="fileList" style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary-color);"></div>
                     </div>
                 </div>
             </div>
@@ -81,11 +89,11 @@
             <div class="form-grid">
                 <div class="checkbox-row">
                     <div class="checkbox-group">
-                        <input type="checkbox" id="secondDoor">
+                        <input type="checkbox" name="additional_info[second_door]" id="secondDoor">
                         <label for="secondDoor">Second Door Style and Finish</label>
                     </div>
                     <div class="checkbox-group">
-                        <input type="checkbox" id="soffits">
+                        <input type="checkbox" name="additional_info[soffits]" id="soffits">
                         <label for="soffits">Soffits</label>
                     </div>
                 </div>
@@ -94,67 +102,71 @@
                     <div class="form-group">
                         <label>Door Finish</label>
                         <div class="multi-input">
-                            <div class="input-unit"><span>Wall:</span> <input type="text" class="form-input mini"></div>
-                            <div class="input-unit"><span>Base:</span> <input type="text" class="form-input mini"></div>
-                            <div class="input-unit"><span>Island:</span> <input type="text" class="form-input mini"></div>
+                            <div class="input-unit"><span>Wall:</span> <input type="text" name="additional_info[door_finish_wall]" class="form-input mini"></div>
+                            <div class="input-unit"><span>Base:</span> <input type="text" name="additional_info[door_finish_base]" class="form-input mini"></div>
+                            <div class="input-unit"><span>Island:</span> <input type="text" name="additional_info[door_finish_island]" class="form-input mini"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Decoration</label>
-                        <select class="form-input">
-                            <option>Select</option>
+                        <select name="additional_info[decoration]" class="form-input">
+                            <option value="">Select</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Premium">Premium</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group full-width">
                     <label>Sink</label>
-                    <select class="form-input small-half">
-                        <option>Select</option>
+                    <select name="additional_info[sink]" class="form-input small-half">
+                        <option value="">Select</option>
+                        <option value="Undermount">Undermount</option>
+                        <option value="Farmhouse">Farmhouse</option>
                     </select>
                 </div>
 
                 <div class="full-width options-section">
                     <h3>Molding & Door Enhancement</h3>
                     <div class="options-grid">
-                        <label class="check-item"><input type="checkbox"> Base Molding</label>
-                        <label class="check-item"><input type="checkbox"> Crown Molding on Cabinet</label>
-                        <label class="check-item"><input type="checkbox"> Decorative Door Panels</label>
-                        <label class="check-item"><input type="checkbox"> Glass Door</label>
-                        <label class="check-item"><input type="checkbox"> Light Rail Molding</label>
-                        <label class="check-item"><input type="checkbox"> Scribe & Shoe Molding</label>
-                        <label class="check-item"><input type="checkbox"> Scribe Molding</label>
-                        <label class="check-item"><input type="checkbox"> Stacked Crown</label>
-                        <label class="check-item"><input type="checkbox"> Wood Hood</label>
-                        <label class="check-item"><input type="checkbox"> Others</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][base]"> Base Molding</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][crown]"> Crown Molding on Cabinet</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][decorative_panels]"> Decorative Door Panels</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][glass_door]"> Glass Door</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][light_rail]"> Light Rail Molding</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][scribe_shoe]"> Scribe & Shoe Molding</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][scribe]"> Scribe Molding</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][stacked_crown]"> Stacked Crown</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][wood_hood]"> Wood Hood</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[molding][others]"> Others</label>
                     </div>
                 </div>
 
                 <div class="full-width options-section">
                     <h3>Storage & Organizer</h3>
                     <div class="options-grid">
-                        <label class="check-item"><input type="checkbox"> Cutlery Insert</label>
-                        <label class="check-item"><input type="checkbox"> Lazy Susan</label>
-                        <label class="check-item"><input type="checkbox"> Pot and Pan Pullout</label>
-                        <label class="check-item"><input type="checkbox"> Spice Pullout</label>
-                        <label class="check-item"><input type="checkbox"> Tray Base</label>
-                        <label class="check-item"><input type="checkbox"> Utensil Drawer</label>
-                        <label class="check-item"><input type="checkbox"> Waste Basket</label>
-                        <label class="check-item"><input type="checkbox"> Others</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][cutlery]"> Cutlery Insert</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][lazy_susan]"> Lazy Susan</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][pot_pan]"> Pot and Pan Pullout</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][spice]"> Spice Pullout</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][tray_base]"> Tray Base</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][utensil]"> Utensil Drawer</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][waste_basket]"> Waste Basket</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[storage][others]"> Others</label>
                     </div>
                 </div>
 
                 <div class="full-width options-section">
                     <h3>Standard Appliances</h3>
                     <div class="options-grid three-col">
-                        <label class="check-item"><input type="checkbox"> Chimney/Hood</label>
-                        <label class="check-item"><input type="checkbox"> Cooktop/Range</label>
-                        <label class="check-item"><input type="checkbox"> Dishwasher</label>
-                        <label class="check-item"><input type="checkbox"> Microwave</label>
-                        <label class="check-item"><input type="checkbox"> Oven</label>
-                        <label class="check-item"><input type="checkbox"> Refrigerator</label>
-                        <label class="check-item"><input type="checkbox"> Wine Cooler</label>
-                        <label class="check-item"><input type="checkbox"> Others</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][chimney_hood]"> Chimney/Hood</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][cooktop_range]"> Cooktop/Range</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][dishwasher]"> Dishwasher</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][microwave]"> Microwave</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][oven]"> Oven</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][refrigerator]"> Refrigerator</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][wine_cooler]"> Wine Cooler</label>
+                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][others]"> Others</label>
                     </div>
                 </div>
 
@@ -180,30 +192,30 @@
                         <label>Multiplier</label>
                         <input type="text" class="form-input">
                     </div>
-                    <div class="form-group">
-                        <label>Expected Date <span class="required-star">*</span></label>
-                        <input type="date" value="2026-04-20" class="form-input">
-                    </div>
+                <div class="form-group">
+                    <label>Expected Date <span class="required-star">*</span></label>
+                    <input type="date" name="expected_date" value="{{ date('Y-m-d') }}" class="form-input">
                 </div>
+            </div>
 
-                <div class="form-group full-width">
-                    <label>Additional Notes</label>
-                    <textarea class="form-input rich-editor" rows="6"></textarea>
-                </div>
+            <div class="form-group full-width">
+                <label>Additional Notes</label>
+                <textarea name="additional_notes" class="form-input rich-editor" rows="6"></textarea>
+            </div>
             </div>
         </div>
     </div>
 
     <div class="form-footer-actions">
         <a href="{{ route('portal.dashboard') }}" style="text-decoration: none;">
-            <button class="btn btn-outline">BACK</button>
+            <button type="button" class="btn btn-outline">BACK</button>
         </a>
         <div class="right-actions">
-            <button class="btn btn-save">SAVE AS DRAFT</button>
-            <button class="btn btn-submit">SUBMIT</button>
+            <button type="button" class="btn btn-save">SAVE AS DRAFT</button>
+            <button type="submit" class="btn btn-submit">SUBMIT</button>
         </div>
     </div>
-</div>
+</form>
 
 @endsection
 
@@ -239,6 +251,21 @@
         document.getElementById('additionalInfoHeader').addEventListener('click', () => {
             const isOpen = addBody.style.display !== 'none';
             toggleSection(addBody, addToggle, addSection, !isOpen);
+        });
+
+        // File upload trigger
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileList.innerHTML = Array.from(fileInput.files).map(f => `<div><i class="fas fa-file"></i> ${f.name}</div>`).join('');
+            }
         });
     });
 </script>

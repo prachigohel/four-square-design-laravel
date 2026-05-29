@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Kitchen365 Portal')</title>
+    <title>@yield('title', 'FourSquareDesign Portal')</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,30 +15,40 @@
 </head>
 <body>
     <div class="app-layout">
-        @if(!request()->routeIs('portal.login'))
+        @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
         <aside id="sidebar" class="portal-sidebar">
             <div class="sidebar-brand">
-                <span class="brand-full">Four Square Designs</span>
-                <span class="brand-short">PSD</span>
+                <span class="brand-full">Four Square Design</span>
+                <span class="brand-short">FSD</span>
             </div>
             <nav class="sidebar-nav">
                 <a href="{{ route('portal.dashboard') }}" class="sidebar-link {{ request()->routeIs('portal.dashboard') ? 'active' : '' }}" title="Dashboard">
-                    <i class="fas fa-th-large"></i> <span class="link-label">Dashboard</span>
+                    <i class="fas fa-th-large"></i> <span class="link-label">Dashboard <span style="font-size: 0.6rem; color: var(--primary-color); vertical-align: middle; margin-left: 4px;">(Coming Soon)</span></span>
                 </a>
+
+
+                
+                <div style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.65rem; color: #475569; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;" class="link-label">Requests</div>
+
+
                 <a href="{{ route('portal.open-requests') }}" class="sidebar-link {{ request()->routeIs('portal.open-requests') ? 'active' : '' }}" title="Open Requests">
                     <i class="fas fa-folder-open"></i> <span class="link-label">Open Requests</span>
                 </a>
                 <a href="{{ route('portal.wip') }}" class="sidebar-link {{ request()->routeIs('portal.wip') ? 'active' : '' }}" title="WIP">
                     <i class="fas fa-clock"></i> <span class="link-label">WIP</span>
                 </a>
+
+                @if(in_array(Auth::user()->role->name ?? '', ['Designer', 'Manager', 'Admin', 'Client']))
                 <a href="{{ route('portal.needs-information') }}" class="sidebar-link {{ request()->routeIs('portal.needs-information') ? 'active' : '' }}" title="Needs Information">
                     <i class="fas fa-info-circle"></i> <span class="link-label">Needs Info</span>
                 </a>
+                @endif
+
                 <a href="{{ route('portal.needs-approval') }}" class="sidebar-link {{ request()->routeIs('portal.needs-approval') ? 'active' : '' }}" title="Needs Approval">
                     <i class="fas fa-check-circle"></i> <span class="link-label">Needs Approval</span>
                 </a>
                 <a href="{{ route('portal.closed') }}" class="sidebar-link {{ request()->routeIs('portal.closed') ? 'active' : '' }}" title="Closed">
-                    <i class="fas fa-archive"></i> <span class="link-label">Closed</span> <span class="badge"></span>
+                    <i class="fas fa-archive"></i> <span class="link-label">Closed</span>
                 </a>
                 <a href="{{ route('portal.your-drafts') }}" class="sidebar-link {{ request()->routeIs('portal.your-drafts') ? 'active' : '' }}" title="Your Drafts">
                     <i class="fas fa-file-alt"></i> <span class="link-label">Your Drafts</span>
@@ -46,6 +56,18 @@
                 <a href="{{ route('portal.prioritized') }}" class="sidebar-link {{ request()->routeIs('portal.prioritized') ? 'active' : '' }}" title="Prioritized">
                     <i class="fas fa-star" style="color: #008fa0;"></i> <span class="link-label" style="color: #008fa0;">Prioritized</span>
                 </a>
+
+                <div style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.65rem; color: #475569; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;" class="link-label">Management</div>
+
+                <a href="{{ route('portal.design-requests') }}" class="sidebar-link {{ request()->routeIs('portal.design-requests') ? 'active' : '' }}" title="Design Requests">
+                    <i class="fas fa-drafting-compass"></i> <span class="link-label">Design Requests</span>
+                </a>
+
+                @if(Auth::check() && (Auth::user()->role->name ?? '') === 'Admin')
+                <a href="{{ route('portal.leads') }}" class="sidebar-link {{ request()->routeIs('portal.leads') ? 'active' : '' }}" title="Leads">
+                    <i class="fas fa-user-tag"></i> <span class="link-label">Leads</span>
+                </a>
+                @endif
             </nav>
             <div class="sidebar-footer">
                 <button id="sidebarToggle" class="sidebar-toggle-btn">
@@ -56,38 +78,83 @@
         @endif
 
         <div class="app-content-wrapper">
-            @if(!request()->routeIs('portal.login'))
+            @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
             <header class="portal-header">
                 <div style="flex: 1;"></div>
                 <nav class="nav-links">
+                    @php
+                        $role = Auth::user()->role->name ?? '';
+                    @endphp
+
                     <a href="{{ route('portal.dashboard') }}" class="nav-item {{ request()->routeIs('portal.dashboard') ? 'active' : '' }}">MY REQUESTS</a>
-                    <a href="{{ route('portal.clients') }}" class="nav-item {{ request()->routeIs('portal.clients') ? 'active' : '' }}">ALL CLIENTS</a>
-                    <a href="{{ route('portal.submit-request') }}" class="nav-item {{ request()->routeIs('portal.submit-request') ? 'active' : '' }}">SUBMIT NEW REQUEST</a>
-                    <a href="#" class="nav-item">REPORTS</a>
+
+                    @if($role === 'Client')
+                        <a href="{{ route('portal.submit-request') }}" class="nav-item {{ request()->routeIs('portal.submit-request') ? 'active' : '' }}">SUBMIT NEW REQUEST</a>
+                    @endif
+
+                    @if(in_array($role, ['Admin', 'Manager', 'Designer']))
+                        <a href="{{ route('portal.clients') }}" class="nav-item {{ request()->routeIs('portal.clients') ? 'active' : '' }}">ALL CLIENTS</a>
+                    @endif
+
+
+
+
                     
                     <div class="user-dropdown">
-                        <div class="user-avatar" id="userDropdownTrigger">YA</div>
+                        @auth
+                        <div class="user-avatar" id="userDropdownTrigger">
+                            @php
+                                $names = explode(' ', Auth::user()->name);
+                                $initials = '';
+                                foreach ($names as $name) {
+                                    $initials .= strtoupper(substr($name, 0, 1));
+                                }
+                                echo substr($initials, 0, 2);
+                            @endphp
+                        </div>
+                        @else
+                        <div class="user-avatar" id="userDropdownTrigger">?</div>
+                        @endauth
                         <div class="dropdown-menu" id="userDropdownMenu">
                             <a href="#" class="dropdown-item" id="myProfileTrigger">My Profile</a>
+                            @if($role === 'Client')
                             <a href="#" class="dropdown-item" id="spocTrigger" style="color: #fab133;">SPOC</a>
+                            @endif
                             <div class="dropdown-divider"></div>
-                            <a href="{{ route('portal.login') }}" class="dropdown-item">Sign Out</a>
+                            <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign Out</a>
+                            <form id="logout-form" action="{{ route('portal.logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
                         </div>
                     </div>
                 </nav>
             </header>
             @endif
 
-            <main class="{{ request()->routeIs('portal.login') ? 'login-view' : 'portal-main' }}">
-                @if(!request()->routeIs('portal.login'))
+            <main class="{{ request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']) ? 'login-view' : 'portal-main' }}">
+                @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
                     @include('partials.filters')
                 @endif
+
+                @if(session('success'))
+                    <div id="toast-success" style="position: fixed; top: 1.25rem; right: 1.5rem; z-index: 9999; background: #dcfce7; color: #166534; padding: 0.85rem 1.25rem; border-radius: 8px; border: 1px solid #bbf7d0; box-shadow: 0 4px 16px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; max-width: 360px; transition: opacity 0.4s ease;">
+                        <i class="fas fa-check-circle" style="font-size: 1.1rem;"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <script>
+                        setTimeout(function() {
+                            var t = document.getElementById('toast-success');
+                            if (t) { t.style.opacity = '0'; setTimeout(function(){ t.remove(); }, 400); }
+                        }, 3500);
+                    </script>
+                @endif
+
                 <div class="page-content">
                     @yield('content')
                 </div>
             </main>
 
-            @if(!request()->routeIs('portal.login'))
+            @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
             <footer class="portal-footer">
                 <p>&copy; 2026 Four Square Designs. All rights reserved.</p>
             </footer>
@@ -149,72 +216,75 @@
             <span class="close-modal">&times;</span>
             <div class="modal-header-img">
                 <div class="sidebar-brand" style="padding: 0; background: transparent; width: auto; color: #020617; transform: scale(1.2);">
-                    <span class="brand-full">KITCHEN<span>365</span></span>
+                    <span class="brand-full">FOUR SQUARE<span> DESIGN</span></span>
                 </div>
             </div>
             <h2 class="modal-title">Point of Contact</h2>
             
             <div class="contact-list">
-                <div class="contact-item">
-                    <div class="contact-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="contact-info">
-                        <div class="contact-name">Jignesh Patel</div>
-                        <a href="mailto:jignesh@kitchen365.com" class="contact-email">jignesh@kitchen365.com</a>
-                    </div>
-                    <div class="contact-tag">Project Manager</div>
-                </div>
+                @php
+                    $activePocs = \App\Models\Poc::all();
+                @endphp
 
+                @foreach($activePocs as $poc)
                 <div class="contact-item">
                     <div class="contact-avatar">
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="contact-info">
-                        <div class="contact-name">Keyur Gohel</div>
-                        <a href="mailto:keyur.gohel@kitchen365.com" class="contact-email">keyur.gohel@kitchen365.com</a>
-                        <div class="contact-phone">+1-6789992124 Ext.118</div>
+                        <div class="contact-name">{{ $poc->name }}</div>
+                        <a href="mailto:{{ $poc->email }}" class="contact-email">{{ $poc->email }}</a>
+                        @if($poc->phone)<div class="contact-phone">{{ $poc->phone }}</div>@endif
                     </div>
-                    <div class="contact-tag">Project Manager</div>
+                    <div class="contact-tag">{{ $poc->tag ?? 'Project Manager' }}</div>
                 </div>
+                @endforeach
+
+                @if(count($activePocs) == 0)
+                <p style="text-align: center; color: var(--text-muted); padding: 1rem;">No contacts available.</p>
+                @endif
             </div>
         </div>
     </div>
 
+    @auth
     <div id="profileModal" class="modal">
         <div class="modal-content profile-modal">
             <span class="close-modal">&times;</span>
             <div class="modal-header-img">
                 <div class="sidebar-brand" style="padding: 0; background: transparent; width: auto; color: #020617; transform: scale(1.2);">
-                    <span class="brand-full">KITCHEN<span>365</span></span>
+                    <span class="brand-full">FOUR SQUARE<span> DESIGN</span></span>
                 </div>
             </div>
             
-            <form class="profile-form">
+            <form class="profile-form" method="POST" action="{{ route('portal.profile.update') }}">
+                @csrf
                 <div class="form-group">
                     <label>Email address <span class="required-star">*</span></label>
-                    <input type="email" value="ybouafia@kitchentuneup.com" class="form-input" readonly>
+                    <input type="email" value="{{ Auth::user()->email }}" class="form-input" readonly>
                 </div>
                 <div class="form-group">
                     <label>Name <span class="required-star">*</span></label>
-                    <input type="text" value="Yakout B" class="form-input">
+                    <input type="text" name="name" value="{{ Auth::user()->name }}" class="form-input" required>
                 </div>
                 <div class="form-group">
                     <label>Mobile Number <span class="required-star">*</span></label>
-                    <input type="text" value="10000000000" class="form-input">
+                    <input type="text" name="phone" value="{{ Auth::user()->phone }}" class="form-input">
                 </div>
                 <div class="form-group">
                     <label>Company Name <span class="required-star">*</span></label>
-                    <input type="text" value="TAC Kitchen Transformation LLC dba Kitchen" class="form-input">
+                    <input type="text" name="company_name" value="{{ Auth::user()->company_name }}" class="form-input">
                 </div>
+
                 
-                <button type="button" class="update-detail-btn">UPDATE DETAIL</button>
+                <button type="submit" class="update-detail-btn">UPDATE DETAIL</button>
                 <div style="text-align: center; margin-top: 1.5rem;">
-                    <a href="#" class="reset-link">Reset password?</a>
+                    <a href="{{ route('portal.forgot-password') }}" class="reset-link">Reset password?</a>
                 </div>
             </form>
         </div>
     </div>
+    @endauth
 
     <script>
         // Modal logic
@@ -270,6 +340,22 @@
                 filterPanel.style.display = 'none';
             });
         }
+
+        // Password Visibility Toggle
+        document.querySelectorAll('.fa-eye-slash').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+        });
     </script>
 </body>
 </html>

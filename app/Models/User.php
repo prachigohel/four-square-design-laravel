@@ -21,12 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'phone',
+        'company_name',
+        'manager_id',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -35,10 +37,33 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be cast.
-     *
-     * @var array<string, string>
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
+
+    /**
+     * Get the role associated with the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the manager associated with the user (client).
+     */
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    /**
+     * Get the clients assigned to this manager.
+     */
+    public function managedClients()
+    {
+        return $this->hasMany(User::class, 'manager_id');
+    }
 }
