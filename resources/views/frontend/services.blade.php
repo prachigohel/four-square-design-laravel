@@ -332,104 +332,71 @@
 </section>
 
 <!-- Bottom CTA -->
-<section class="bg-[#0a0a0a] border-t border-white/5 py-20 md:py-28 overflow-hidden relative">
+<section class="bg-[#0a0a0a] border-t border-white/5 py-24 md:py-32 overflow-hidden relative">
 
-    {{-- Ambient glow --}}
-    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-amber-500/5 blur-[140px] pointer-events-none rounded-full"></div>
+    {{-- Ambient glows --}}
+    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-amber-500/4 blur-[160px] pointer-events-none rounded-full"></div>
 
-    <div class="container mx-auto px-6 lg:px-16">
-        <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+    <div class="container mx-auto px-6 lg:px-16 relative z-10">
 
-            {{-- LEFT: Text --}}
-            <div class="flex-1 space-y-8">
-
-                <span class="text-amber-500 text-[9px] font-black uppercase tracking-[0.5em]">Begin Your Journey</span>
-
-                <h2 class="text-4xl sm:text-5xl md:text-6xl font-serif text-white leading-tight">
-                    <em>Let's Build</em><br>
-                    <span class="text-amber-500 not-italic font-bold">Your Vision</span>
-                </h2>
-
-                <p class="text-slate-400 text-base font-light leading-relaxed max-w-md">
-                    From concept sketches to build-ready construction documents — our team delivers precision-crafted kitchen and bath designs that contractors trust.
-                </p>
-
-                {{-- Feature list --}}
-                <ul class="space-y-3">
-                    @foreach(['NKBA-Compliant Technical Drawings', '2020 Design 4K Renderings', 'Contractor-Ready Packages', 'US-Standard Specifications'] as $item)
-                    <li class="flex items-center gap-3 text-slate-300 text-sm font-light">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
-                        {{ $item }}
-                    </li>
-                    @endforeach
-                </ul>
-
-                <div class="flex flex-wrap items-center gap-4 pt-2">
-                    <a href="{{ url('/request') }}" class="btn-gold inline-flex items-center gap-3 !px-8 !py-4">
-                        <span>Start Your Project</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                    <a href="{{ url('/contact') }}" class="text-white/50 text-sm font-semibold hover:text-amber-500 transition-colors underline underline-offset-4">
-                        Ask a Question
-                    </a>
-                </div>
-
-                {{-- Stats --}}
-                <div class="flex items-center gap-10 pt-6 border-t border-white/8">
-                    <div>
-                        <p class="text-amber-500 text-2xl font-black">500+</p>
-                        <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Projects</p>
-                    </div>
-                    <div class="w-px h-8 bg-white/10"></div>
-                    <div>
-                        <p class="text-amber-500 text-2xl font-black">15+</p>
-                        <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Years</p>
-                    </div>
-                    <div class="w-px h-8 bg-white/10"></div>
-                    <div>
-                        <p class="text-amber-500 text-2xl font-black">100%</p>
-                        <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Satisfaction</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- RIGHT: Design sample card --}}
-            <div class="w-full lg:w-[46%] shrink-0">
-                <div class="relative rounded-2xl overflow-hidden border border-white/8 shadow-2xl bg-[#141414]">
-
-                    {{-- Top bar --}}
-                    <div class="flex items-center gap-2 px-5 py-3 border-b border-white/8 bg-[#111]">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-amber-500/60"></div>
-                        <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
-                        <span class="ml-3 text-white/25 text-[10px] font-mono">kitchen_floor_plan_v3.pdf</span>
-                    </div>
-
-                    {{-- Design drawing image — fixed height, crops to top --}}
-                    <div class="relative h-72 md:h-96 overflow-hidden bg-white">
-                        <img src="{{ asset('images/design-sample/overview.png') }}" alt="Kitchen Floor Plan"
-                             class="w-full h-full object-cover object-top opacity-95">
-                        {{-- Fade bottom --}}
-                        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#141414] to-transparent"></div>
-                    </div>
-
-                    {{-- Bottom label --}}
-                    <div class="px-5 py-4 border-t border-white/5">
-                        <p class="text-white text-xs font-black uppercase tracking-widest">Technical Floor Plan</p>
-                        <p class="text-slate-500 text-[10px] mt-0.5">Build-ready · NKBA Compliant · 2020 Design</p>
-                    </div>
-                </div>
-
-                {{-- Floating badge --}}
-                <div class="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/8 border border-amber-500/20">
-                    <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></div>
-                    <p class="text-amber-400 text-xs font-semibold">Delivered within 3–5 business days</p>
-                </div>
-            </div>
-
+        {{-- Top label --}}
+        <div class="flex items-center justify-center gap-4 mb-10">
+            <div class="h-px w-12 bg-amber-500/40"></div>
+            <span class="text-amber-500 text-[9px] font-black uppercase tracking-[0.5em]">Begin Your Journey</span>
+            <div class="h-px w-12 bg-amber-500/40"></div>
         </div>
+
+        {{-- Heading --}}
+        <div class="text-center mb-10">
+            <h2 class="text-5xl sm:text-6xl md:text-7xl font-serif text-white leading-tight">
+                <em>Let's Build</em> <span class="text-amber-500 not-italic font-bold">Your Vision</span>
+            </h2>
+            <p class="text-slate-400 text-base font-light leading-relaxed max-w-xl mx-auto mt-6">
+                From concept sketches to build-ready construction documents — precision-crafted kitchen and bath designs that contractors trust.
+            </p>
+        </div>
+
+        {{-- Feature pills --}}
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+            @foreach(['NKBA-Compliant Drawings', '2020 Design 4K Renderings', 'Contractor-Ready Packages', 'US-Standard Specifications'] as $item)
+            <span class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/4 text-slate-300 text-xs font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                {{ $item }}
+            </span>
+            @endforeach
+        </div>
+
+        {{-- CTA buttons --}}
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+            <a href="{{ url('/request') }}" class="btn-gold inline-flex items-center gap-3 !px-10 !py-4">
+                <span>Start Your Project</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+            <a href="{{ url('/contact') }}" class="px-10 py-4 rounded-full border border-white/15 text-white/60 text-sm font-semibold hover:border-amber-500/40 hover:text-amber-500 transition-all duration-300">
+                Ask a Question
+            </a>
+        </div>
+
+        {{-- Stats row --}}
+        <div class="flex items-center justify-center gap-10 md:gap-16 pt-10 border-t border-white/8 max-w-lg mx-auto">
+            <div class="text-center">
+                <p class="text-amber-500 text-3xl font-black">500+</p>
+                <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Projects</p>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div class="text-center">
+                <p class="text-amber-500 text-3xl font-black">15+</p>
+                <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Years</p>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div class="text-center">
+                <p class="text-amber-500 text-3xl font-black">100%</p>
+                <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Satisfaction</p>
+            </div>
+        </div>
+
     </div>
 </section>
 @endsection
