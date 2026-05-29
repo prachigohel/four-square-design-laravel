@@ -113,7 +113,7 @@
                     alt="{{ $logo[1] }}"
                     class="marquee-logo-img h-9 max-w-[130px] object-contain hidden"
                     onload="this.classList.remove('hidden'); this.nextElementSibling.classList.add('hidden');"
-                    onerror="this.remove();"
+                    onerror="this.closest('div').remove();"
                 >
                 <span class="marquee-logo-text whitespace-nowrap">{{ $logo[1] }}</span>
             </div>

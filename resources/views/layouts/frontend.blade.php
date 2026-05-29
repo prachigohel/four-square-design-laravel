@@ -59,5 +59,168 @@
     <script src="{{ asset('js/animations.js') }}"></script>
 
     @stack('scripts')
+
+    <!-- ===== CONTACT POPUP ===== -->
+    <div id="contact-popup-overlay"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-500"
+         style="background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);">
+
+        <div id="contact-popup"
+             class="relative w-full max-w-lg bg-[#111111] border border-white/10 rounded-2xl shadow-2xl translate-y-6 transition-transform duration-500 overflow-hidden">
+
+            {{-- Amber top bar --}}
+            <div class="h-1 w-full bg-amber-500"></div>
+
+            <div class="p-8 md:p-10">
+
+                {{-- Header --}}
+                <div class="flex items-start justify-between mb-8">
+                    <div>
+                        <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.45em] mb-2">Get In Touch</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-white leading-snug">
+                            Let's Discuss Your<br>
+                            <span class="font-serif italic font-normal text-amber-500">Next Project</span>
+                        </h3>
+                    </div>
+                    <button onclick="closeContactPopup()"
+                            class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white hover:border-white/40 transition-all duration-200 flex-shrink-0 ml-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- Success message --}}
+                <div id="popup-success" style="display:none;" class="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl items-center gap-3 text-amber-500 text-sm font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Message sent! We'll get back to you within 24 hours.</span>
+                </div>
+
+                {{-- Form --}}
+                <form id="popup-contact-form" action="{{ route('contact.store') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[12px] text-white/50 font-medium mb-3 uppercase tracking-wider">Name</label>
+                            <input type="text" name="name" required placeholder="Your Name"
+                                   class="popup-input w-full border-b border-white/15 pb-3 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-amber-500 transition-colors duration-200"
+                                   style="background:transparent;">
+                        </div>
+                        <div>
+                            <label class="block text-[12px] text-white/50 font-medium mb-3 uppercase tracking-wider">Email</label>
+                            <input type="email" name="email" required placeholder="your@email.com"
+                                   class="popup-input w-full border-b border-white/15 pb-3 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-amber-500 transition-colors duration-200"
+                                   style="background:transparent;">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[12px] text-white/50 font-medium mb-3 uppercase tracking-wider">Message</label>
+                        <textarea name="message" rows="4" required placeholder="How can we help with your design?"
+                                  class="popup-input w-full border-b border-white/15 pb-3 text-[13px] text-white placeholder-white/20 focus:outline-none focus:border-amber-500 transition-colors duration-200 resize-none"
+                                  style="background:transparent;"></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold text-[13px] tracking-widest uppercase py-4 rounded-xl transition-all duration-300 hover:shadow-[0_8px_30px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2">
+                        Send Message
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </button>
+                </form>
+
+                <p class="text-center text-white/20 text-[11px] mt-5">
+                    Or email us at <a href="mailto:foursquaredesigns.fsd@gmail.com" class="text-amber-500/70 hover:text-amber-500 transition-colors">foursquaredesigns.fsd@gmail.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .popup-input:-webkit-autofill,
+        .popup-input:-webkit-autofill:hover,
+        .popup-input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px #111111 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+    </style>
+
+    <script>
+        function openContactPopup() {
+            const overlay = document.getElementById('contact-popup-overlay');
+            const popup   = document.getElementById('contact-popup');
+            overlay.classList.remove('opacity-0','pointer-events-none');
+            overlay.classList.add('opacity-100');
+            popup.classList.remove('translate-y-6');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactPopup() {
+            const overlay = document.getElementById('contact-popup-overlay');
+            const popup   = document.getElementById('contact-popup');
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0','pointer-events-none');
+            popup.classList.add('translate-y-6');
+            document.body.style.overflow = '';
+            sessionStorage.setItem('contactPopupShown', '1');
+        }
+
+        // Close on backdrop click
+        document.getElementById('contact-popup-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeContactPopup();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeContactPopup();
+        });
+
+        // AJAX form submit
+        document.getElementById('popup-contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const btn  = form.querySelector('button[type="submit"]');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="animate-spin w-4 h-4 inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Sending…';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(function(r) {
+                if (!r.ok) throw new Error('Server error');
+                return r.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    const successEl = document.getElementById('popup-success');
+                    successEl.style.display = 'flex';
+                    form.reset();
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                    setTimeout(closeContactPopup, 2500);
+                }
+            })
+            .catch(function() {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                alert('Something went wrong. Please try again or email us directly.');
+            });
+        });
+
+        // Auto-open after 3 s, once per session
+        if (!sessionStorage.getItem('contactPopupShown')) {
+            setTimeout(openContactPopup, 3000);
+        }
+    </script>
 </body>
 </html>

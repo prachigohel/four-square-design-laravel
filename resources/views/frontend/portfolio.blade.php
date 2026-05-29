@@ -157,54 +157,6 @@
                 </div>
             </div>
 
-            <!-- Card 7: Modern Minimalist Kitchen -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
-                <img src="{{ asset('images/portfolio/image_7.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Modern Minimalist Kitchen" onerror="this.src='https://images.unsplash.com/photo-1556911223-053f7767a75b?auto=format&fit=crop&q=80&w=800'">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Modern Minimalist Kitchen</h3>
-                    <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Handleless Slab</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Graphite Matte &amp; White Marble</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 8: Classic Farmhouse Kitchen -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
-                <img src="{{ asset('images/portfolio/image_8.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Classic Farmhouse Kitchen" onerror="this.src='https://images.unsplash.com/photo-1556909212-d5b604dd05b7?auto=format&fit=crop&q=80&w=800'">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Classic Farmhouse Kitchen</h3>
-                    <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Beadboard Shaker</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Sage Green &amp; Butcher Block</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 9: Luxury Penthouse Suite -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
-                <img src="{{ asset('images/portfolio/image_9.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Luxury Penthouse Suite" onerror="this.src='https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800'">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Luxury Penthouse Suite</h3>
-                    <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Glass Front Wall Units</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Black Walnut &amp; Gold Accents</p></div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>

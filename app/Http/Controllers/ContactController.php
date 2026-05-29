@@ -28,6 +28,10 @@ class ContactController extends Controller
             Mail::to($recipient->email)->send(new NewLeadMail($contact));
         }
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
         return back()->with('success', 'Your message has been sent successfully!');
     }
 }
