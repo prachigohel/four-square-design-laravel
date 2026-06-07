@@ -36,7 +36,7 @@ class DesignRequestController extends Controller
         $designRequest = DesignRequest::create([
             'title'              => $request->title,
             'client_id'          => Auth::id() ?? null,
-            'status'             => 'Open',
+            'status'             => 'Queued',
             'request_type'       => $request->request_type,
             'cabinet_brand'      => $request->cabinet_brand,
             'ceiling_height'     => $request->ceiling_height,
