@@ -131,9 +131,9 @@
                 <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" id="statusUpdateForm">
                     @csrf
                     <input type="hidden" name="status" id="statusHiddenInput" value="">
-                    <div class="cstm-select-wrap" id="cstmSelect">
+                    <div class="cstm-select-wrap" id="cstmSelect" data-current="{{ $request->status }}">
                         <div class="cstm-select-trigger" id="cstmTrigger">
-                            <span id="cstmLabel">Select</span>
+                            <span id="cstmLabel">{{ $request->status }}</span>
                             <i class="fas fa-chevron-down cstm-chevron"></i>
                         </div>
                         <ul class="cstm-options" id="cstmOptions">
@@ -250,17 +250,19 @@
                 <h3><i class="fas fa-paperclip"></i> Measurements & Assets</h3>
             </div>
             <div class="assets-content">
-                @if(!empty($request->additional_info['attachments']))
-                    @foreach($request->additional_info['attachments'] as $file)
+                @if(!empty($request->attachments))
+                    @foreach($request->attachments as $file)
                         <div class="asset-item">
                             <div class="asset-preview">
                                 @php
                                     $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                                    $ext = strtolower($ext);
                                     $icon = match($ext) {
                                         'pdf' => 'fa-file-pdf',
-                                        'xls', 'xlsx', 'csv' => 'fa-file-excel',
-                                        'doc', 'docx' => 'fa-file-word',
-                                        'jpg', 'jpeg', 'png', 'webp' => 'fa-file-image',
+                                        'xls', 'xlsx', 'csv', 'tsv' => 'fa-file-excel',
+                                        'doc', 'docx', 'txt' => 'fa-file-word',
+                                        'jpg', 'jpeg', 'png', 'webp', 'heic' => 'fa-file-image',
+                                        'ppt', 'pptx' => 'fa-file-powerpoint',
                                         default => 'fa-file',
                                     };
                                 @endphp
@@ -492,6 +494,13 @@
         const form    = document.getElementById('statusUpdateForm');
 
         if (!wrap) return;
+
+        // Pre-select current status
+        const current = wrap.dataset.current || '';
+        hidden.value = current;
+        options.querySelectorAll('.cstm-opt:not(.cstm-opt-header)').forEach(function (opt) {
+            if (opt.dataset.value === current) opt.classList.add('cstm-opt-active');
+        });
 
         trigger.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -1113,6 +1122,7 @@
         font-weight: 500;
     }
     .cstm-opt:hover { background: #f1f5f9; }
+    .cstm-opt-active { background: #eff6ff; color: var(--primary-color); font-weight: 700; }
     .cstm-opt-header {
         background: #1e40af;
         color: #fff !important;

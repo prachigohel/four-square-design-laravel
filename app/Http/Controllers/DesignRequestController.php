@@ -17,9 +17,9 @@ class DesignRequestController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'project_type' => 'nullable|string',
+            'title'        => 'required|string|max:255',
+            'request_type' => 'required|string',
+            'cabinet_brand'=> 'required|string|max:255',
         ]);
 
         $attachments = [];
@@ -34,26 +34,17 @@ class DesignRequestController extends Controller
         }
 
         $designRequest = DesignRequest::create([
-            'title' => 'Project Inquiry: ' . ($request->project_type ?? 'New Project'),
-            'client_id' => Auth::id() ?? null,
-            'status' => 'Queued',
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'project_type' => $request->project_type,
-            'scope' => $request->scope,
-            'door_style' => $request->door_style,
-            'refrigerator' => $request->refrigerator,
-            'range_cooktop' => $request->range_cooktop,
-            'ventilation' => $request->ventilation,
-            'dishwasher' => $request->dishwasher,
-            'cabinet_brand' => $request->cabinet_brand,
-            'ceiling_height' => $request->ceiling_height,
-            'wall_cabinet_height' => $request->wall_cabinet_height,
-            'expected_date' => $request->expected_date,
-            'additional_notes' => $request->additional_notes,
-            'attachments' => $attachments,
-            'additional_info' => $request->except(['attachments', '_token']),
+            'title'              => $request->title,
+            'client_id'          => Auth::id() ?? null,
+            'status'             => 'Open',
+            'request_type'       => $request->request_type,
+            'cabinet_brand'      => $request->cabinet_brand,
+            'ceiling_height'     => $request->ceiling_height,
+            'wall_cabinet_height'=> $request->wall_cabinet_height,
+            'expected_date'      => $request->expected_date,
+            'additional_notes'   => $request->additional_notes,
+            'attachments'        => $attachments,
+            'additional_info'    => $request->input('additional_info', []),
         ]);
 
         // Load relationships for email
@@ -84,7 +75,7 @@ class DesignRequestController extends Controller
             return response()->json(['success' => true, 'message' => 'Request submitted successfully!', 'data' => $designRequest]);
         }
 
-        return redirect()->back()->with('success', 'Your project request has been submitted successfully! We will contact you soon.');
+        return redirect()->route('portal.dashboard')->with('success', 'Your request has been submitted successfully!');
     }
 
     public function assign(Request $request, string $id)

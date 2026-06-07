@@ -44,59 +44,6 @@
                     <input type="text" name="cabinet_brand" class="form-input" placeholder="Enter cabinet brand" required>
                 </div>
 
-                {{-- Door Style --}}
-                <div class="form-group" id="doorStyleGroup">
-                    <label>Select Door Style <span class="required-star">*</span></label>
-                    <div class="custom-select-wrapper">
-                        <div class="custom-select-trigger form-input">
-                            <span class="custom-select-label">Select</span>
-                            <i class="fas fa-chevron-down" style="font-size:0.75rem;color:#94a3b8;flex-shrink:0;"></i>
-                        </div>
-                        <div class="custom-select-dropdown">
-                            <div style="padding:0.5rem 0.5rem 0;">
-                                <input type="text" class="custom-select-search form-input" placeholder="Search..." style="padding:0.5rem 0.75rem;font-size:0.85rem;">
-                            </div>
-                            <div class="custom-select-options" id="doorStyleOptions">
-                                {{-- Us Cabinet Depot --}}
-                                <div class="custom-select-option" data-value="CASSELBERRY ANTIQUE WHITE">CASSELBERRY ANTIQUE WHITE</div>
-                                <div class="custom-select-option" data-value="CASSELBERRY SADDLE">CASSELBERRY SADDLE</div>
-                                <div class="custom-select-option" data-value="EDGELINE WHITE">EDGELINE WHITE</div>
-                                <div class="custom-select-option" data-value="OXFORD MIST">OXFORD MIST</div>
-                                <div class="custom-select-option" data-value="OXFORD SAGE">OXFORD SAGE</div>
-                                <div class="custom-select-option" data-value="OXFORD TOFFEE">OXFORD TOFFEE</div>
-                                <div class="custom-select-option" data-value="OXFORD WHITE">OXFORD WHITE</div>
-                                <div class="custom-select-option" data-value="SHAKER ANTIQUE WHITE">SHAKER ANTIQUE WHITE</div>
-                                <div class="custom-select-option" data-value="SHAKER BLACK">SHAKER BLACK</div>
-                                <div class="custom-select-option" data-value="SHAKER CINDER">SHAKER CINDER</div>
-                                <div class="custom-select-option" data-value="SHAKER DOVE">SHAKER DOVE</div>
-                                <div class="custom-select-option" data-value="SHAKER GREY">SHAKER GREY</div>
-                                <div class="custom-select-option" data-value="SHAKER HONEY">SHAKER HONEY</div>
-                                <div class="custom-select-option" data-value="SHAKER NAVY">SHAKER NAVY</div>
-                                <div class="custom-select-option" data-value="SHAKER WHITE">SHAKER WHITE</div>
-                                <div class="custom-select-option" data-value="TORRANCE WHITE">TORRANCE WHITE</div>
-                                {{-- J&K Cabinetry --}}
-                                <div class="custom-select-option" data-value="Creme Maple Glazed">Creme Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Cinnamon Maple Glazed">Cinnamon Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Pearl Maple Glazed">Pearl Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Mahagony Maple Glazed">Mahagony Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Greige Maple">Greige Maple</div>
-                                <div class="custom-select-option" data-value="Espresso Maple">Espresso Maple</div>
-                                <div class="custom-select-option" data-value="Mocha Maple Glazed">Mocha Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Chocolate Maple Glazed">Chocolate Maple Glazed</div>
-                                <div class="custom-select-option" data-value="Java Coffee Maple">Java Coffee Maple</div>
-                                <div class="custom-select-option" data-value="Almond Maple">Almond Maple</div>
-                                <div class="custom-select-option" data-value="White Maple">White Maple</div>
-                                <div class="custom-select-option" data-value="Dove">Dove</div>
-                                <div class="custom-select-option" data-value="Charcoal">Charcoal</div>
-                                <div class="custom-select-option" data-value="Hazel">Hazel</div>
-                                <div class="custom-select-option" data-value="Castle Grey">Castle Grey</div>
-                                <div class="custom-select-option" data-value="Chestnut">Chestnut</div>
-                            </div>
-                        </div>
-                        <input type="hidden" name="door_style" class="custom-select-input">
-                    </div>
-                </div>
-
                 <div class="form-group-row">
                     <div class="form-group">
                         <label>Ceiling Height</label>
@@ -136,7 +83,7 @@
                     <p class="section-subtitle">Appliances, Molding &amp; Door, Notes, Storage</p>
                 </div>
             </div>
-            <button class="toggle-section-btn" id="additionalInfoToggle"><i class="fas fa-plus"></i></button>
+            <button type="button" class="toggle-section-btn" id="additionalInfoToggle"><i class="fas fa-plus"></i></button>
         </div>
 
         <div class="section-body" id="additionalInfoBody" style="display:none;">

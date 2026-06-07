@@ -523,7 +523,7 @@
                 <td style="color:#94a3b8;font-size:0.75rem;">{{ $req->id }}</td>
                 <td><a href="{{ route('portal.view-request', $req->id) }}">{{ Str::limit($req->title, 40) }}</a></td>
                 <td>{{ $req->client->name ?? '—' }}</td>
-                <td>{{ $req->designer->name ?? '<span style="color:#94a3b8;">Unassigned</span>' }}</td>
+                <td>{!! $req->designer->name ?? '<span style="color:#94a3b8;">Unassigned</span>' !!}</td>
                 <td><span class="badge badge-{{ $bClass }}">{{ $req->status }}</span></td>
                 <td style="{{ $overdue ? 'color:#f43f5e;font-weight:700;' : 'color:#64748b;' }}">
                     {{ $req->expected_date ? $req->expected_date->format('M d, Y') : '—' }}

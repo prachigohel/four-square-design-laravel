@@ -124,9 +124,7 @@
                         @endauth
                         <div class="dropdown-menu" id="userDropdownMenu">
                             <a href="#" class="dropdown-item" id="myProfileTrigger">My Profile</a>
-                            @if($role === 'Client')
-                            <a href="#" class="dropdown-item" id="spocTrigger" style="color: #fab133;">SPOC</a>
-                            @endif
+                            {{-- SPOC hidden --}}
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign Out</a>
                             <form id="logout-form" action="{{ route('portal.logout') }}" method="POST" style="display: none;">
