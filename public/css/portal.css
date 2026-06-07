@@ -1647,11 +1647,18 @@ h3 {
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.6rem;
     color: var(--text-main);
     font-size: 1.25rem;
     flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.15s;
 }
+.mobile-menu-btn:hover { background: #f1f5f9; }
 
 /* Sidebar overlay behind drawer */
 .sidebar-overlay {
@@ -1893,5 +1900,400 @@ h3 {
         padding: 1.5rem !important;
         margin: 1rem;
         max-width: calc(100% - 2rem) !important;
+    }
+}
+
+/* =================================================================
+   COMPREHENSIVE MOBILE RESPONSIVE ADDITIONS
+   Covers all gaps: tables, dashboards, cards, modals, forms, portal
+   ================================================================= */
+
+/* ── Utility: horizontal-scroll wrapper for any table ── */
+.table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+
+/* ── Design-requests table: always scrollable ── */
+.design-requests-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Design-requests filter bar: flexible layout ── */
+.dr-filter-bar > div {
+    flex: 1 1 140px;
+    min-width: 0 !important;
+}
+
+/* ── Request card right block baseline ── */
+.req-right-block {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .req-right-block {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-left: 0 !important;
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f1f5f9;
+    }
+    .req-right-block > div:first-child {
+        border-right: none !important;
+        padding-right: 0 !important;
+        margin-right: 0 !important;
+        text-align: left !important;
+    }
+}
+
+/* ── Portal main: safe padding on all sizes ── */
+@media (max-width: 900px) {
+    .portal-main {
+        padding: 1rem;
+        min-height: calc(100vh - 60px);
+    }
+
+    /* ── Dashboard two-col → single column ── */
+    .dash-two-col {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Dash table: horizontal scroll ── */
+    .dash-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .dash-table {
+        min-width: 520px;
+    }
+
+    /* ── Design-requests filter inputs: remove hard min-widths ── */
+    .horizontal-filter-panel input[type="text"],
+    .horizontal-filter-panel input[type="date"],
+    .horizontal-filter-panel select {
+        min-width: 0 !important;
+        width: 100%;
+    }
+
+    /* ── Request card right side: allow wrap on tablet ── */
+    .request-card .req-right-block {
+        flex-wrap: wrap;
+        margin-left: 0 !important;
+    }
+
+    /* ── View-request: status section padding ── */
+    .req-status-section {
+        padding: 1.25rem;
+    }
+
+    /* ── View-request: change status max-width full ── */
+    .req-change-status {
+        max-width: 100% !important;
+    }
+
+    /* ── Assign dropdown compact on tablet ── */
+    .assign-select-wrap select {
+        width: 100%;
+    }
+
+    /* ── Page header: stack title + action button ── */
+    .page-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* ── User table: horizontal scroll ── */
+    .user-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .user-table {
+        min-width: 600px;
+    }
+
+    /* ── Users page modal: full width ── */
+    .modal-box {
+        width: calc(100% - 1.5rem) !important;
+        max-width: 100% !important;
+        margin: 1rem;
+    }
+
+    /* ── Status breakdown bars: readable on tablet ── */
+    .status-bars .sbar-row {
+        gap: 0.5rem;
+    }
+    .sbar-label {
+        min-width: 110px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .portal-main {
+        padding: 0.875rem;
+    }
+
+    /* ── Stat grid → 2 columns ── */
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem;
+    }
+    .stat-card {
+        padding: 1rem;
+    }
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    /* ── Quick actions: 3 per row ── */
+    .quick-actions {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    .qa-card {
+        padding: 1rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    .qa-card i {
+        font-size: 1.2rem;
+    }
+
+    /* ── Dash recent table min-width ── */
+    .dash-table {
+        min-width: 480px;
+        font-size: 0.78rem;
+    }
+    .dash-table th,
+    .dash-table td {
+        padding: 0.6rem 0.75rem;
+    }
+
+    /* ── Mini list items: ensure they wrap ── */
+    .mini-list li {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: flex-start;
+    }
+    .ml-title {
+        flex: 1 1 100%;
+    }
+
+    /* ── Request list view: compact ── */
+    .request-item {
+        border-radius: 12px;
+    }
+    .request-meta-header {
+        font-size: 0.78rem;
+    }
+
+    /* ── Assign designer dropdown: full row ── */
+    .request-card form select {
+        width: 140px;
+    }
+
+    /* ── Status pills: wrap ── */
+    .req-status-stats {
+        flex-wrap: wrap;
+        gap: 1.25rem;
+    }
+
+    /* ── Client action buttons: stack ── */
+    .client-action-buttons {
+        flex-direction: column;
+    }
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* ── View-request: info grid 2 cols ── */
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* ── View-request: timeline readable ── */
+    .timeline {
+        padding-left: 1.25rem;
+    }
+
+    /* ── View-request: comment actions stack ── */
+    .comment-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .comment-meta-switches .btn-save {
+        width: 100%;
+    }
+
+    /* ── Users page: role tabs wrap ── */
+    .role-tabs {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+    .role-tab {
+        font-size: 0.72rem;
+        padding: 0.35rem 0.75rem;
+    }
+
+    /* ── Design requests: horizontal filter panel ── */
+    .horizontal-filter-panel {
+        padding: 1rem;
+    }
+
+    /* ── Portal modals: full screen on small phones ── */
+    .modal-content {
+        width: calc(100vw - 1rem) !important;
+        max-width: 100% !important;
+        padding: 1.25rem !important;
+        margin: 0.5rem auto;
+        border-radius: 12px;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+    .profile-modal {
+        width: calc(100vw - 1rem) !important;
+    }
+    .modal-box {
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+
+    /* ── Signup card: full width ── */
+    .signup-card {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .portal-main {
+        padding: 0.75rem;
+    }
+
+    /* ── Stat grid → 2 cols ── */
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem;
+    }
+
+    /* ── Quick actions: 2 per row ── */
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ── Page head button full width ── */
+    .btn-add-user {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* ── User modal form rows → single col ── */
+    .mform-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── View-request: header stack ── */
+    .header-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* ── View-request: footer stack ── */
+    .view-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .view-footer .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* ── Design-requests table: scroll ── */
+    .design-requests-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Open-requests: view + expand buttons wrap ── */
+    .req-actions-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        align-items: flex-end;
+    }
+
+    /* ── Status change section full width ── */
+    .req-change-status {
+        width: 100%;
+        max-width: 100% !important;
+    }
+    .cstm-select-wrap {
+        width: 100%;
+    }
+
+    /* ── Timeline: tight on phone ── */
+    .timeline-header {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    /* ── Info grid → 1 col on small phone ── */
+    .info-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .info-group.full-width {
+        grid-column: span 1 !important;
+    }
+}
+
+@media (max-width: 400px) {
+    /* ── Stat grid → 1 col on tiny phones ── */
+    .stat-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── Quick actions: 1 col ── */
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ── Portal header: tighter ── */
+    .portal-header {
+        padding: 0 0.75rem;
+        height: 52px;
+    }
+
+    /* ── Portal main: minimal padding ── */
+    .portal-main {
+        padding: 0.5rem;
+    }
+
+    /* ── Role tabs: smaller ── */
+    .role-tab {
+        font-size: 0.68rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    /* ── Modals: full viewport ── */
+    .modal-box {
+        width: 100% !important;
+        border-radius: 12px 12px 0 0;
+        margin: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 90vh;
+    }
+    .modal-overlay {
+        align-items: flex-end !important;
     }
 }

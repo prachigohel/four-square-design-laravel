@@ -48,7 +48,7 @@
                         <a href="{{ route('portal.view-request', ['id' => $req->id]) }}" style="color: inherit; text-decoration: none;">{{ $req->title }}</a>
                     </h3>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0; margin-left: auto;">
+                <div class="req-right-block" style="display: flex; align-items: center; gap: 0; margin-left: auto;">
                     <!-- Info column: Added By + Assign Designer -->
                     <div style="text-align: right; padding-right: 1.25rem; margin-right: 1.25rem; border-right: 1px solid var(--border-color);">
                         <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem;">

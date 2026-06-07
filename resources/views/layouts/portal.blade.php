@@ -24,7 +24,7 @@
             </div>
             <nav class="sidebar-nav">
                 <a href="{{ route('portal.dashboard') }}" class="sidebar-link {{ request()->routeIs('portal.dashboard') ? 'active' : '' }}" title="Dashboard">
-                    <i class="fas fa-th-large"></i> <span class="link-label">Dashboard <span style="font-size: 0.6rem; color: var(--primary-color); vertical-align: middle; margin-left: 4px;">(Coming Soon)</span></span>
+                    <i class="fas fa-th-large"></i> <span class="link-label">Dashboard</span>
                 </a>
 
 

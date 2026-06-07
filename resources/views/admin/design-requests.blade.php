@@ -3,7 +3,7 @@
 @section('title', 'Design Requests - FourSquareDesign Portal')
 
 @section('content')
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+<div class="dr-page-head" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
     <div>
         <h2 style="font-family: var(--font-heading); font-size: 1.6rem; color: #020617; margin: 0;">Design Requests</h2>
         <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.25rem;">All design requests submitted through the portal</p>
@@ -13,7 +13,7 @@
 
 {{-- Filter Bar --}}
 <form method="GET" action="{{ route('portal.design-requests') }}" id="filterForm">
-    <div style="background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+    <div class="dr-filter-bar" style="background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
 
         {{-- Search --}}
         <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 180px;">
@@ -96,8 +96,8 @@
         @endif
     </div>
 @else
-    <div style="background: #fff; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div class="design-requests-table-wrap" style="background: #fff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
             <thead>
                 <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
                     <th style="padding: 1rem 1.25rem; text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #475569;">Request ID</th>
