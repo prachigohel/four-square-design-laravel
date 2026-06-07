@@ -19,6 +19,18 @@ Route::get('/', function () {
     return view('frontend.index');
 })->name('home');
 
+Route::get('/sitemap.xml', function () {
+    return response()->view('sitemap', [], 200, ['Content-Type' => 'application/xml']);
+})->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\n"
+             . "Allow: /\n"
+             . "Disallow: /portal/\n\n"
+             . "Sitemap: " . url('/sitemap.xml') . "\n";
+    return response($content, 200, ['Content-Type' => 'text/plain']);
+});
+
 Route::get('/services', function () {
     return view('frontend.services');
 })->name('services');

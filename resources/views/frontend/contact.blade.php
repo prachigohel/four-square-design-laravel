@@ -1,6 +1,42 @@
 @extends('layouts.frontend')
 
-@section('title', 'Contact | Four Square Design')
+@section('title', 'Contact Us | Four Square Design Ahmedabad')
+@section('meta_description', 'Get in touch with Four Square Design in Ahmedabad. Located at E-601, Iscon Platinum, Bopal — reach us for kitchen design, 3D rendering, and cabinet layout enquiries.')
+@section('meta_keywords', 'contact Four Square Design, kitchen design Ahmedabad contact, interior design studio Bopal, design enquiry Gujarat')
+@section('og_title', 'Contact Us | Four Square Design Ahmedabad')
+@section('og_description', 'Reach out to Four Square Design at E-601, Iscon Platinum, Bopal, Ahmedabad. We\'d love to discuss your next kitchen or bath design project.')
+@section('canonical', url('/contact'))
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact Four Square Design",
+  "url": "{{ url('/contact') }}",
+  "description": "Contact page for Four Square Design — kitchen and interior design studio in Ahmedabad.",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "name": "Four Square Design",
+    "email": "foursquaredesigns.fsd@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "E-601, Iscon Platinum, Bopal, S.P. Ring Road",
+      "addressLocality": "Ahmedabad",
+      "addressRegion": "Gujarat",
+      "postalCode": "380058",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "23.0422",
+      "longitude": "72.4757"
+    },
+    "url": "{{ url('/') }}"
+  }
+}
+</script>
+@endpush
 
 @section('content')
 <section class="min-h-screen bg-[#0d0d0d] text-white flex items-center py-24 lg:py-36 pt-28 md:pt-24">
@@ -12,10 +48,8 @@
                 <!-- Heading -->
                 <div class="mb-10">
                     <h1 class="text-5xl md:text-6xl xl:text-7xl font-bold leading-tight tracking-tight text-white mb-2">
-                        Let's Discuss Your
-                    </h1>
-                    <h1 class="text-5xl md:text-6xl xl:text-7xl font-serif italic font-normal leading-tight tracking-tight text-amber-500">
-                        Next Project
+                        Let's Discuss Your<br>
+                        <span class="font-serif italic font-normal text-amber-500">Next Project</span>
                     </h1>
                 </div>
 

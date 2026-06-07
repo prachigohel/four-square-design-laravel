@@ -1,6 +1,28 @@
 @extends('layouts.frontend')
 
-@section('title', 'Portfolio | Four Square Design')
+@section('title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Design')
+@section('meta_description', 'Browse Four Square Design\'s portfolio of completed kitchen and bath projects — including gourmet kitchens, luxury bath retreats, elevation drawings, floor plans, and multi-family unit designs.')
+@section('meta_keywords', 'kitchen design portfolio, 3D kitchen rendering portfolio, bath design portfolio, Ahmedabad interior design projects, luxury kitchen gallery, cabinet design gallery India')
+@section('og_title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Design')
+@section('og_description', 'Browse our completed kitchen and bath design projects — gourmet kitchens, bath retreats, elevation drawings, floor plans, and multi-family designs.')
+@section('canonical', url('/portfolio'))
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Four Square Design – Portfolio",
+  "url": "{{ url('/portfolio') }}",
+  "description": "Portfolio of completed kitchen and bath design projects by Four Square Design, Ahmedabad.",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "Four Square Design",
+    "url": "{{ url('/') }}"
+  }
+}
+</script>
+@endpush
 
 @section('content')
 
