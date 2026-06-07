@@ -18,7 +18,7 @@ class RequestClosedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Request Closed – #CAB-2026-' . $this->designRequest->id,
+            subject: 'Project Completed – #CAB-2026-' . $this->designRequest->id,
         );
     }
 

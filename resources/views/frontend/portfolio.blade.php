@@ -39,11 +39,22 @@
             <!-- Right: Floor Plan Image -->
             <div class="flex-1 w-full">
                 <div class="bg-white rounded-2xl overflow-hidden shadow-2xl p-4 lg:p-6">
-                    <img
-                        src="{{ asset('images/design-sample/overview.png') }}"
-                        class="w-full h-auto object-contain"
-                        alt="Multi-Family Design Sample Floor Plan"
-                    >
+                    <div class="relative group cursor-pointer overflow-hidden rounded-lg"
+                         onclick="openElevationLightbox('{{ asset('images/design-sample/overview.png') }}', 'Multi-Family Design Sample Floor Plan')">
+                        <img
+                            src="{{ asset('images/design-sample/overview.png') }}"
+                            class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                            alt="Multi-Family Design Sample Floor Plan"
+                        >
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0zm0 0l3 3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 8v6M8 11h6" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex justify-between text-xs text-slate-500 pt-3 font-medium">
                         <span>Four Square Designs</span>
                         <span>Multi-Family Design Sample</span>
@@ -62,97 +73,109 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
             <!-- Card 1: Gourmet Living Kitchen -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_1.png') }}', 'Gourmet Living Kitchen')">
                 <img src="{{ asset('images/portfolio/image_1.png') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Gourmet Living Kitchen">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Gourmet Living Kitchen</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Gourmet Living Kitchen</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Inset Slim Shaker</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Warm-Off White &amp; Deep Navy</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Inset Slim Shaker</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Warm-Off White &amp; Deep Navy</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- Card 2: Serene Bath Retreat -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_2.png') }}', 'Serene Bath Retreat')">
                 <img src="{{ asset('images/portfolio/image_2.png') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Serene Bath Retreat">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Serene Bath Retreat</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Serene Bath Retreat</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Full Overlay Shaker</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Pure White Matte</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Full Overlay Shaker</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Pure White Matte</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- Card 3: Dual Vanity Suite -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_3.3.jpeg') }}', 'Dual Vanity Suite')">
                 <img src="{{ asset('images/portfolio/image_3.3.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dual Vanity Suite">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Dual Vanity Suite</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Dual Vanity Suite</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Arch Profile Shaker</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Antique White &amp; Brass</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Arch Profile Shaker</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Antique White &amp; Brass</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- Card 4: Library Nook -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_4.jpeg') }}', 'Built-In Library Nook')">
                 <img src="{{ asset('images/portfolio/image_4.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Built-In Library Nook">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Built-In Library Nook</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Built-In Library Nook</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Open Shelving</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Deep Navy &amp; Warm Oak</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Open Shelving</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Deep Navy &amp; Warm Oak</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- Card 5: Coffered Ceiling Kitchen -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_5.jpeg') }}', 'Coffered Ceiling Kitchen')">
                 <img src="{{ asset('images/portfolio/image_5.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Coffered Ceiling Kitchen">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Residential</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Coffered Ceiling Kitchen</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Coffered Ceiling Kitchen</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Raised Panel Traditional</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Cream &amp; Natural Maple</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Raised Panel Traditional</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Cream &amp; Natural Maple</p></div>
                     </div>
                 </div>
             </div>
 
             <!-- Card 6: Midnight Blue Kitchen -->
-            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer">
+            <div class="portfolio-card group relative overflow-hidden rounded-3xl bg-zinc-900 aspect-square cursor-pointer" onclick="openElevationLightbox('{{ asset('images/portfolio/image_6.jpeg') }}', 'Midnight Blue Kitchen')">
                 <img src="{{ asset('images/portfolio/image_6.jpeg') }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Midnight Blue Kitchen">
-                <div class="absolute top-4 right-4 w-10 h-10 bg-black/80 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-start justify-end p-4">
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 rounded-full p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <div class="absolute bottom-0 left-0 right-0 p-6 transition-all duration-500" style="background:linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%);">
                     <p class="text-amber-500 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Multi-Family</p>
-                    <h3 class="font-serif italic text-white text-xl mb-3">Midnight Blue Kitchen</h3>
+                    <h3 style="font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-size:1.25rem; font-weight:700; margin:0 0 10px 0; text-shadow:0 2px 10px rgba(0,0,0,0.9);">Midnight Blue Kitchen</h3>
                     <div class="space-y-1">
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Door Style</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Flat Panel Modern</p></div>
-                        <div><p class="text-slate-500 text-[8px] font-black uppercase tracking-widest">Finish</p><p class="text-white text-[10px] font-black uppercase tracking-wider">Midnight Blue &amp; Concrete</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Door Style</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Flat Panel Modern</p></div>
+                        <div><p style="color:#f59e0b; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.15em; margin:0 0 1px 0;">Finish</p><p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Midnight Blue &amp; Concrete</p></div>
                     </div>
                 </div>
             </div>
@@ -165,7 +188,7 @@
 <div id="specs-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300" onclick="closeSpecsDrawer()"></div>
 
 <div id="specs-drawer" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none">
-    <div id="specs-panel" class="relative w-[95vw] max-w-6xl h-[90vh] bg-[#111] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row pointer-events-auto translate-y-8 opacity-0 transition-all duration-400">
+    <div id="specs-panel" class="relative w-[95vw] max-w-6xl h-[90vh] bg-[#111] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row pointer-events-none translate-y-8 opacity-0 transition-all duration-400">
 
         <!-- Close Button -->
         <button onclick="closeSpecsDrawer()" class="absolute top-5 right-5 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors">
@@ -251,7 +274,7 @@
                             <span class="opacity-0 group-hover:opacity-100 bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full transition-opacity duration-300">Expand</span>
                         </div>
                         <div class="p-3 flex items-center justify-between">
-                            <p class="text-white text-[10px] font-black uppercase tracking-wider">Refrigerator<br>Elevation</p>
+                            <p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Refrigerator<br>Elevation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -267,7 +290,7 @@
                             <span class="opacity-0 group-hover:opacity-100 bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full transition-opacity duration-300">Expand</span>
                         </div>
                         <div class="p-3 flex items-center justify-between">
-                            <p class="text-white text-[10px] font-black uppercase tracking-wider">Range<br>Elevation</p>
+                            <p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Range<br>Elevation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -283,7 +306,7 @@
                             <span class="opacity-0 group-hover:opacity-100 bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full transition-opacity duration-300">Expand</span>
                         </div>
                         <div class="p-3 flex items-center justify-between">
-                            <p class="text-white text-[10px] font-black uppercase tracking-wider">Island<br>Elevation</p>
+                            <p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Island<br>Elevation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -299,7 +322,7 @@
                             <span class="opacity-0 group-hover:opacity-100 bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full transition-opacity duration-300">Expand</span>
                         </div>
                         <div class="p-3 flex items-center justify-between">
-                            <p class="text-white text-[10px] font-black uppercase tracking-wider">Bath 1<br>Elevation</p>
+                            <p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Bath 1<br>Elevation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -315,7 +338,7 @@
                             <span class="opacity-0 group-hover:opacity-100 bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full transition-opacity duration-300">Expand</span>
                         </div>
                         <div class="p-3 flex items-center justify-between">
-                            <p class="text-white text-[10px] font-black uppercase tracking-wider">Bath 2<br>Elevation</p>
+                            <p style="color:#ffffff; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 6px 0;">Bath 2<br>Elevation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -333,21 +356,16 @@
 </div>
 
 <!-- Elevation Lightbox -->
-<div id="elevation-lightbox" class="fixed inset-0 bg-black/95 z-[80] hidden items-center justify-center p-6" onclick="closeElevationLightbox()">
-    <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+<div id="elevation-lightbox" onclick="closeElevationLightbox()"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:9999; align-items:center; justify-content:center; padding:1.5rem;">
+    <button onclick="event.stopPropagation(); closeElevationLightbox()"
+            style="position:absolute; top:1.25rem; right:1.25rem; width:2.75rem; height:2.75rem; background:rgba(255,255,255,0.12); border:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s;"
+            onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:1.2rem;height:1.2rem;" stroke="white" fill="none" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
-    <img id="elevation-lightbox-img" src="" class="max-w-4xl max-h-[85vh] w-full object-contain rounded-2xl shadow-2xl" alt="">
+    <img id="elevation-lightbox-img" src="" alt=""
+         style="max-width:90vw; max-height:90vh; width:auto; height:auto; object-fit:contain; border-radius:1rem; box-shadow:0 25px 60px rgba(0,0,0,0.8); display:block; margin:auto;">
 </div>
-
-<!-- Gallery Lightbox -->
-<div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-6" onclick="closeLightbox()">
-    <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors" onclick="closeLightbox()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-    <img id="lightbox-img" src="" class="max-w-4xl max-h-[85vh] w-full object-contain rounded-2xl shadow-2xl" alt="">
-</div>
-
 
 <!-- Call to Action -->
 <section class="py-20 md:py-40 bg-black relative overflow-hidden">
@@ -378,8 +396,8 @@
         requestAnimationFrame(() => {
             overlay.classList.add('opacity-100');
             overlay.classList.remove('opacity-0');
-            panel.classList.remove('translate-y-8', 'opacity-0');
-            panel.classList.add('translate-y-0', 'opacity-100');
+            panel.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+            panel.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
         });
     }
 
@@ -388,8 +406,8 @@
         const panel   = document.getElementById('specs-panel');
         overlay.classList.remove('opacity-100');
         overlay.classList.add('opacity-0');
-        panel.classList.add('translate-y-8', 'opacity-0');
-        panel.classList.remove('translate-y-0', 'opacity-100');
+        panel.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+        panel.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
         setTimeout(() => {
             overlay.classList.add('hidden');
             document.body.style.overflow = '';
@@ -401,50 +419,17 @@
         const lb = document.getElementById('elevation-lightbox');
         document.getElementById('elevation-lightbox-img').src = src;
         document.getElementById('elevation-lightbox-img').alt = alt;
-        lb.classList.remove('hidden');
-        lb.classList.add('flex');
+        lb.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
     function closeElevationLightbox() {
-        const lb = document.getElementById('elevation-lightbox');
-        lb.classList.add('hidden');
-        lb.classList.remove('flex');
-    }
-
-    // ---- Gallery Lightbox ----
-    document.querySelectorAll('.portfolio-card').forEach(card => {
-        const expandBtn = card.querySelector('.absolute.top-4');
-        expandBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const img = card.querySelector('img');
-            openLightbox(img.src, img.alt);
-        });
-        card.addEventListener('click', () => {
-            const img = card.querySelector('img');
-            openLightbox(img.src, img.alt);
-        });
-    });
-
-    function openLightbox(src, alt) {
-        const lb = document.getElementById('lightbox');
-        document.getElementById('lightbox-img').src = src;
-        document.getElementById('lightbox-img').alt = alt;
-        lb.classList.remove('hidden');
-        lb.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-        const lb = document.getElementById('lightbox');
-        lb.classList.add('hidden');
-        lb.classList.remove('flex');
+        document.getElementById('elevation-lightbox').style.display = 'none';
         document.body.style.overflow = '';
     }
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            closeLightbox();
             closeSpecsDrawer();
             closeElevationLightbox();
         }

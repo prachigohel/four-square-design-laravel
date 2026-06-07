@@ -40,9 +40,6 @@
                     <label for="remember" style="font-size: 0.85rem; color: #64748b; cursor: pointer;">Remember me</label>
                 </div>
                 <button type="submit" class="login-btn">Login</button>
-                <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #475569;">
-                    Not a Member yet? <a href="{{ route('portal.signup') }}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign up</a>
-                </div>
             </form>
         </div>
     </div>

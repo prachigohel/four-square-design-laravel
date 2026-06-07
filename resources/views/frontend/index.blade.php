@@ -1,6 +1,85 @@
 @extends('layouts.frontend')
 
-@section('title', 'Four Square Design | Bespoke Kitchen & Interior Artistry')
+@section('title', 'Four Square Design | Bespoke Kitchen & Interior Artistry in Ahmedabad')
+@section('meta_description', 'Four Square Design is Ahmedabad\'s premier kitchen & interior design studio. Expert in 2020 Design layouts, photorealistic 3D renderings, cabinet design, and luxury bath artistry for residential and multi-family projects.')
+@section('meta_keywords', 'kitchen design Ahmedabad, cabinet design India, 2020 Design rendering, luxury kitchen remodel, interior design studio Gujarat, 3D kitchen visualization')
+@section('og_title', 'Four Square Design | Bespoke Kitchen & Interior Artistry in Ahmedabad')
+@section('og_description', 'Ahmedabad\'s premier kitchen & interior design studio. Expert in 2020 Design layouts, 3D renderings, and luxury cabinet artistry for residential & multi-family projects.')
+@section('og_image', asset('images/kitchen-hero.png'))
+@section('canonical', url('/'))
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ url('/') }}/#organization",
+      "name": "Four Square Design",
+      "url": "{{ url('/') }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ asset('images/kitchen-hero.png') }}"
+      },
+      "email": "foursquaredesigns.fsd@gmail.com",
+      "description": "Bespoke kitchen and interior design studio in Ahmedabad specializing in 2020 Design layouts, 3D renderings, and cabinet design.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "E-601, Iscon Platinum, Bopal, S.P. Ring Road",
+        "addressLocality": "Ahmedabad",
+        "addressRegion": "Gujarat",
+        "postalCode": "380058",
+        "addressCountry": "IN"
+      },
+      "sameAs": []
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "{{ url('/') }}/#localbusiness",
+      "name": "Four Square Design",
+      "url": "{{ url('/') }}",
+      "email": "foursquaredesigns.fsd@gmail.com",
+      "description": "Bespoke kitchen and interior design studio in Ahmedabad specializing in 2020 Design layouts, photorealistic 3D renderings, and luxury cabinet artistry.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "E-601, Iscon Platinum, Bopal, S.P. Ring Road",
+        "addressLocality": "Ahmedabad",
+        "addressRegion": "Gujarat",
+        "postalCode": "380058",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "23.0422",
+        "longitude": "72.4757"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "priceRange": "$$",
+      "currenciesAccepted": "INR, USD",
+      "areaServed": ["Ahmedabad", "Gujarat", "India", "United States", "Canada"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ url('/') }}/#website",
+      "url": "{{ url('/') }}",
+      "name": "Four Square Design",
+      "description": "Bespoke Kitchen & Interior Artistry",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ url('/') }}/portfolio?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 
@@ -144,7 +223,7 @@
                     We specialize in Kitchen &amp; Bath design, delivering precise, build-ready layouts using industry-standard 2020 Design.
                     With over 8 years of experience, we focus on creating functional, detail-driven spaces that seamlessly translate from concept to execution.
                 </p>
-                <p class="text-slate-400 leading-relaxed font-light">
+                <p class="text-slate-300 text-lg leading-relaxed font-light">
                     Working alongside professionals who use leading cabinetry brands, we provide accurate cabinet layouts,
                     NKBA-compliant planning, and high-quality 4K visualizations—ensuring every design is both technically sound and visually compelling.
                 </p>

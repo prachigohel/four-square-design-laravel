@@ -141,42 +141,6 @@
     opacity: 0.75;
 }
 
-/* ================================================================
-   CUSTOM CURSOR
-================================================================ */
-#custom-cursor {
-    position: fixed;
-    width: 40px;
-    height: 40px;
-    border: 1.5px solid rgba(245,158,11,0.55);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transition: width .35s cubic-bezier(.25,.46,.45,.94),
-                height .35s cubic-bezier(.25,.46,.45,.94),
-                border-color .3s,
-                background .3s;
-    will-change: transform;
-}
-
-#custom-cursor.is-hover {
-    width: 60px;
-    height: 60px;
-    border-color: #f59e0b;
-    background: rgba(245,158,11,0.08);
-}
-
-#cursor-dot {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    background: #f59e0b;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    box-shadow: 0 0 10px rgba(245,158,11,0.6);
-    will-change: transform;
-}
 
 /* ================================================================
    3D CARD TILT — shine overlay
@@ -318,9 +282,7 @@ h2:hover {
    MOBILE: hide cursor elements
 ================================================================ */
 @media (max-width: 768px) {
-    #custom-cursor,
-    #cursor-dot { display: none; }
-    #particle-canvas { opacity: 0.4; }
+#particle-canvas { opacity: 0.4; }
 }
 
 /* ================================================================

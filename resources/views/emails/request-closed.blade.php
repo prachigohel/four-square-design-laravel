@@ -1,9 +1,9 @@
 @extends('emails.layout')
 
 @section('email-body')
-<p class="greeting">Request Closed</p>
+<p class="greeting">Project Completed</p>
 <p class="message">
-    A design request has been marked as <strong>Closed</strong> by the assigned designer.
+    The project has been successfully completed and closed. Thank you for choosing Four Square Designs.
 </p>
 
 <div class="info-box">
@@ -12,7 +12,7 @@
         <span class="info-value">CAB-2026-{{ $designRequest->id }}</span>
     </div>
     <div class="info-row">
-        <span class="info-label">Title</span>
+        <span class="info-label">Project Title</span>
         <span class="info-value">{{ $designRequest->title }}</span>
     </div>
     <div class="info-row">
@@ -24,10 +24,6 @@
         <span class="info-value">{{ $designRequest->designer->name ?? 'N/A' }}</span>
     </div>
     <div class="info-row">
-        <span class="info-label">Project Type</span>
-        <span class="info-value">{{ $designRequest->project_type ?? 'N/A' }}</span>
-    </div>
-    <div class="info-row">
         <span class="info-label">Closed At</span>
         <span class="info-value">{{ $designRequest->updated_at->format('d M, Y h:i A') }}</span>
     </div>
@@ -37,6 +33,6 @@
 
 <hr class="divider">
 <p class="message" style="margin-bottom: 0; font-size: 0.85rem; color: #94a3b8;">
-    This request has been completed. Please log in to the portal to review the final deliverables.
+    Thank you for trusting Four Square Designs with your project. We look forward to working with you again in the future.
 </p>
 @endsection

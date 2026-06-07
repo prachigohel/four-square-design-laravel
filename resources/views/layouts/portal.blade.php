@@ -15,6 +15,7 @@
 </head>
 <body>
     <div class="app-layout">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
         <aside id="sidebar" class="portal-sidebar">
             <div class="sidebar-brand">
@@ -34,8 +35,8 @@
                 <a href="{{ route('portal.open-requests') }}" class="sidebar-link {{ request()->routeIs('portal.open-requests') ? 'active' : '' }}" title="Open Requests">
                     <i class="fas fa-folder-open"></i> <span class="link-label">Open Requests</span>
                 </a>
-                <a href="{{ route('portal.wip') }}" class="sidebar-link {{ request()->routeIs('portal.wip') ? 'active' : '' }}" title="WIP">
-                    <i class="fas fa-clock"></i> <span class="link-label">WIP</span>
+                <a href="{{ route('portal.wip') }}" class="sidebar-link {{ request()->routeIs('portal.wip') ? 'active' : '' }}" title="In Progress">
+                    <i class="fas fa-clock"></i> <span class="link-label">In Progress</span>
                 </a>
 
                 @if(in_array(Auth::user()->role->name ?? '', ['Designer', 'Manager', 'Admin', 'Client']))
@@ -47,8 +48,8 @@
                 <a href="{{ route('portal.needs-approval') }}" class="sidebar-link {{ request()->routeIs('portal.needs-approval') ? 'active' : '' }}" title="Needs Approval">
                     <i class="fas fa-check-circle"></i> <span class="link-label">Needs Approval</span>
                 </a>
-                <a href="{{ route('portal.closed') }}" class="sidebar-link {{ request()->routeIs('portal.closed') ? 'active' : '' }}" title="Closed">
-                    <i class="fas fa-archive"></i> <span class="link-label">Closed</span>
+                <a href="{{ route('portal.closed') }}" class="sidebar-link {{ request()->routeIs('portal.closed') ? 'active' : '' }}" title="Project Completed">
+                    <i class="fas fa-archive"></i> <span class="link-label">Project Completed</span>
                 </a>
                 <a href="{{ route('portal.your-drafts') }}" class="sidebar-link {{ request()->routeIs('portal.your-drafts') ? 'active' : '' }}" title="Your Drafts">
                     <i class="fas fa-file-alt"></i> <span class="link-label">Your Drafts</span>
@@ -80,6 +81,9 @@
         <div class="app-content-wrapper">
             @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
             <header class="portal-header">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <div style="flex: 1;"></div>
                 <nav class="nav-links">
                     @php
@@ -132,7 +136,7 @@
             @endif
 
             <main class="{{ request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']) ? 'login-view' : 'portal-main' }}">
-                @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
+                @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password', 'portal.design-requests']))
                     @include('partials.filters')
                 @endif
 
@@ -163,7 +167,7 @@
     </div>
 
     <script>
-        // Sidebar Toggle
+        // Desktop Sidebar Collapse Toggle
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
         const toggleIcon = sidebarToggle ? sidebarToggle.querySelector('i') : null;
@@ -180,6 +184,39 @@
                         toggleIcon.classList.add('fa-angle-double-left');
                     }
                 }
+            });
+        }
+
+        // Mobile Sidebar Drawer
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openMobileSidebar() {
+            if (sidebar) sidebar.classList.add('mobile-open');
+            if (sidebarOverlay) sidebarOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', openMobileSidebar);
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeMobileSidebar);
+        }
+
+        // Close sidebar when a nav link is clicked on mobile
+        if (sidebar) {
+            sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 900) closeMobileSidebar();
+                });
             });
         }
 

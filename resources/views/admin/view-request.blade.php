@@ -50,18 +50,24 @@
 
     @php
         $revisionCount = $request->comments->where('type', 'revision')->count();
+        $designErrorCount = $request->comments->where('type', 'status_change')->filter(fn($c) => str_contains($c->message ?? '', 'Design Error'))->count();
         $statusMeta = [
-            'Open'             => ['label' => 'Open',             'bg' => '#f3f4f6', 'color' => '#6b7280'],
-            'Assigned'         => ['label' => 'Assigned',         'bg' => '#ede9fe', 'color' => '#7c3aed'],
-            'WIP'              => ['label' => 'In Progress',      'bg' => '#eff6ff', 'color' => '#3b82f6'],
-            'Needs Information'=> ['label' => 'Needs Information','bg' => '#fffbeb', 'color' => '#d97706'],
-            'Needs Approval'   => ['label' => 'Needs Approval',   'bg' => '#ecfdf5', 'color' => '#059669'],
-            'Closed'           => ['label' => 'Closed',           'bg' => '#fef2f2', 'color' => '#dc2626'],
-            'Draft'            => ['label' => 'Draft',            'bg' => '#f9fafb', 'color' => '#9ca3af'],
+            'Queued'               => ['label' => 'Queued',               'bg' => '#f3f4f6', 'color' => '#6b7280'],
+            'Assigned'             => ['label' => 'Assigned',             'bg' => '#ede9fe', 'color' => '#7c3aed'],
+            'In Progress'          => ['label' => 'In Progress',          'bg' => '#eff6ff', 'color' => '#3b82f6'],
+            'Needs Information'    => ['label' => 'Needs Information',    'bg' => '#fffbeb', 'color' => '#d97706'],
+            'Information Submitted'=> ['label' => 'Information Submitted','bg' => '#f0fdf4', 'color' => '#15803d'],
+            'To Be Continued'      => ['label' => 'To Be Continued',      'bg' => '#fefce8', 'color' => '#a16207'],
+            'Needs Approval'       => ['label' => 'Needs Approval',       'bg' => '#ecfdf5', 'color' => '#059669'],
+            'Revision Requested'   => ['label' => 'Revision Requested',   'bg' => '#fff7ed', 'color' => '#c2410c'],
+            'Design Error'         => ['label' => 'Design Error',         'bg' => '#fef2f2', 'color' => '#b91c1c'],
+            'Approved'             => ['label' => 'Approved',             'bg' => '#f0fdf4', 'color' => '#166534'],
+            'Project Completed'    => ['label' => 'Project Completed',    'bg' => '#020617', 'color' => '#fab133'],
+            'Draft'                => ['label' => 'Draft',                'bg' => '#f9fafb', 'color' => '#9ca3af'],
         ];
         $sm = $statusMeta[$request->status] ?? ['label' => $request->status, 'bg' => '#f3f4f6', 'color' => '#6b7280'];
         $userRole = Auth::user()->role->name ?? '';
-        $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin']);
+        $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin', 'Client']);
     @endphp
 
     @if($canChangeStatus)
@@ -80,29 +86,84 @@
                 <span class="req-stat-val">{{ $revisionCount }}</span>
             </div>
             <div class="req-stat-col">
-                <span class="req-stat-label">Revision Due To Design Error</span>
-                <span class="req-stat-val">0</span>
+                <span class="req-stat-label">Design Errors</span>
+                <span class="req-stat-val">{{ $designErrorCount }}</span>
             </div>
         </div>
 
         <div class="req-change-status">
             <span class="req-stat-label" style="display:block; margin-bottom:0.75rem;">Change Status</span>
-            <form action="{{ route('portal.requests.update-status', $request->id) }}" method="POST" id="statusUpdateForm">
-                @csrf
-                <input type="hidden" name="status" id="statusHiddenInput" value="">
-                <div class="cstm-select-wrap" id="cstmSelect">
-                    <div class="cstm-select-trigger" id="cstmTrigger">
-                        <span id="cstmLabel">Select</span>
-                        <i class="fas fa-chevron-down cstm-chevron"></i>
+
+            @if($userRole === 'Client')
+                {{-- Context-aware client action buttons --}}
+                @if($request->status === 'Needs Approval')
+                    <div class="client-action-buttons">
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Approved">
+                            <button type="submit" class="btn-action btn-approve"><i class="fas fa-check"></i> Approve</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Revision Requested">
+                            <button type="submit" class="btn-action btn-revision"><i class="fas fa-redo"></i> Request Revision</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Design Error">
+                            <button type="submit" class="btn-action btn-error"><i class="fas fa-exclamation-triangle"></i> Design Error</button>
+                        </form>
                     </div>
-                    <ul class="cstm-options" id="cstmOptions">
-                        <li class="cstm-opt cstm-opt-header" data-value="">Select</li>
-                        <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
-                        <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
-                        <li class="cstm-opt" data-value="WIP">To be Continued</li>
-                    </ul>
-                </div>
-            </form>
+                @elseif($request->status === 'Needs Information')
+                    <div class="client-action-buttons">
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Information Submitted">
+                            <button type="submit" class="btn-action btn-approve"><i class="fas fa-paper-plane"></i> Submit Information</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Project Completed">
+                            <button type="submit" class="btn-action btn-close" onclick="return confirm('Are you sure you want to close this request?')"><i class="fas fa-times-circle"></i> Close Request</button>
+                        </form>
+                    </div>
+                @else
+                    <p style="font-size:0.82rem; color:var(--text-muted); font-style:italic;">No actions available at this stage.</p>
+                @endif
+
+            @else
+                {{-- Dropdown for Manager, Designer, Admin --}}
+                <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" id="statusUpdateForm">
+                    @csrf
+                    <input type="hidden" name="status" id="statusHiddenInput" value="">
+                    <div class="cstm-select-wrap" id="cstmSelect">
+                        <div class="cstm-select-trigger" id="cstmTrigger">
+                            <span id="cstmLabel">Select</span>
+                            <i class="fas fa-chevron-down cstm-chevron"></i>
+                        </div>
+                        <ul class="cstm-options" id="cstmOptions">
+                            <li class="cstm-opt cstm-opt-header" data-value="">Select Status</li>
+                            @if($userRole === 'Designer')
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                            @elseif($userRole === 'Manager')
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                            @else
+                                {{-- Admin sees all --}}
+                                <li class="cstm-opt" data-value="Queued">Queued</li>
+                                <li class="cstm-opt" data-value="Assigned">Assigned</li>
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="Information Submitted">Information Submitted</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
+                                <li class="cstm-opt" data-value="Revision Requested">Revision Requested</li>
+                                <li class="cstm-opt" data-value="Design Error">Design Error</li>
+                                <li class="cstm-opt" data-value="Approved">Approved</li>
+                                <li class="cstm-opt" data-value="Project Completed">Project Completed</li>
+                            @endif
+                        </ul>
+                    </div>
+                </form>
+            @endif
         </div>
     </div>
     @endif
@@ -140,8 +201,45 @@
                         <span class="detail-value">{{ $request->designer->name ?? 'Unassigned' }}</span>
                     </div>
                     <div class="detail-item">
+                        <span class="detail-label">Sink</span>
+                        <span class="detail-value">
+                            @php $sink = $request->additional_info['sink'] ?? null; $sinkText = $request->additional_info['sink_others_text'] ?? null; @endphp
+                            {{ $sink === 'Others' && $sinkText ? 'Others: ' . $sinkText : ($sink ?: 'N/A') }}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Second Door Style</span>
+                        <span class="detail-value">
+                            @php $secondDoorText = $request->additional_info['second_door_text'] ?? null; @endphp
+                            {{ ($request->additional_info['second_door'] ?? false) ? ($secondDoorText ?: 'Yes') : 'No' }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
                         <span class="detail-label">Soffits</span>
-                        <span class="detail-value">{{ ($request->additional_info['soffits'] ?? false) ? 'Yes' : 'No' }}</span>
+                        <span class="detail-value">
+                            @if(!empty($request->additional_info['soffits']))
+                                Yes
+                                @if(!empty($request->additional_info['soffits_width']) || !empty($request->additional_info['soffits_height']))
+                                    <span style="font-size:0.8rem; color:var(--text-muted); font-weight:400;">
+                                        (W: {{ $request->additional_info['soffits_width'] ?? '—' }}", H: {{ $request->additional_info['soffits_height'] ?? '—' }}")
+                                    </span>
+                                @endif
+                            @else
+                                No
+                            @endif
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Multiplier</span>
+                        <span class="detail-value">{{ $request->additional_info['multiplier'] ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Decoration</span>
+                        <span class="detail-value">{{ $request->additional_info['decoration'] ?? 'N/A' }}</span>
                     </div>
                 </div>
             </div>
@@ -194,17 +292,34 @@
         </div>
         <div class="section-body">
             <div class="info-grid">
+                @php
+                    function renderInfoList($items, $labelMap = []) {
+                        $hasAny = false;
+                        $html = '';
+                        foreach ($items as $key => $value) {
+                            if (str_ends_with($key, '_text')) continue; // skip text companion fields
+                            if (!$value) continue;
+                            $hasAny = true;
+                            $label = $labelMap[$key] ?? ucwords(str_replace('_', ' ', $key));
+                            // if "others" and companion text exists
+                            $textKey = $key . '_text';
+                            if ($key === 'others' && !empty($items[$textKey])) {
+                                $label = 'Others: ' . $items[$textKey];
+                            }
+                            $html .= '<li><i class="fas fa-check"></i> ' . e($label) . '</li>';
+                        }
+                        if (!$hasAny) $html = '<li style="font-style:italic;">None selected</li>';
+                        return $html;
+                    }
+                @endphp
+
                 <div class="info-group">
-                    <h4>Molding & Doors</h4>
+                    <h4>Molding &amp; Doors</h4>
                     <ul class="info-list">
                         @if(!empty($request->additional_info['molding']))
-                            @foreach($request->additional_info['molding'] as $key => $value)
-                                @if($value)
-                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
-                                @endif
-                            @endforeach
+                            {!! renderInfoList($request->additional_info['molding']) !!}
                         @else
-                            <li style="font-style: italic;">None selected</li>
+                            <li style="font-style:italic;">None selected</li>
                         @endif
                     </ul>
                 </div>
@@ -212,31 +327,33 @@
                     <h4>Standard Appliances</h4>
                     <ul class="info-list">
                         @if(!empty($request->additional_info['appliances']))
-                            @foreach($request->additional_info['appliances'] as $key => $value)
-                                @if($value)
-                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
-                                @endif
-                            @endforeach
+                            {!! renderInfoList($request->additional_info['appliances']) !!}
                         @else
-                            <li style="font-style: italic;">None selected</li>
+                            <li style="font-style:italic;">None selected</li>
                         @endif
                     </ul>
                 </div>
                 <div class="info-group">
-                    <h4>Storage & Organizer</h4>
+                    <h4>Storage &amp; Organizer</h4>
                     <ul class="info-list">
                         @if(!empty($request->additional_info['storage']))
-                            @foreach($request->additional_info['storage'] as $key => $value)
-                                @if($value)
-                                    <li><i class="fas fa-check"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}</li>
-                                @endif
-                            @endforeach
+                            {!! renderInfoList($request->additional_info['storage']) !!}
                         @else
-                            <li style="font-style: italic;">None selected</li>
+                            <li style="font-style:italic;">None selected</li>
                         @endif
                     </ul>
                 </div>
-                <div class="info-group full-width" style="margin-top: 1rem;">
+                <div class="info-group">
+                    <h4>Loose Appliances</h4>
+                    <ul class="info-list">
+                        @if(!empty($request->additional_info['loose']))
+                            {!! renderInfoList($request->additional_info['loose']) !!}
+                        @else
+                            <li style="font-style:italic;">None selected</li>
+                        @endif
+                    </ul>
+                </div>
+                <div class="info-group full-width" style="margin-top:1rem;">
                     <h4>Additional Notes</h4>
                     <div class="notes-content">
                         <p>{{ $request->additional_notes ?? 'No additional notes provided.' }}</p>
@@ -341,32 +458,18 @@
 
     @php $currentRole = Auth::user()->role->name ?? ''; @endphp
 
-    {{-- Status Update panel (Designer, Manager, Admin only) --}}
-    @if(in_array($currentRole, ['Designer', 'Manager', 'Admin']))
-    <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="margin-top: 2rem;">
-        @csrf
-        <div class="add-comment-section" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.5rem 2rem;">
-            <div style="flex-shrink: 0;">
-                <h3 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; margin: 0;">
-                    <i class="fas fa-exchange-alt" style="color: var(--primary-color);"></i> Update Status
-                </h3>
-            </div>
-            <select name="status" class="form-input" style="flex: 1; min-width: 200px; max-width: 280px; padding: 0.6rem 1rem; font-size: 0.9rem; border-radius: 6px; border: 1px solid var(--border-color);">
-                @foreach(['Open','Assigned','WIP','Needs Information','Needs Approval','Closed'] as $s)
-                    <option value="{{ $s }}" {{ $request->status === $s ? 'selected' : '' }}>{{ $s }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-save" style="border-radius: 6px; padding: 0.6rem 1.5rem; white-space: nowrap;">UPDATE STATUS</button>
-        </div>
-    </form>
-    @endif
-
     <div class="view-footer" style="margin-top: 1.5rem;">
         <a href="{{ url()->previous() }}" class="btn btn-outline">BACK</a>
         @if($currentRole === 'Client' && $request->status === 'Needs Approval')
         <div class="action-group">
             <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center; font-style: italic;">
-                Post a comment below to approve or request revisions.
+                Use the action buttons above to approve, request a revision, or report a design error. Add a comment below with your feedback.
+            </span>
+        </div>
+        @elseif($currentRole === 'Client' && $request->status === 'Needs Information')
+        <div class="action-group">
+            <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center; font-style: italic;">
+                Please add a comment with the requested information, then click "Submit Information" above.
             </span>
         </div>
         @endif
@@ -601,7 +704,7 @@
 
     .info-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
     }
 
@@ -804,13 +907,84 @@
         gap: 1rem;
     }
 
+    @media (max-width: 1100px) {
+        .info-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     @media (max-width: 992px) {
-        .details-grid-wrapper {
-            grid-template-columns: 1fr;
+        .details-grid-wrapper { grid-template-columns: 1fr; }
+        .info-grid { grid-template-columns: repeat(2, 1fr); }
+        .req-status-stats { gap: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+        .view-request-container { padding-bottom: 3rem; }
+
+        .view-header { padding: 1.25rem; }
+
+        .header-main {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
         }
-        .info-grid {
-            grid-template-columns: 1fr;
+
+        .header-actions {
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
+
+        .project-title { font-size: 1.4rem; }
+
+        .header-dates {
+            gap: 1rem;
+            flex-direction: column;
+        }
+
+        .rev-v { margin-left: 0; }
+
+        .detail-row {
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .req-status-stats {
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .req-change-status { max-width: 100%; }
+
+        .comment-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .comment-meta-switches { width: 100%; }
+        .comment-meta-switches .btn-save { width: 100%; }
+
+        .view-footer {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .view-footer .btn { text-align: center; }
+
+        .timeline { padding-left: 1.5rem; }
+
+        .timeline-header { flex-direction: column; gap: 0.25rem; }
+
+        .timeline-attachments { flex-wrap: wrap; }
+
+        .info-grid { grid-template-columns: 1fr; }
+
+        .info-group.full-width { grid-column: span 1; }
+
+        .add-comment-section { padding: 1.25rem; }
+
+        .communications-section { padding: 1.25rem; }
     }
 
     /* ── Alert banners ── */
@@ -879,8 +1053,22 @@
         flex-shrink: 0;
     }
 
+    /* ── Client Action Buttons ── */
+    .client-action-buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .btn-action {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.82rem;
+        font-weight: 700; border: none; cursor: pointer; letter-spacing: 0.3px;
+        transition: opacity 0.15s;
+    }
+    .btn-action:hover { opacity: 0.85; }
+    .btn-approve  { background: #059669; color: #fff; }
+    .btn-revision { background: #d97706; color: #fff; }
+    .btn-error    { background: #dc2626; color: #fff; }
+    .btn-close    { background: #64748b; color: #fff; }
+
     /* ── Custom Select ── */
-    .req-change-status { max-width: 260px; }
+    .req-change-status { max-width: 320px; }
     .cstm-select-wrap {
         position: relative;
         user-select: none;

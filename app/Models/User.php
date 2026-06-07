@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\DesignRequest;
 
 class User extends Authenticatable
 {
@@ -65,5 +66,10 @@ class User extends Authenticatable
     public function managedClients()
     {
         return $this->hasMany(User::class, 'manager_id');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(DesignRequest::class, 'client_id');
     }
 }

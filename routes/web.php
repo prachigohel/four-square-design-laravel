@@ -90,7 +90,38 @@ Route::prefix('portal')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
-            return view('admin.dashboard-placeholder');
+            $user = Auth::user();
+            $role = $user->role->name ?? '';
+
+            $stats = [];
+
+            if (in_array($role, ['Admin', 'Manager'])) {
+                $base = \App\Models\DesignRequest::query();
+                if ($role === 'Manager') {
+                    $base->whereHas('client', fn($q) => $q->where('manager_id', $user->id));
+                }
+                $stats['total']           = (clone $base)->count();
+                $stats['open']            = (clone $base)->where('status', 'Queued')->count();
+                $stats['wip']             = (clone $base)->where('status', 'In Progress')->count();
+                $stats['needs_approval']  = (clone $base)->where('status', 'Needs Approval')->count();
+                $stats['needs_info']      = (clone $base)->where('status', 'Needs Information')->count();
+                $stats['closed']          = (clone $base)->where('status', 'Project Completed')->count();
+                $stats['clients']         = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Client'))->count();
+                $stats['designers']       = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->count();
+                $stats['recent']          = (clone $base)->with('client', 'designer')->orderBy('created_at', 'desc')->limit(8)->get();
+                $stats['overdue']         = (clone $base)->whereNotIn('status', ['Project Completed'])->whereDate('expected_date', '<', now())->count();
+            } elseif ($role === 'Client') {
+                $base = \App\Models\DesignRequest::where('client_id', $user->id);
+                $stats['total']           = (clone $base)->count();
+                $stats['open']            = (clone $base)->where('status', 'Queued')->count();
+                $stats['wip']             = (clone $base)->where('status', 'In Progress')->count();
+                $stats['needs_approval']  = (clone $base)->where('status', 'Needs Approval')->count();
+                $stats['needs_info']      = (clone $base)->where('status', 'Needs Information')->count();
+                $stats['closed']          = (clone $base)->where('status', 'Project Completed')->count();
+                $stats['recent']          = (clone $base)->with('designer')->orderBy('created_at', 'desc')->limit(5)->get();
+            }
+
+            return view('admin.dashboard-placeholder', compact('role', 'stats', 'user'));
         })->name('portal.dashboard');
 
         Route::get('/all-requests', function () {
@@ -148,7 +179,7 @@ Route::prefix('portal')->group(function () {
         Route::get('/wip', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'WIP')->orderBy('created_at', 'desc');
+            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'In Progress')->orderBy('created_at', 'desc');
             if ($role === 'Client') $query->where('client_id', $user->id);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -193,7 +224,7 @@ Route::prefix('portal')->group(function () {
         Route::get('/closed', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Closed')->orderBy('created_at', 'desc');
+            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Project Completed')->orderBy('created_at', 'desc');
             if ($role === 'Client') $query->where('client_id', $user->id);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -254,7 +285,7 @@ Route::prefix('portal')->group(function () {
 
             $designers = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->orderBy('name')->get();
             $projectTypes = \App\Models\DesignRequest::whereNotNull('project_type')->distinct()->pluck('project_type')->sort()->values();
-            $statuses = ['Open', 'Assigned', 'WIP', 'Needs Information', 'Needs Approval', 'Closed'];
+            $statuses = ['Queued', 'Assigned', 'In Progress', 'Needs Information', 'Information Submitted', 'To Be Continued', 'Needs Approval', 'Revision Requested', 'Design Error', 'Approved', 'Project Completed'];
 
             return view('admin.design-requests', compact('requests', 'role', 'designers', 'projectTypes', 'statuses'));
         })->name('portal.design-requests');

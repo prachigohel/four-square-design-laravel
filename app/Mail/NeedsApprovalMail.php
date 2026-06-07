@@ -18,7 +18,7 @@ class NeedsApprovalMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Design Needs Approval – #CAB-2026-' . $this->designRequest->id,
+            subject: 'Design Ready for Review – #CAB-2026-' . $this->designRequest->id,
         );
     }
 

@@ -114,12 +114,17 @@
                 @foreach($requests as $req)
                 @php
                     $statusColors = [
-                        'Open'              => ['bg' => '#dbeafe', 'text' => '#1e40af'],
-                        'Assigned'          => ['bg' => '#fef3c7', 'text' => '#92400e'],
-                        'WIP'               => ['bg' => '#e0e7ff', 'text' => '#3730a3'],
-                        'Needs Information' => ['bg' => '#fde68a', 'text' => '#78350f'],
-                        'Needs Approval'    => ['bg' => '#fee2e2', 'text' => '#991b1b'],
-                        'Closed'            => ['bg' => '#d1fae5', 'text' => '#065f46'],
+                        'Queued'               => ['bg' => '#dbeafe', 'text' => '#1e40af'],
+                        'Assigned'             => ['bg' => '#e0f2fe', 'text' => '#0369a1'],
+                        'In Progress'          => ['bg' => '#e0e7ff', 'text' => '#3730a3'],
+                        'Needs Information'    => ['bg' => '#fde68a', 'text' => '#78350f'],
+                        'Information Submitted'=> ['bg' => '#d1fae5', 'text' => '#065f46'],
+                        'To Be Continued'      => ['bg' => '#fefce8', 'text' => '#a16207'],
+                        'Needs Approval'       => ['bg' => '#fee2e2', 'text' => '#991b1b'],
+                        'Revision Requested'   => ['bg' => '#fff7ed', 'text' => '#c2410c'],
+                        'Design Error'         => ['bg' => '#fef2f2', 'text' => '#b91c1c'],
+                        'Approved'             => ['bg' => '#dcfce7', 'text' => '#166534'],
+                        'Project Completed'    => ['bg' => '#020617', 'text' => '#fab133'],
                     ];
                     $color = $statusColors[$req->status] ?? ['bg' => '#f1f5f9', 'text' => '#475569'];
                 @endphp

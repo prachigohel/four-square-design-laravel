@@ -3,7 +3,7 @@
 @section('email-body')
 <p class="greeting">Hi {{ $designRequest->client->name ?? ($designRequest->full_name ?? 'Valued Client') }},</p>
 <p class="message">
-    Your design is ready for review. Please review the submitted files and provide your approval or feedback.
+    Your project has been assigned to a designer and work will begin shortly. We will keep you informed throughout the process.
 </p>
 
 <div class="info-box">
@@ -23,11 +23,13 @@
         <span class="info-label">Designer</span>
         <span class="info-value">{{ $designRequest->designer->name ?? 'N/A' }}</span>
     </div>
+    @if($designRequest->expected_date)
     <div class="info-row">
-        <span class="info-label">Ready Since</span>
-        <span class="info-value">{{ $designRequest->updated_at->format('d M, Y h:i A') }}</span>
+        <span class="info-label">Due Date</span>
+        <span class="info-value">{{ $designRequest->expected_date->format('d M, Y') }}</span>
     </div>
+    @endif
 </div>
 
-<a href="{{ url('/portal/view-request/' . $designRequest->id) }}" class="btn">Review & Approve Design</a>
+<a href="{{ url('/portal/view-request/' . $designRequest->id) }}" class="btn">View Request</a>
 @endsection

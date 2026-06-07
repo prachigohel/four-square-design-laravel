@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewRequestMail extends Mailable
+class StatusWipManagerMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,14 +18,14 @@ class NewRequestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Project Received – #CAB-2026-' . $this->designRequest->id,
+            subject: 'Project In Progress – #CAB-2026-' . $this->designRequest->id,
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.new-request',
+            view: 'emails.status-wip-manager',
         );
     }
 }

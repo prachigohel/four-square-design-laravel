@@ -193,8 +193,7 @@
                 Invest in <span class="text-amber-500 not-italic font-bold">Excellence</span>
             </h2>
             <p class="text-slate-400 text-lg font-light max-w-xl mx-auto leading-relaxed">
-                Select the perfect design package tailored to the scale of your project.<br>
-                High-end design, delivered with precision.
+                Select the perfect design package tailored to the scale of your project. High-end design, delivered with precision.
             </p>
         </div>
 
@@ -382,12 +381,12 @@
         {{-- Stats row --}}
         <div class="flex items-center justify-center gap-10 md:gap-16 pt-10 border-t border-white/8 max-w-lg mx-auto">
             <div class="text-center">
-                <p class="text-amber-500 text-3xl font-black">500+</p>
+                <p class="text-amber-500 text-3xl font-black">2000+</p>
                 <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Projects</p>
             </div>
             <div class="w-px h-10 bg-white/10"></div>
             <div class="text-center">
-                <p class="text-amber-500 text-3xl font-black">15+</p>
+                <p class="text-amber-500 text-3xl font-black">8+</p>
                 <p class="text-slate-500 text-[9px] font-black uppercase tracking-widest mt-1">Years</p>
             </div>
             <div class="w-px h-10 bg-white/10"></div>

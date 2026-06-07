@@ -101,32 +101,6 @@
         });
     }
 
-    /* ===========================================================
-       3. CUSTOM CURSOR (desktop only)
-    =========================================================== */
-    function initCursor() {
-        const ring = document.getElementById('custom-cursor');
-        const dot  = document.getElementById('cursor-dot');
-        if (!ring || !dot || isMobile) return;
-
-        let cx = -200, cy = -200, dx = -200, dy = -200;
-        document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
-        document.addEventListener('mouseleave', () => gsap.to([ring, dot], { autoAlpha: 0, duration: .3 }));
-        document.addEventListener('mouseenter', () => gsap.to([ring, dot], { autoAlpha: 1, duration: .3 }));
-
-        (function loop() {
-            dx += (cx - dx) * .13;
-            dy += (cy - dy) * .13;
-            ring.style.transform = `translate(${cx - 20}px, ${cy - 20}px)`;
-            dot.style.transform  = `translate(${dx - 4}px, ${dy - 4}px)`;
-            requestAnimationFrame(loop);
-        })();
-
-        document.querySelectorAll('a, button, .glass-card, .portfolio-card, input, textarea').forEach(el => {
-            el.addEventListener('mouseenter', () => ring.classList.add('is-hover'));
-            el.addEventListener('mouseleave', () => ring.classList.remove('is-hover'));
-        });
-    }
 
     /* ===========================================================
        4. HERO ENTRANCE — runs FIRST to lock initial states
@@ -419,7 +393,7 @@
             heroEntrance();   /* ← FIRST: lock hero initial states */
             initScroll();     /* ← SECOND: scroll triggers (excludes hero via inHero()) */
             initParticles();
-            initCursor();
+
             initTilt();
             initMagnetic();
             initGlows();

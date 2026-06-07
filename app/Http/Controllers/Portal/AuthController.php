@@ -36,12 +36,19 @@ class AuthController extends Controller
 
     public function showSignup()
     {
+        if (!Auth::check() || (Auth::user()->role->name ?? '') !== 'Admin') {
+            abort(403);
+        }
         $roles = Role::all();
         return view('admin.signup', compact('roles'));
     }
 
     public function signup(Request $request)
     {
+        if (!Auth::check() || (Auth::user()->role->name ?? '') !== 'Admin') {
+            abort(403);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
@@ -49,16 +56,14 @@ class AuthController extends Controller
             'role_id' => ['required', 'exists:roles,id'],
         ]);
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role_id' => $request->role_id,
         ]);
 
-        Auth::login($user);
-
-        return redirect(route('portal.dashboard'));
+        return redirect()->route('portal.dashboard')->with('success', 'User created successfully.');
     }
 
     public function showForgotPassword()

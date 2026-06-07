@@ -1335,7 +1335,8 @@ h3 {
     gap: 1.5rem 2rem;
 }
 
-.form-group.full-width {
+.form-group.full-width,
+.full-width {
     grid-column: span 2;
 }
 
@@ -1425,6 +1426,7 @@ h3 {
     gap: 2rem;
     grid-column: span 2;
     margin-bottom: 1rem;
+    align-items: flex-start;
 }
 
 .multi-input {
@@ -1581,5 +1583,315 @@ h3 {
     }
     .options-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ── Custom Searchable Select ───────────────────────────── */
+.custom-select-wrapper {
+    position: relative;
+}
+
+.custom-select-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    z-index: 300;
+    overflow: hidden;
+}
+
+.custom-select-options {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 0.4rem 0;
+}
+
+.custom-select-option {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    transition: background 0.15s;
+}
+
+.custom-select-option:hover {
+    background: var(--bg-color);
+    color: var(--primary-color);
+}
+
+/* Conditional checkbox columns (Second Door / Soffits) */
+.cond-checkbox-col {
+    flex: 1;
+}
+
+/* =====================
+   MOBILE RESPONSIVE
+   ===================== */
+
+/* Hamburger button — hidden on desktop, shown on mobile */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--text-main);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* Sidebar overlay behind drawer */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 490;
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
+
+@media (max-width: 900px) {
+    /* Sidebar becomes a slide-in drawer */
+    .portal-sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        height: 100vh;
+        z-index: 500;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+    }
+
+    .portal-sidebar.mobile-open {
+        left: 0;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Hide the collapse toggle on mobile */
+    .sidebar-footer {
+        display: none;
+    }
+
+    /* Show hamburger in header */
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Header layout on mobile */
+    .portal-header {
+        padding: 0 1rem;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .portal-header > div:first-child {
+        display: none; /* Hide the flex spacer */
+    }
+
+    /* Condense nav links */
+    .nav-links {
+        gap: 1rem;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .nav-item {
+        font-size: 0.7rem;
+        letter-spacing: 0;
+    }
+
+    /* Main content — full width, less padding */
+    .portal-main {
+        padding: 1rem;
+    }
+
+    /* Clients grid — 2 columns on tablet */
+    .clients-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Filter row — 2 columns on tablet */
+    .filter-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .filter-row.align-end {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* Modals — full width */
+    .modal-content {
+        width: calc(100% - 2rem) !important;
+        max-width: 560px;
+        margin: 2vh auto;
+        padding: 2rem;
+    }
+
+    /* Page header actions wrap */
+    .page-header-actions {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .page-header-actions .filters-bar {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Header — hide text nav items, keep avatar */
+    .nav-item {
+        display: none;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    /* Main padding */
+    .portal-main {
+        padding: 0.75rem;
+    }
+
+    /* Clients grid — single column */
+    .clients-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Client card — stack vertically */
+    .client-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    /* Filter row — single column */
+    .filter-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Filters bar */
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sort-group {
+        flex-wrap: wrap;
+    }
+
+    .filter-btn,
+    .new-request-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Request card — vertical stacking */
+    .request-card > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+
+    .request-card > div > div:last-child {
+        width: 100%;
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        gap: 0.75rem !important;
+        margin-left: 0 !important;
+    }
+
+    /* Request meta header — stack */
+    .request-meta-header {
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0;
+    }
+
+    /* Request details expanded grid */
+    .request-details-expanded > div {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* Modals */
+    .modal-content {
+        width: calc(100% - 1rem) !important;
+        padding: 1.5rem;
+        margin: 1vh auto;
+        border-radius: 12px;
+    }
+
+    .profile-modal {
+        width: calc(100% - 1rem) !important;
+    }
+
+    /* Contact item — stack on tiny screens */
+    .contact-item {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    /* Form footer actions */
+    .form-footer-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .right-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .right-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Section header on submit form */
+    .section-header {
+        padding: 1rem;
+    }
+
+    .section-body {
+        padding: 1rem;
+    }
+
+    .horizontal-filter-panel {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .request-details-expanded > div {
+        grid-template-columns: 1fr !important;
+    }
+
+    .nav-links {
+        gap: 0.25rem;
+    }
+
+    /* Login card — reduce inner padding on tiny phones */
+    .login-card {
+        padding: 1.5rem !important;
+        margin: 1rem;
+        max-width: calc(100% - 2rem) !important;
     }
 }

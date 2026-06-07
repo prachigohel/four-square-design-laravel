@@ -5,9 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Four Square Designs | Bespoke Kitchen & Interior Artistry')</title>
-    <meta name="description" content="@yield('meta_description', 'Curating high-end interior experiences with 2020 Design precision. Specialized in Kitchen & Bath artistry for luxury homes.')">
+    <title>@yield('title', 'Four Square Design | Bespoke Kitchen & Interior Artistry')</title>
+    <meta name="description" content="@yield('meta_description', 'Four Square Design is an Ahmedabad-based interior design studio specializing in bespoke kitchen cabinetry, 2020 Design layouts, 3D renderings, and bath artistry for luxury homes.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'kitchen cabinet design, interior design Ahmedabad, 2020 design software, 3D kitchen rendering, cabinet layout, bath design, luxury kitchen design, kitchen remodel India')">
+    <meta name="author" content="Four Square Design">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="theme-color" content="#020617">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="@yield('canonical', url()->current())">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="Four Square Design">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="@yield('canonical', url()->current())">
+    <meta property="og:title" content="@yield('og_title', 'Four Square Design | Bespoke Kitchen & Interior Artistry')">
+    <meta property="og:description" content="@yield('og_description', 'Four Square Design is an Ahmedabad-based studio specializing in bespoke kitchen cabinetry, 2020 Design layouts, 3D renderings, and luxury bath artistry.')">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('og_title', 'Four Square Design | Bespoke Kitchen & Interior Artistry')">
+    <meta name="twitter:description" content="@yield('og_description', 'Four Square Design is an Ahmedabad-based studio specializing in bespoke kitchen cabinetry, 2020 Design layouts, 3D renderings, and luxury bath artistry.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/og-default.jpg'))">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,15 +47,15 @@
 
     <!-- App Styles & Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- JSON-LD Schema (per-page) -->
+    @stack('schema')
 </head>
 <body class="font-sans antialiased bg-slate-950 text-slate-50 overflow-x-hidden w-full">
 
     <!-- ===== THREE.JS PARTICLE CANVAS ===== -->
     <canvas id="particle-canvas"></canvas>
 
-    <!-- ===== CUSTOM CURSOR ===== -->
-    <div id="custom-cursor"></div>
-    <div id="cursor-dot"></div>
 
     <div id="app" class="relative">
         <!-- Background Grid Global -->

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientProjectAssignedMail;
 use App\Mail\DesignerAssignedMail;
 use App\Mail\NewRequestMail;
 use App\Models\DesignRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class DesignRequestController extends Controller
@@ -34,7 +36,7 @@ class DesignRequestController extends Controller
         $designRequest = DesignRequest::create([
             'title' => 'Project Inquiry: ' . ($request->project_type ?? 'New Project'),
             'client_id' => Auth::id() ?? null,
-            'status' => 'Open',
+            'status' => 'Queued',
             'full_name' => $request->full_name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -71,7 +73,11 @@ class DesignRequestController extends Controller
         }
 
         foreach ($recipients as $recipient) {
-            Mail::to($recipient->email)->send(new NewRequestMail($designRequest));
+            try {
+                Mail::to($recipient->email)->send(new NewRequestMail($designRequest));
+            } catch (\Exception $e) {
+                Log::error('NewRequestMail failed to ' . $recipient->email . ': ' . $e->getMessage());
+            }
         }
 
         if ($request->expectsJson()) {
@@ -97,7 +103,20 @@ class DesignRequestController extends Controller
 
         $designRequest->refresh()->load('designer');
 
-        Mail::to($designer->email)->send(new DesignerAssignedMail($designRequest, $designer));
+        try {
+            Mail::to($designer->email)->send(new DesignerAssignedMail($designRequest, $designer));
+        } catch (\Exception $e) {
+            Log::error('DesignerAssignedMail failed to ' . $designer->email . ': ' . $e->getMessage());
+        }
+
+        $clientEmail = $designRequest->client->email ?? $designRequest->email ?? null;
+        if ($clientEmail) {
+            try {
+                Mail::to($clientEmail)->send(new ClientProjectAssignedMail($designRequest));
+            } catch (\Exception $e) {
+                Log::error('ClientProjectAssignedMail failed to ' . $clientEmail . ': ' . $e->getMessage());
+            }
+        }
 
         return back()->with('success', 'Request assigned to ' . $designer->name . ' successfully.');
     }

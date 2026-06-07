@@ -22,7 +22,7 @@ class DesignerAssignedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Request Assigned to You – #CAB-2026-' . $this->designRequest->id,
+            subject: 'New Project Assigned – #CAB-2026-' . $this->designRequest->id,
         );
     }
 

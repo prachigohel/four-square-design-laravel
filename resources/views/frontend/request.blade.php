@@ -76,13 +76,16 @@
                                 <p class="field-error hidden text-red-400 text-xs mt-1" data-for="phone">Phone number is required.</p>
                             </div>
                             <div class="space-y-2">
-                                <label class="block text-sm font-semibold text-slate-300">Project Type</label>
+                                <label class="block text-sm font-semibold text-slate-300">Request Type</label>
                                 <select name="project_type"
                                     class="w-full bg-slate-900 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-amber-500 transition-colors text-sm appearance-none cursor-pointer">
-                                    <option value="Kitchen">Kitchen</option>
-                                    <option value="Full House">Full House</option>
-                                    <option value="Full House+">Full House+</option>
-                                    <option value="Commercial/Multi-Family">Commercial / Multi-Family</option>
+                                    <option value="">Select</option>
+                                    <option value="Design Start">Design Start</option>
+                                    <option value="Initial Packet">Initial Packet</option>
+                                    <option value="Conversion">Conversion</option>
+                                    <option value="Full Package">Full Package</option>
+                                    <option value="Design start & Initial Packet">Design start &amp; Initial Packet</option>
+                                    <option value="Other Services">Other Services</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
