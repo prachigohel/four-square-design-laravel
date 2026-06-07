@@ -68,6 +68,9 @@
                 <a href="{{ route('portal.leads') }}" class="sidebar-link {{ request()->routeIs('portal.leads') ? 'active' : '' }}" title="Leads">
                     <i class="fas fa-user-tag"></i> <span class="link-label">Leads</span>
                 </a>
+                <a href="{{ route('portal.users') }}" class="sidebar-link {{ request()->routeIs('portal.users') ? 'active' : '' }}" title="User Management">
+                    <i class="fas fa-users-cog"></i> <span class="link-label">Users</span>
+                </a>
                 @endif
             </nav>
             <div class="sidebar-footer">

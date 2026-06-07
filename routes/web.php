@@ -253,6 +253,11 @@ Route::prefix('portal')->group(function () {
 
         Route::get('/leads', [App\Http\Controllers\Portal\LeadController::class, 'index'])->name('portal.leads');
 
+        Route::get('/users',           [App\Http\Controllers\Portal\UserController::class, 'index'])->name('portal.users');
+        Route::post('/users',          [App\Http\Controllers\Portal\UserController::class, 'store'])->name('portal.users.store');
+        Route::put('/users/{user}',    [App\Http\Controllers\Portal\UserController::class, 'update'])->name('portal.users.update');
+        Route::delete('/users/{user}', [App\Http\Controllers\Portal\UserController::class, 'destroy'])->name('portal.users.destroy');
+
         Route::get('/design-requests', function (Illuminate\Http\Request $request) {
             $user = Auth::user();
             $role = $user->role->name ?? '';
