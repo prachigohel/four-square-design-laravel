@@ -250,6 +250,7 @@ Route::prefix('portal')->group(function () {
 
         Route::get('/clients', [App\Http\Controllers\Portal\ClientController::class, 'index'])->name('portal.clients');
         Route::post('/clients', [App\Http\Controllers\Portal\ClientController::class, 'store'])->name('portal.clients.store');
+        Route::get('/clients/{id}', [App\Http\Controllers\Portal\ClientController::class, 'show'])->name('portal.clients.show');
 
         Route::get('/leads', [App\Http\Controllers\Portal\LeadController::class, 'index'])->name('portal.leads');
 
@@ -323,8 +324,9 @@ Route::prefix('portal')->group(function () {
         })->name('portal.prioritized');
 
         Route::get('/view-request/{id}', function ($id) {
-            $request = \App\Models\DesignRequest::with(['client', 'designer', 'comments.user'])->findOrFail($id);
-            return view('admin.view-request', compact('request'));
+            $request   = \App\Models\DesignRequest::with(['client', 'designer', 'comments.user'])->findOrFail($id);
+            $designers = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->orderBy('name')->get();
+            return view('admin.view-request', compact('request', 'designers'));
         })->name('portal.view-request');
 
         Route::post('/requests/{id}/comments', [\App\Http\Controllers\Portal\CommentController::class, 'store'])->name('portal.comments.store');

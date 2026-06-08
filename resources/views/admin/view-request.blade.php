@@ -126,6 +126,13 @@
                     <p style="font-size:0.82rem; color:var(--text-muted); font-style:italic;">No actions available at this stage.</p>
                 @endif
 
+            @elseif($request->status === 'Needs Approval' && in_array($userRole, ['Designer', 'Manager']))
+                {{-- Locked: waiting for client action --}}
+                <div style="display:flex;align-items:center;gap:0.6rem;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:0.65rem 1rem;font-size:0.85rem;color:#92400e;">
+                    <i class="fas fa-lock"></i>
+                    <span>Locked — awaiting client approval, revision request, or design error report.</span>
+                </div>
+
             @else
                 {{-- Dropdown for Manager, Designer, Admin --}}
                 <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" id="statusUpdateForm">
@@ -146,6 +153,8 @@
                             @elseif($userRole === 'Manager')
                                 <li class="cstm-opt" data-value="In Progress">In Progress</li>
                                 <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
                             @else
                                 {{-- Admin sees all --}}
                                 <li class="cstm-opt" data-value="Queued">Queued</li>
@@ -198,7 +207,22 @@
                 <div class="detail-row">
                     <div class="detail-item">
                         <span class="detail-label">Designer</span>
-                        <span class="detail-value">{{ $request->designer->name ?? 'Unassigned' }}</span>
+                        @if(in_array($userRole, ['Admin', 'Manager']))
+                            <form action="{{ route('portal.requests.assign', $request->id) }}" method="POST" style="margin-top:0.25rem;">
+                                @csrf
+                                <select name="designer_id" onchange="this.form.submit()"
+                                    style="border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.6rem;font-size:0.85rem;color:#020617;background:#f8fafc;outline:none;width:100%;cursor:pointer;">
+                                    <option value="">— Unassigned —</option>
+                                    @foreach($designers as $d)
+                                        <option value="{{ $d->id }}" {{ $request->designer_id == $d->id ? 'selected' : '' }}>
+                                            {{ $d->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        @else
+                            <span class="detail-value">{{ $request->designer->name ?? 'Unassigned' }}</span>
+                        @endif
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Sink</span>
@@ -365,21 +389,23 @@
         </div>
     </div>
 
-    <!-- Communication Pipeline -->
+    @php
+        $userComments  = $request->comments->whereIn('type', ['comment', 'revision']);
+        $statusHistory = $request->comments->where('type', 'status_change');
+    @endphp
+
+    <!-- Comments Section -->
     <div class="communications-section">
         <div class="card-header">
-            <h3><i class="fas fa-comments"></i> Communications & Activity</h3>
+            <h3><i class="fas fa-comments"></i> Comments</h3>
         </div>
         <div class="timeline">
-            <!-- Initial Request Entry -->
             <div class="timeline-item">
                 <div class="timeline-icon user-icon">
                     @php
                         $names = explode(' ', $request->client->name ?? 'U');
                         $initials = '';
-                        foreach ($names as $name) {
-                            $initials .= strtoupper(substr($name, 0, 1));
-                        }
+                        foreach ($names as $n) { $initials .= strtoupper(substr($n, 0, 1)); }
                         echo substr($initials, 0, 2);
                     @endphp
                 </div>
@@ -394,18 +420,16 @@
                 </div>
             </div>
 
-            @foreach($request->comments as $comment)
+            @forelse($userComments as $comment)
             <div class="timeline-item {{ $comment->type === 'revision' ? 'revision-item' : '' }}">
-                <div class="timeline-icon {{ $comment->type === 'revision' ? 'status-icon' : 'user-icon' }}" style="{{ $comment->type === 'comment' ? 'background: #3b82f6; color: white;' : '' }}">
+                <div class="timeline-icon user-icon" style="{{ $comment->type === 'revision' ? 'background:#fef3c7;color:#92400e;border-color:#fde68a;' : 'background:#3b82f6;color:#fff;border-color:#3b82f6;' }}">
                     @if($comment->type === 'revision')
                         <i class="fas fa-sync-alt"></i>
                     @else
                         @php
                             $names = explode(' ', $comment->user->name ?? 'U');
                             $initials = '';
-                            foreach ($names as $name) {
-                                $initials .= strtoupper(substr($name, 0, 1));
-                            }
+                            foreach ($names as $n) { $initials .= strtoupper(substr($n, 0, 1)); }
                             echo substr($initials, 0, 2);
                         @endphp
                     @endif
@@ -429,7 +453,52 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No comments yet.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Status History Section -->
+    <div class="communications-section" style="margin-top:1.5rem;">
+        <div class="card-header">
+            <h3><i class="fas fa-history"></i> Status History</h3>
+        </div>
+        <div class="timeline">
+            <!-- Created entry -->
+            <div class="timeline-item">
+                <div class="timeline-icon" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0;">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
+                        <span class="timestamp">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p>Request created with status <strong>Queued</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            @forelse($statusHistory as $entry)
+            <div class="timeline-item">
+                <div class="timeline-icon" style="background:#ede9fe;color:#7c3aed;border-color:#ddd6fe;">
+                    <i class="fas fa-arrow-right-arrow-left" style="font-size:0.7rem;"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header">
+                        <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
+                        <span class="timestamp">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p>{!! nl2br(e($entry->message)) !!}</p>
+                    </div>
+                </div>
+            </div>
+            @empty
+                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No status changes yet.</p>
+            @endforelse
         </div>
     </div>
 
@@ -441,7 +510,7 @@
                 <h3><i class="fas fa-plus"></i> Add Comment</h3>
             </div>
             <div class="comment-input-wrapper">
-                <textarea name="message" placeholder="Write your comment here..." rows="4" class="form-input" required></textarea>
+                <textarea name="message" placeholder="Write your comment here..." rows="4" class="form-input"></textarea>
                 <div class="comment-actions">
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <label class="attachment-btn" style="margin: 0;">

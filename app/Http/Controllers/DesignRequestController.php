@@ -80,6 +80,11 @@ class DesignRequestController extends Controller
 
     public function assign(Request $request, string $id)
     {
+        $userRole = Auth::user()->role->name ?? '';
+        if (!in_array($userRole, ['Admin', 'Manager'])) {
+            return back()->with('error', 'You are not allowed to assign designers.');
+        }
+
         $request->validate([
             'designer_id' => 'required|exists:users,id',
         ]);

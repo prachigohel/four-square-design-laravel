@@ -16,14 +16,16 @@
 
 <div class="clients-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
     @foreach($clients as $client)
-    <div class="client-card" style="background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+    <a href="{{ route('portal.clients.show', $client->id) }}" style="text-decoration:none;">
+    <div class="client-card" style="background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.10)';this.style.borderColor='var(--primary-color)'" onmouseout="this.style.boxShadow='0 4px 6px -1px rgba(0,0,0,0.05)';this.style.borderColor='var(--border-color)'">
         <div class="client-info">
             <h3 class="client-company" style="font-family: var(--font-body); font-weight: 800; font-size: 1.1rem; color: #020617; margin-bottom: 0.25rem;">{{ $client->company_name ?? 'Individual' }}</h3>
-            <p class="client-name" style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">{{ $client->name }}</p>
+            <p class="client-name" style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">{{ $client->contacts }}</p>
             <div class="requests-line" style="font-size: 0.85rem; font-weight: 700; color: #fab133;">Total Open Requests: <span class="requests-count">{{ $client->requests_count }}</span></div>
         </div>
-        <button class="standard-btn" style="background: #f1f5f9; color: #475569; border: none; font-size: 0.75rem; padding: 0.4rem 0.8rem;">Standard</button>
+        <button class="standard-btn" style="background: #f1f5f9; color: #475569; border: none; font-size: 0.75rem; padding: 0.4rem 0.8rem;" onclick="event.preventDefault()">Standard</button>
     </div>
+    </a>
     @endforeach
 </div>
 

@@ -35,6 +35,7 @@
                     <label>Company:</label>
                     <input type="text" name="company" value="{{ request('company') }}" placeholder="Company or name..." class="filter-input">
                 </div>
+                @if((Auth::user()->role->name ?? '') !== 'Client')
                 <div class="filter-group">
                     <label>Created By:</label>
                     <select name="created_by" class="filter-select">
@@ -44,6 +45,7 @@
                         @endforeach
                     </select>
                 </div>
+                @endif
             </div>
 
             <div class="filter-row align-end">

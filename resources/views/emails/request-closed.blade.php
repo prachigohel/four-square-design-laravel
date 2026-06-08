@@ -3,7 +3,7 @@
 @section('email-body')
 <p class="greeting">Project Completed</p>
 <p class="message">
-    The project has been successfully completed and closed. Thank you for choosing Four Square Designs.
+    The project has been successfully completed and closed. Thank you for choosing Four Square Design.
 </p>
 
 <div class="info-box">
@@ -33,6 +33,6 @@
 
 <hr class="divider">
 <p class="message" style="margin-bottom: 0; font-size: 0.85rem; color: #94a3b8;">
-    Thank you for trusting Four Square Designs with your project. We look forward to working with you again in the future.
+    Thank you for trusting Four Square Design with your project. We look forward to working with you again in the future.
 </p>
 @endsection

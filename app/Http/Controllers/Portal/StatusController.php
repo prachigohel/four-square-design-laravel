@@ -28,7 +28,7 @@ class StatusController extends Controller
 {
     // Statuses each role is allowed to set
     private const CLIENT_STATUSES   = ['Information Submitted', 'Approved', 'Revision Requested', 'Design Error', 'Project Completed'];
-    private const MANAGER_STATUSES  = ['In Progress', 'Needs Information'];
+    private const MANAGER_STATUSES  = ['In Progress', 'Needs Information', 'To Be Continued', 'Needs Approval'];
     private const DESIGNER_STATUSES = ['In Progress', 'Needs Information', 'Needs Approval', 'To Be Continued'];
     private const ADMIN_STATUSES    = ['Queued', 'Assigned', 'In Progress', 'Needs Information', 'Information Submitted', 'To Be Continued', 'Needs Approval', 'Revision Requested', 'Design Error', 'Approved', 'Project Completed'];
 
@@ -56,6 +56,11 @@ class StatusController extends Controller
         $designRequest = DesignRequest::with('client', 'designer')->findOrFail($id);
         $oldStatus     = $designRequest->status;
 
+        // Designer and Manager cannot change status while awaiting client approval
+        if ($oldStatus === 'Needs Approval' && in_array($userRole, ['Designer', 'Manager'])) {
+            return back()->with('error', 'Status is locked at "Needs Approval". Waiting for client to approve, request revision, or report a design error.');
+        }
+
         if ($oldStatus === $newStatus) {
             return back()->with('info', 'Status is already set to ' . $newStatus . '.');
         }
@@ -67,7 +72,7 @@ class StatusController extends Controller
             'user_id'           => Auth::id(),
             'message'           => "Status changed from \"{$oldStatus}\" to \"{$newStatus}\".",
             'attachments'       => [],
-            'type'              => 'status_change',
+            'type'              => $newStatus === 'Revision Requested' ? 'revision' : 'status_change',
         ]);
 
         $clientEmail   = $designRequest->client->email ?? $designRequest->email ?? null;

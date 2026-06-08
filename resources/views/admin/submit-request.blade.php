@@ -212,33 +212,147 @@
                 <div class="full-width options-section">
                     <h3>Standard Appliances</h3>
                     <div class="options-grid three-col">
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][chimney_hood]"> Chimney/Hood</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][cooktop_range]"> Cooktop/Range</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][dishwasher]"> Dishwasher</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][microwave]"> Microwave</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][oven]"> Oven</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][refrigerator]"> Refrigerator</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[appliances][wine_cooler]"> Wine Cooler</label>
-                        <div>
-                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][others]" class="others-checkbox"> Others</label>
-                            <input type="text" name="additional_info[appliances][others_text]" class="others-textbox form-input" placeholder="Please specify..." style="display:none;margin-top:0.5rem;font-size:0.85rem;">
+
+                        {{-- Chimney/Hood --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][chimney_hood]" class="appliance-cb"> Chimney/Hood</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[appliances][chimney_hood_size]" class="form-input mini" placeholder="size">
+                            </div>
                         </div>
+
+                        {{-- Cooktop/Range --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][cooktop_range]" class="appliance-cb"> Cooktop/Range</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[appliances][cooktop_range_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Dishwasher --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][dishwasher]" class="appliance-cb"> Dishwasher</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[appliances][dishwasher_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Microwave --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][microwave]" class="appliance-cb"> Microwave</label>
+                            <div class="appliance-fields" data-display="flex" style="display:none;margin-top:0.5rem;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                                <select name="additional_info[appliances][microwave_type]" class="form-input" style="flex:1;min-width:140px;">
+                                    <option value="">Select</option>
+                                    <option>Wall Standalone</option>
+                                    <option>Wall Built In</option>
+                                    <option>Tall Built In</option>
+                                    <option>Over the Range</option>
+                                </select>
+                                <input type="text" name="additional_info[appliances][microwave_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Oven --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][oven]" class="appliance-cb"> Oven</label>
+                            <div class="appliance-fields" data-display="flex" style="display:none;margin-top:0.5rem;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                                <select name="additional_info[appliances][oven_type]" class="form-input" style="flex:1;min-width:140px;">
+                                    <option value="">Select</option>
+                                    <option>Base Built In</option>
+                                    <option>Tall Built In</option>
+                                </select>
+                                <input type="text" name="additional_info[appliances][oven_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Refrigerator --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][refrigerator]" class="appliance-cb"> Refrigerator</label>
+                            <div class="appliance-fields" data-display="flex" style="display:none;margin-top:0.5rem;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                                <select name="additional_info[appliances][refrigerator_type]" class="form-input" style="flex:1;min-width:140px;">
+                                    <option value="">Select</option>
+                                    <option>Standalone</option>
+                                    <option>Built In</option>
+                                </select>
+                                <input type="text" name="additional_info[appliances][refrigerator_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Wine Cooler --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][wine_cooler]" class="appliance-cb"> Wine Cooler</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[appliances][wine_cooler_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Others --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[appliances][others]" class="others-checkbox"> Others</label>
+                            <input type="text" name="additional_info[appliances][others_text]" class="others-textbox form-input" placeholder="Enter" style="display:none;margin-top:0.5rem;font-size:0.85rem;">
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="full-width options-section">
                     <h3>Loose Appliances</h3>
                     <div class="options-grid three-col">
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][coffee_machine]"> Coffee Machine</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][dryer]"> Dryer</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][freezer]"> Freezer</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][outdoor_grill]"> Outdoor Grill</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][warming_drawer]"> Warming Drawer</label>
-                        <label class="check-item"><input type="checkbox" name="additional_info[loose][washer]"> Washer</label>
-                        <div>
-                            <label class="check-item"><input type="checkbox" name="additional_info[loose][others]" class="others-checkbox"> Others</label>
-                            <input type="text" name="additional_info[loose][others_text]" class="others-textbox form-input" placeholder="Please specify..." style="display:none;margin-top:0.5rem;font-size:0.85rem;">
+
+                        {{-- Coffee Machine --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][coffee_machine]" class="appliance-cb"> Coffee Machine</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][coffee_machine_size]" class="form-input mini" placeholder="size">
+                            </div>
                         </div>
+
+                        {{-- Dryer --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][dryer]" class="appliance-cb"> Dryer</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][dryer_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Freezer --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][freezer]" class="appliance-cb"> Freezer</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][freezer_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Outdoor Grill --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][outdoor_grill]" class="appliance-cb"> Outdoor Grill</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][outdoor_grill_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Warming Drawer --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][warming_drawer]" class="appliance-cb"> Warming Drawer</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][warming_drawer_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Washer --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][washer]" class="appliance-cb"> Washer</label>
+                            <div class="appliance-fields" style="display:none;margin-top:0.5rem;">
+                                <input type="text" name="additional_info[loose][washer_size]" class="form-input mini" placeholder="size">
+                            </div>
+                        </div>
+
+                        {{-- Others --}}
+                        <div class="appliance-item">
+                            <label class="check-item"><input type="checkbox" name="additional_info[loose][others]" class="others-checkbox"> Others</label>
+                            <input type="text" name="additional_info[loose][others_text]" class="others-textbox form-input" placeholder="Enter" style="display:none;margin-top:0.5rem;font-size:0.85rem;">
+                        </div>
+
                     </div>
                 </div>
 
@@ -381,6 +495,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('soffitsFields').style.display = this.checked ? 'block' : 'none';
     });
 
+    // ── Appliance checkboxes → conditional size / type fields ──────
+    document.querySelectorAll('.appliance-cb').forEach(cb => {
+        cb.addEventListener('change', function () {
+            const fields = this.closest('.appliance-item').querySelector('.appliance-fields');
+            if (!fields) return;
+            const show = this.checked;
+            fields.style.display = show ? (fields.dataset.display || 'block') : 'none';
+            if (!show) fields.querySelectorAll('input, select').forEach(el => el.value = '');
+        });
+    });
+
     // ── "Others" checkboxes in option grids ────────────────────────
     document.querySelectorAll('.others-checkbox').forEach(cb => {
         cb.addEventListener('change', function () {
@@ -392,15 +517,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ── File upload ─────────────────────────────────────────────────
+    // ── File upload (accumulating) ──────────────────────────────────
     const uploadArea = document.getElementById('uploadArea');
     const fileInput  = document.getElementById('fileInput');
     const fileList   = document.getElementById('fileList');
+    const theForm    = document.querySelector('.submit-request-container');
+    let accFiles = [];
 
-    uploadArea.addEventListener('click', () => fileInput.click());
+    function iconFor(name) {
+        const ext = name.split('.').pop().toLowerCase();
+        if (['pdf'].includes(ext))                            return 'fa-file-pdf';
+        if (['xls','xlsx','csv','tsv'].includes(ext))         return 'fa-file-excel';
+        if (['doc','docx','txt'].includes(ext))               return 'fa-file-word';
+        if (['ppt','pptx'].includes(ext))                     return 'fa-file-powerpoint';
+        if (['jpg','jpeg','png','webp','heic'].includes(ext))  return 'fa-file-image';
+        return 'fa-file';
+    }
+
+    function renderFiles() {
+        if (accFiles.length === 0) { fileList.innerHTML = ''; return; }
+        fileList.innerHTML = accFiles.map((f, i) => `
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.4rem;font-size:0.82rem;color:var(--secondary-color);">
+                <i class="fas ${iconFor(f.name)}" style="color:var(--primary-color);"></i>
+                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</span>
+                <span style="color:#94a3b8;font-size:0.75rem;">${(f.size/1024).toFixed(0)} KB</span>
+                <button type="button" data-idx="${i}" class="rm-file"
+                    style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.9rem;padding:0 0.25rem;" title="Remove">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>`).join('');
+
+        fileList.querySelectorAll('.rm-file').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                accFiles.splice(parseInt(this.dataset.idx), 1);
+                renderFiles();
+            });
+        });
+    }
+
+    function addFiles(newFiles) {
+        Array.from(newFiles).forEach(f => {
+            if (!accFiles.some(a => a.name === f.name && a.size === f.size)) accFiles.push(f);
+        });
+        renderFiles();
+    }
+
+    uploadArea.addEventListener('click', (e) => {
+        if (!e.target.closest('.rm-file')) fileInput.click();
+    });
+
     fileInput.addEventListener('change', () => {
-        fileList.innerHTML = Array.from(fileInput.files)
-            .map(f => `<div><i class="fas fa-file"></i> ${f.name}</div>`).join('');
+        addFiles(fileInput.files);
+        // Reset picker so the same file can be re-selected after removal
+        fileInput.value = '';
+    });
+
+    // Sync accumulated files into the input just before the form submits
+    theForm.addEventListener('submit', () => {
+        const dt = new DataTransfer();
+        accFiles.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+    });
+
+    // Drag-and-drop
+    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--primary-color)'; });
+    uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = ''; });
+    uploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '';
+        addFiles(e.dataTransfer.files);
     });
 });
 </script>
