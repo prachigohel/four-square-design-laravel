@@ -44,6 +44,18 @@
                     <input type="text" name="cabinet_brand" class="form-input" placeholder="Enter cabinet brand" required>
                 </div>
 
+                {{-- Door Style --}}
+                <div class="form-group">
+                    <label>Door Style <span class="required-star">*</span></label>
+                    <input type="text" name="door_style" class="form-input" placeholder="Enter door style" required>
+                </div>
+
+                {{-- Finish --}}
+                <div class="form-group">
+                    <label>Finish <span class="required-star">*</span></label>
+                    <input type="text" name="finish" class="form-input" placeholder="Enter finish" required>
+                </div>
+
                 <div class="form-group-row">
                     <div class="form-group">
                         <label>Ceiling Height</label>
@@ -556,10 +568,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const MAX_TOTAL_MB  = 100;
+    const MAX_SINGLE_MB = 10;
+
+    function totalSizeMB() {
+        return accFiles.reduce((sum, f) => sum + f.size, 0) / (1024 * 1024);
+    }
+
+    function showUploadError(msg) {
+        let el = document.getElementById('uploadSizeError');
+        if (!el) {
+            el = document.createElement('p');
+            el.id = 'uploadSizeError';
+            el.style.cssText = 'color:#ef4444;font-size:0.82rem;margin-top:0.4rem;';
+            uploadArea.parentNode.insertBefore(el, uploadArea.nextSibling);
+        }
+        el.textContent = msg;
+    }
+
+    function clearUploadError() {
+        const el = document.getElementById('uploadSizeError');
+        if (el) el.textContent = '';
+    }
+
     function addFiles(newFiles) {
+        const skipped = [];
         Array.from(newFiles).forEach(f => {
+            if (f.size > MAX_SINGLE_MB * 1024 * 1024) {
+                skipped.push(`${f.name} (exceeds ${MAX_SINGLE_MB} MB limit)`);
+                return;
+            }
             if (!accFiles.some(a => a.name === f.name && a.size === f.size)) accFiles.push(f);
         });
+        if (skipped.length) {
+            showUploadError('Skipped: ' + skipped.join(', '));
+        } else {
+            clearUploadError();
+        }
         renderFiles();
     }
 
@@ -574,7 +619,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Sync accumulated files into the input just before the form submits
-    theForm.addEventListener('submit', () => {
+    theForm.addEventListener('submit', (e) => {
+        if (totalSizeMB() > MAX_TOTAL_MB) {
+            e.preventDefault();
+            showUploadError(`Total upload size (${totalSizeMB().toFixed(1)} MB) exceeds the ${MAX_TOTAL_MB} MB limit. Please remove some files.`);
+            uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        clearUploadError();
         const dt = new DataTransfer();
         accFiles.forEach(f => dt.items.add(f));
         fileInput.files = dt.files;

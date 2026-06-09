@@ -107,6 +107,12 @@
 
 
                     
+                    <div id="tz-toggle" class="tz-toggle" title="Switch timezone">
+                        <span class="tz-opt" data-tz-val="IST">IST</span>
+                        <span class="tz-sep">|</span>
+                        <span class="tz-opt" data-tz-val="EST">EST</span>
+                    </div>
+
                     <div class="user-dropdown">
                         @auth
                         <div class="user-avatar" id="userDropdownTrigger">
@@ -247,6 +253,80 @@
         });
     </script>
     @yield('scripts')
+
+    <style>
+        .tz-toggle {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 0.2rem 0.55rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            gap: 0.2rem;
+            cursor: default;
+            user-select: none;
+            letter-spacing: 0.4px;
+        }
+        .tz-opt {
+            padding: 0.15rem 0.45rem;
+            border-radius: 12px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .tz-opt:hover { color: #475569; }
+        .tz-opt.tz-active { background: var(--primary-color, #008fa0); color: #fff; }
+        .tz-sep { color: #cbd5e1; font-weight: 300; font-size: 0.75rem; }
+    </style>
+
+    <script>
+    (function () {
+        var TZ_MAP = { IST: 'Asia/Kolkata', EST: 'America/New_York' };
+
+        function fmtInTz(iso, tz, fmt) {
+            var d = new Date(iso);
+            var parts = new Intl.DateTimeFormat('en-GB', {
+                timeZone: tz,
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: true
+            }).formatToParts(d);
+            var get = function (type) { var p = parts.find(function (x) { return x.type === type; }); return p ? p.value : ''; };
+            var day = get('day'), mon = get('month'), yr = get('year');
+            var hr = get('hour'), min = get('minute'), ampm = (get('dayPeriod') || '').toUpperCase();
+            if (fmt === 'date') return day + ' ' + mon + ', ' + yr;
+            if (fmt === 'time') return hr + ':' + min + ' ' + ampm;
+            return day + ' ' + mon + ', ' + yr + ' ' + hr + ':' + min + ' ' + ampm;
+        }
+
+        function applyTz(tzKey) {
+            var tz = TZ_MAP[tzKey] || TZ_MAP.IST;
+            document.querySelectorAll('[data-utc]').forEach(function (el) {
+                var iso = el.getAttribute('data-utc');
+                if (!iso) return;
+                var fmt = el.getAttribute('data-utc-fmt') || '';
+                el.textContent = fmtInTz(iso, tz, fmt);
+            });
+            document.querySelectorAll('.tz-opt').forEach(function (opt) {
+                opt.classList.toggle('tz-active', opt.getAttribute('data-tz-val') === tzKey);
+            });
+        }
+
+        var saved = localStorage.getItem('tz_pref') || 'IST';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            applyTz(saved);
+            document.querySelectorAll('.tz-opt').forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    var val = this.getAttribute('data-tz-val');
+                    localStorage.setItem('tz_pref', val);
+                    applyTz(val);
+                });
+            });
+        });
+    })();
+    </script>
 
     <!-- Modals -->
     <div id="spocModal" class="modal">

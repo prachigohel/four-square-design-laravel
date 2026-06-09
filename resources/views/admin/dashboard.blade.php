@@ -29,8 +29,8 @@
     @foreach($requests as $req)
     <div class="request-item">
         <div class="request-meta-header">
-            <div>Request #CAB-2026-{{ $req->id }} | <span class="company-name">{{ $req->client->name ?? 'Unknown Client' }}</span></div>
-            <div>Created on: {{ $req->created_at->format('d M, Y h:i A') }}</div>
+            <div>Request #{{ $req->request_number }} | <span class="company-name">{{ $req->client->name ?? 'Unknown Client' }}</span></div>
+            <div>Created on: <span data-utc="{{ $req->created_at->toISOString() }}">{{ $req->created_at->format('d M, Y h:i A') }}</span></div>
         </div>
         <div class="request-card">
             <div class="request-icon">

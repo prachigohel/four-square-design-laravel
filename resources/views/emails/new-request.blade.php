@@ -9,7 +9,7 @@
 <div class="info-box">
     <div class="info-row">
         <span class="info-label">Request #</span>
-        <span class="info-value">CAB-2026-{{ $designRequest->id }}</span>
+        <span class="info-value">{{ $designRequest->request_number }}</span>
     </div>
     <div class="info-row">
         <span class="info-label">Project Title</span>

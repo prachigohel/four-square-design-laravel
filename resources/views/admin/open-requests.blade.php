@@ -37,8 +37,8 @@
     @endphp
     <div class="request-item">
         <div class="request-meta-header">
-            <div>Request #CAB-2026-{{ $req->id }} | <span class="company-name">{{ $req->client->name ?? $req->full_name ?? 'Website Visitor' }}</span>@if(!$req->client_id) <span style="display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 4px; margin-left: 0.3rem; vertical-align: middle; letter-spacing: 0.3px;">Website</span>@endif</div>
-            <div style="color: #008fa0; font-weight: 600;"><i class="fas fa-clock" style="margin-right: 0.3rem; font-size: 0.7rem;"></i>Created on: {{ $req->created_at->format('d M, Y h:i A') }}</div>
+            <div>Request #{{ $req->request_number }} | <span class="company-name">{{ $req->client->name ?? $req->full_name ?? 'Website Visitor' }}</span>@if(!$req->client_id) <span style="display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 4px; margin-left: 0.3rem; vertical-align: middle; letter-spacing: 0.3px;">Website</span>@endif</div>
+            <div style="color: #008fa0; font-weight: 600;"><i class="fas fa-clock" style="margin-right: 0.3rem; font-size: 0.7rem;"></i>Created on: <span data-utc="{{ $req->created_at->toISOString() }}">{{ $req->created_at->format('d M, Y h:i A') }}</span></div>
         </div>
         <div class="request-card" style="display: block; padding: 0;">
             <div style="display: flex; gap: 1.5rem; padding: 1.25rem 1.5rem; align-items: center;">

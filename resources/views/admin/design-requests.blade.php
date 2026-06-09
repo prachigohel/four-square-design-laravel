@@ -130,7 +130,7 @@
                 @endphp
                 <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s;" onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='#fff'">
                     <td style="padding: 1rem 1.25rem;">
-                        <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8;">CAB-2026-{{ $req->id }}</span>
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8;">{{ $req->request_number }}</span>
                     </td>
                     <td style="padding: 1rem 1.25rem; max-width: 220px;">
                         <div style="font-weight: 700; font-size: 0.9rem; color: #020617; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $req->title }}</div>
@@ -151,8 +151,8 @@
                         <span style="display: inline-block; background: {{ $color['bg'] }}; color: {{ $color['text'] }}; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 999px; white-space: nowrap;">{{ $req->status }}</span>
                     </td>
                     <td style="padding: 1rem 1.25rem; white-space: nowrap;">
-                        <div style="font-size: 0.8rem; color: #475569;">{{ $req->created_at->format('d M, Y') }}</div>
-                        <div style="font-size: 0.72rem; color: #94a3b8;">{{ $req->created_at->format('h:i A') }}</div>
+                        <div data-utc="{{ $req->created_at->toISOString() }}" data-utc-fmt="date" style="font-size: 0.8rem; color: #475569;">{{ $req->created_at->format('d M, Y') }}</div>
+                        <div data-utc="{{ $req->created_at->toISOString() }}" data-utc-fmt="time" style="font-size: 0.72rem; color: #94a3b8;">{{ $req->created_at->format('h:i A') }}</div>
                     </td>
                     <td style="padding: 1rem 1.25rem;">
                         <a href="{{ route('portal.view-request', $req->id) }}" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; font-weight: 700; color: var(--primary-color); text-decoration: none; background: #f0fdf4; padding: 0.3rem 0.8rem; border-radius: 6px; transition: background 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">

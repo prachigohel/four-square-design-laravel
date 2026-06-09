@@ -57,15 +57,15 @@
 
         {{-- Top bar --}}
         <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 1.25rem;background:#f8fafc;border-bottom:1px solid var(--border-color);font-size:0.75rem;color:var(--text-muted);flex-wrap:wrap;gap:0.5rem;">
-            <span style="font-weight:700;color:var(--secondary-color);">Request #CAB-2026-{{ $req->id }}</span>
+            <span style="font-weight:700;color:var(--secondary-color);">Request #{{ $req->request_number }}</span>
             <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
-                <span><strong>Created on:</strong> {{ $req->created_at->format('d M, Y h:i A') }}</span>
+                <span><strong>Created on:</strong> <span data-utc="{{ $req->created_at->toISOString() }}">{{ $req->created_at->format('d M, Y h:i A') }}</span></span>
                 @if($req->expected_date)
                 <span style="{{ $req->expected_date->isPast() && $req->status !== 'Project Completed' ? 'color:#ef4444;font-weight:700;' : '' }}">
                     <strong>Due:</strong> {{ $req->expected_date->format('d M, Y') }}
                 </span>
                 @endif
-                <span><strong>Last Updated:</strong> {{ $req->updated_at->format('d M, Y h:i A') }}</span>
+                <span><strong>Last Updated:</strong> <span data-utc="{{ $req->updated_at->toISOString() }}">{{ $req->updated_at->format('d M, Y h:i A') }}</span></span>
             </div>
             <span style="background:#e2e8f0;color:#475569;font-weight:800;padding:0.15rem 0.6rem;border-radius:6px;">#{{ $i + 1 }}</span>
         </div>

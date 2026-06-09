@@ -17,9 +17,13 @@ class DesignRequestController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'        => 'required|string|max:255',
-            'request_type' => 'required|string',
-            'cabinet_brand'=> 'required|string|max:255',
+            'title'          => 'required|string|max:255',
+            'request_type'   => 'required|string',
+            'cabinet_brand'  => 'required|string|max:255',
+            'door_style'     => 'required|string|max:255',
+            'finish'         => 'required|string|max:255',
+            'attachments'    => 'nullable|array',
+            'attachments.*'  => 'file|max:10240', // 10 MB per file
         ]);
 
         $attachments = [];
@@ -39,6 +43,8 @@ class DesignRequestController extends Controller
             'status'             => 'Queued',
             'request_type'       => $request->request_type,
             'cabinet_brand'      => $request->cabinet_brand,
+            'door_style'         => $request->door_style,
+            'finish'             => $request->finish,
             'ceiling_height'     => $request->ceiling_height,
             'wall_cabinet_height'=> $request->wall_cabinet_height,
             'expected_date'      => $request->expected_date,
@@ -115,5 +121,17 @@ class DesignRequestController extends Controller
         }
 
         return back()->with('success', 'Request assigned to ' . $designer->name . ' successfully.');
+    }
+
+    public function prioritize(string $id)
+    {
+        $designRequest = DesignRequest::findOrFail($id);
+        $designRequest->update(['is_prioritized' => !$designRequest->is_prioritized]);
+
+        $message = $designRequest->is_prioritized
+            ? 'Request marked as prioritized.'
+            : 'Request removed from prioritized.';
+
+        return back()->with('success', $message);
     }
 }

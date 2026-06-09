@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', 'View Request #CAB-2026-' . $request->id . ' - Four Square Design Portal')
+@section('title', 'View Request #' . $request->request_number . ' - Four Square Design Portal')
 
 @section('content')
 <div class="view-request-container">
@@ -10,20 +10,31 @@
             <div class="project-info">
                 <h1 class="project-title">{{ $request->title }}</h1>
                 <div class="request-meta">
-                    <span class="request-id">Request #CAB-2026-{{ $request->id }}</span>
+                    <span class="request-id">Request #{{ $request->request_number }}</span>
                     <span class="meta-divider">|</span>
                     <span class="company-name">{{ $request->client->name ?? 'Unknown Client' }}</span>
                 </div>
             </div>
             <div class="header-actions">
                 <span class="status-badge" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700;">● {{ $request->status }}</span>
-                <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fas fa-edit"></i> EDIT</button>
+                <form action="{{ route('portal.requests.prioritize', $request->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @if($request->is_prioritized)
+                        <button type="submit" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #1e40af; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; letter-spacing: 0.3px;">
+                            <i class="fas fa-star"></i> Prioritized
+                        </button>
+                    @else
+                        <button type="submit" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; letter-spacing: 0.3px;">
+                            <i class="far fa-star"></i> Prioritize this Request
+                        </button>
+                    @endif
+                </form>
             </div>
         </div>
         <div class="header-dates">
             <div class="date-item">
                 <span class="date-label">Created on:</span>
-                <span class="date-value">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                <span class="date-value" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
             </div>
             <div class="date-item">
                 <span class="date-label">Due Date:</span>
@@ -31,7 +42,7 @@
             </div>
             <div class="date-item">
                 <span class="date-label">Last Updated:</span>
-                <span class="date-value">{{ $request->updated_at->format('d M, Y h:i A') }}</span>
+                <span class="date-value" data-utc="{{ $request->updated_at->toISOString() }}">{{ $request->updated_at->format('d M, Y h:i A') }}</span>
             </div>
             <div class="rev-v">#1</div>
         </div>
@@ -63,6 +74,7 @@
             'Design Error'         => ['label' => 'Design Error',         'bg' => '#fef2f2', 'color' => '#b91c1c'],
             'Approved'             => ['label' => 'Approved',             'bg' => '#f0fdf4', 'color' => '#166534'],
             'Project Completed'    => ['label' => 'Project Completed',    'bg' => '#020617', 'color' => '#fab133'],
+            'Closed'               => ['label' => 'Closed',               'bg' => '#f1f5f9', 'color' => '#475569'],
             'Draft'                => ['label' => 'Draft',                'bg' => '#f9fafb', 'color' => '#9ca3af'],
         ];
         $sm = $statusMeta[$request->status] ?? ['label' => $request->status, 'bg' => '#f3f4f6', 'color' => '#6b7280'];
@@ -111,14 +123,36 @@
                             <button type="submit" class="btn-action btn-error"><i class="fas fa-exclamation-triangle"></i> Design Error</button>
                         </form>
                     </div>
+                @elseif($request->status === 'Queued')
+                    <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" id="statusUpdateForm">
+                        @csrf
+                        <input type="hidden" name="status" id="statusHiddenInput" value="">
+                        <div class="cstm-select-wrap" id="cstmSelect" data-current="{{ $request->status }}">
+                            <div class="cstm-select-trigger" id="cstmTrigger">
+                                <span id="cstmLabel">{{ $request->status }}</span>
+                                <i class="fas fa-chevron-down cstm-chevron"></i>
+                            </div>
+                            <ul class="cstm-options" id="cstmOptions">
+                                <li class="cstm-opt cstm-opt-header" data-value="">Select Status</li>
+                                <li class="cstm-opt" data-value="Closed">Closed</li>
+                            </ul>
+                        </div>
+                    </form>
                 @elseif($request->status === 'Needs Information')
                     <div class="client-action-buttons">
                         <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
                             @csrf <input type="hidden" name="status" value="Information Submitted">
                             <button type="submit" class="btn-action btn-approve"><i class="fas fa-paper-plane"></i> Submit Information</button>
                         </form>
+                    </div>
+                @elseif($request->status === 'Approved')
+                    <div class="client-action-buttons">
                         <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
-                            @csrf <input type="hidden" name="status" value="Project Completed">
+                            @csrf <input type="hidden" name="status" value="Revision Requested">
+                            <button type="submit" class="btn-action btn-revision"><i class="fas fa-redo"></i> Request Revision</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Closed">
                             <button type="submit" class="btn-action btn-close" onclick="return confirm('Are you sure you want to close this request?')"><i class="fas fa-times-circle"></i> Close Request</button>
                         </form>
                     </div>
@@ -145,17 +179,7 @@
                         </div>
                         <ul class="cstm-options" id="cstmOptions">
                             <li class="cstm-opt cstm-opt-header" data-value="">Select Status</li>
-                            @if($userRole === 'Designer')
-                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
-                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
-                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
-                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
-                            @elseif($userRole === 'Manager')
-                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
-                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
-                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
-                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
-                            @else
+                            @if($userRole === 'Admin')
                                 {{-- Admin sees all --}}
                                 <li class="cstm-opt" data-value="Queued">Queued</li>
                                 <li class="cstm-opt" data-value="Assigned">Assigned</li>
@@ -168,6 +192,39 @@
                                 <li class="cstm-opt" data-value="Design Error">Design Error</li>
                                 <li class="cstm-opt" data-value="Approved">Approved</li>
                                 <li class="cstm-opt" data-value="Project Completed">Project Completed</li>
+                            @elseif($request->status === 'Assigned')
+                                {{-- Designer/Manager: Assigned → only these two transitions --}}
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                            @elseif($request->status === 'In Progress')
+                                {{-- Designer/Manager: In Progress → only these three transitions --}}
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                            @elseif($request->status === 'Needs Information')
+                                {{-- Designer/Manager: Needs Information → only In Progress --}}
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                            @elseif($request->status === 'Information Submitted')
+                                {{-- Designer/Manager: Information Submitted → only In Progress --}}
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                            @elseif($request->status === 'Revision Requested')
+                                {{-- Designer/Manager: Revision Requested → In Progress, Needs Information --}}
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                            @elseif($request->status === 'Design Error')
+                                {{-- Designer/Manager: Design Error → In Progress, Needs Information --}}
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                            @elseif($userRole === 'Designer')
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                            @elseif($userRole === 'Manager')
+                                <li class="cstm-opt" data-value="In Progress">In Progress</li>
+                                <li class="cstm-opt" data-value="Needs Information">Needs Information</li>
+                                <li class="cstm-opt" data-value="To Be Continued">To Be Continued</li>
+                                <li class="cstm-opt" data-value="Needs Approval">Needs Approval</li>
                             @endif
                         </ul>
                     </div>
@@ -192,6 +249,16 @@
                     <div class="detail-item">
                         <span class="detail-label">Cabinet Brand</span>
                         <span class="detail-value">{{ $request->cabinet_brand ?? 'N/A' }}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="detail-label">Door Style</span>
+                        <span class="detail-value">{{ $request->door_style ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Finish</span>
+                        <span class="detail-value">{{ $request->finish ?? 'N/A' }}</span>
                     </div>
                 </div>
                 <div class="detail-row">
@@ -317,22 +384,42 @@
             </div>
         </div>
         <div class="section-body">
+
+            {{-- Door Style & Finish summary row --}}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-color);">
+                <div>
+                    <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);display:block;margin-bottom:0.3rem;">Door Style</span>
+                    <span style="font-size:0.95rem;font-weight:600;color:var(--secondary-color);">{{ $request->door_style ?? 'N/A' }}</span>
+                </div>
+                <div>
+                    <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);display:block;margin-bottom:0.3rem;">Finish</span>
+                    <span style="font-size:0.95rem;font-weight:600;color:var(--secondary-color);">{{ $request->finish ?? 'N/A' }}</span>
+                </div>
+            </div>
+
             <div class="info-grid">
                 @php
                     function renderInfoList($items, $labelMap = []) {
                         $hasAny = false;
                         $html = '';
                         foreach ($items as $key => $value) {
-                            if (str_ends_with($key, '_text')) continue; // skip text companion fields
+                            // Skip companion fields — rendered inline with their parent
+                            if (str_ends_with($key, '_text') || str_ends_with($key, '_size') || str_ends_with($key, '_type')) continue;
                             if (!$value) continue;
                             $hasAny = true;
                             $label = $labelMap[$key] ?? ucwords(str_replace('_', ' ', $key));
-                            // if "others" and companion text exists
-                            $textKey = $key . '_text';
-                            if ($key === 'others' && !empty($items[$textKey])) {
-                                $label = 'Others: ' . $items[$textKey];
+                            if ($key === 'others' && !empty($items[$key . '_text'])) {
+                                $label = 'Others: ' . $items[$key . '_text'];
                             }
-                            $html .= '<li><i class="fas fa-check"></i> ' . e($label) . '</li>';
+                            // Collect companion type/size values and show inline
+                            $extras = [];
+                            if (!empty($items[$key . '_type'])) $extras[] = $items[$key . '_type'];
+                            if (!empty($items[$key . '_size'])) $extras[] = $items[$key . '_size'];
+                            $html .= '<li><i class="fas fa-check"></i> ' . e($label);
+                            if ($extras) {
+                                $html .= ' <span style="color:#64748b;font-weight:500;font-size:0.85em;">(' . e(implode(', ', $extras)) . ')</span>';
+                            }
+                            $html .= '</li>';
                         }
                         if (!$hasAny) $html = '<li style="font-style:italic;">None selected</li>';
                         return $html;
@@ -394,6 +481,9 @@
         $statusHistory = $request->comments->where('type', 'status_change');
     @endphp
 
+    <!-- Comments + Status History — two columns -->
+    <div class="comments-grid">
+
     <!-- Comments Section -->
     <div class="communications-section">
         <div class="card-header">
@@ -412,7 +502,7 @@
                 <div class="timeline-content">
                     <div class="timeline-header">
                         <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
-                        <span class="timestamp">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
                     </div>
                     <div class="timeline-body">
                         <p><strong>Initial Request Submitted:</strong> {{ $request->title }}</p>
@@ -437,7 +527,7 @@
                 <div class="timeline-content">
                     <div class="timeline-header">
                         <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
-                        <span class="timestamp">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
+                        <span class="timestamp" data-utc="{{ $comment->created_at->toISOString() }}">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
                     </div>
                     <div class="timeline-body">
                         <p>{!! nl2br(e($comment->message)) !!}</p>
@@ -460,7 +550,7 @@
     </div>
 
     <!-- Status History Section -->
-    <div class="communications-section" style="margin-top:1.5rem;">
+    <div class="communications-section">
         <div class="card-header">
             <h3><i class="fas fa-history"></i> Status History</h3>
         </div>
@@ -473,7 +563,7 @@
                 <div class="timeline-content">
                     <div class="timeline-header">
                         <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
-                        <span class="timestamp">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
                     </div>
                     <div class="timeline-body">
                         <p>Request created with status <strong>Queued</strong>.</p>
@@ -489,7 +579,7 @@
                 <div class="timeline-content">
                     <div class="timeline-header">
                         <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
-                        <span class="timestamp">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
+                        <span class="timestamp" data-utc="{{ $entry->created_at->toISOString() }}">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
                     </div>
                     <div class="timeline-body">
                         <p>{!! nl2br(e($entry->message)) !!}</p>
@@ -501,6 +591,8 @@
             @endforelse
         </div>
     </div>
+
+    </div>{{-- end two-column grid --}}
 
     <!-- Add Comment Section -->
     <form action="{{ route('portal.comments.store', $request->id) }}" method="POST" enctype="multipart/form-data">
@@ -579,6 +671,7 @@
         options.querySelectorAll('.cstm-opt:not(.cstm-opt-header)').forEach(function (opt) {
             opt.addEventListener('click', function () {
                 const val = opt.dataset.value;
+                if (val === 'Closed' && !confirm('Are you sure you want to close this request?')) return;
                 label.textContent = opt.textContent.trim();
                 hidden.value = val;
                 wrap.classList.remove('open');
@@ -828,6 +921,24 @@
         padding: 2rem;
         border: 1px solid var(--border-color);
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .comments-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+        margin-top: 2rem;
+    }
+
+    .comments-grid .communications-section {
+        margin-top: 0;
+    }
+
+    @media (max-width: 768px) {
+        .comments-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     .timeline {

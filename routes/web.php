@@ -320,8 +320,16 @@ Route::prefix('portal')->group(function () {
         })->name('portal.your-drafts');
 
         Route::get('/prioritized', function () {
-            return view('admin.prioritized');
+            $requests  = \App\Models\DesignRequest::with(['client', 'designer'])
+                ->where('is_prioritized', true)
+                ->orderByDesc('updated_at')
+                ->get();
+            $designers = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->orderBy('name')->get();
+            $role      = \Illuminate\Support\Facades\Auth::user()->role->name ?? '';
+            return view('admin.prioritized', compact('requests', 'designers', 'role'));
         })->name('portal.prioritized');
+
+        Route::post('/requests/{id}/prioritize', [\App\Http\Controllers\DesignRequestController::class, 'prioritize'])->name('portal.requests.prioritize');
 
         Route::get('/view-request/{id}', function ($id) {
             $request   = \App\Models\DesignRequest::with(['client', 'designer', 'comments.user'])->findOrFail($id);

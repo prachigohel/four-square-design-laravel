@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Mail;
 class StatusController extends Controller
 {
     // Statuses each role is allowed to set
-    private const CLIENT_STATUSES   = ['Information Submitted', 'Approved', 'Revision Requested', 'Design Error', 'Project Completed'];
+    private const CLIENT_STATUSES   = ['Information Submitted', 'Approved', 'Revision Requested', 'Design Error', 'Project Completed', 'Closed'];
     private const MANAGER_STATUSES  = ['In Progress', 'Needs Information', 'To Be Continued', 'Needs Approval'];
     private const DESIGNER_STATUSES = ['In Progress', 'Needs Information', 'Needs Approval', 'To Be Continued'];
     private const ADMIN_STATUSES    = ['Queued', 'Assigned', 'In Progress', 'Needs Information', 'Information Submitted', 'To Be Continued', 'Needs Approval', 'Revision Requested', 'Design Error', 'Approved', 'Project Completed'];
@@ -35,7 +35,7 @@ class StatusController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Queued,Assigned,In Progress,Needs Information,Information Submitted,To Be Continued,Needs Approval,Revision Requested,Design Error,Approved,Project Completed',
+            'status' => 'required|in:Queued,Assigned,In Progress,Needs Information,Information Submitted,To Be Continued,Needs Approval,Revision Requested,Design Error,Approved,Project Completed,Closed',
         ]);
 
         $userRole  = Auth::user()->role->name ?? '';
@@ -59,6 +59,21 @@ class StatusController extends Controller
         // Designer and Manager cannot change status while awaiting client approval
         if ($oldStatus === 'Needs Approval' && in_array($userRole, ['Designer', 'Manager'])) {
             return back()->with('error', 'Status is locked at "Needs Approval". Waiting for client to approve, request revision, or report a design error.');
+        }
+
+        // Designer and Manager have restricted transitions based on current status
+        if (in_array($userRole, ['Designer', 'Manager'])) {
+            $transitionMap = [
+                'Assigned'             => ['In Progress', 'Needs Information'],
+                'In Progress'          => ['Needs Information', 'Needs Approval', 'To Be Continued'],
+                'Needs Information'    => ['In Progress'],
+                'Information Submitted'=> ['In Progress'],
+                'Revision Requested'   => ['In Progress', 'Needs Information'],
+                'Design Error'         => ['In Progress', 'Needs Information'],
+            ];
+            if (isset($transitionMap[$oldStatus]) && !in_array($newStatus, $transitionMap[$oldStatus])) {
+                return back()->with('error', 'That status transition is not allowed from "' . $oldStatus . '".');
+            }
         }
 
         if ($oldStatus === $newStatus) {
@@ -163,6 +178,7 @@ class StatusController extends Controller
                 break;
 
             case 'Project Completed':
+            case 'Closed':
                 foreach ($managers as $manager) {
                     $this->send($manager->email, new RequestClosedMail($designRequest));
                 }
