@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', 'Login - Four Square Design Portal')
+@section('title', 'Login - Four Square Designs Portal')
 
 @section('content')
 <div class="login-page" style="background-image: url('{{ asset('images/kitchen-hero.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">

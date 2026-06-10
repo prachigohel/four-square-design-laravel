@@ -1,9 +1,9 @@
 @extends('layouts.frontend')
 
-@section('title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Design')
-@section('meta_description', 'Browse Four Square Design\'s portfolio of completed kitchen and bath projects — including gourmet kitchens, luxury bath retreats, elevation drawings, floor plans, and multi-family unit designs.')
+@section('title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Designs')
+@section('meta_description', 'Browse Four Square Designs\'s portfolio of completed kitchen and bath projects — including gourmet kitchens, luxury bath retreats, elevation drawings, floor plans, and multi-family unit designs.')
 @section('meta_keywords', 'kitchen design portfolio, 3D kitchen rendering portfolio, bath design portfolio, Ahmedabad interior design projects, luxury kitchen gallery, cabinet design gallery India')
-@section('og_title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Design')
+@section('og_title', 'Portfolio | Kitchen & Bath Design Projects | Four Square Designs')
 @section('og_description', 'Browse our completed kitchen and bath design projects — gourmet kitchens, bath retreats, elevation drawings, floor plans, and multi-family designs.')
 @section('canonical', url('/portfolio'))
 
@@ -12,12 +12,12 @@
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Four Square Design – Portfolio",
+  "name": "Four Square Designs – Portfolio",
   "url": "{{ url('/portfolio') }}",
-  "description": "Portfolio of completed kitchen and bath design projects by Four Square Design, Ahmedabad.",
+  "description": "Portfolio of completed kitchen and bath design projects by Four Square Designs, Ahmedabad.",
   "provider": {
     "@type": "LocalBusiness",
-    "name": "Four Square Design",
+    "name": "Four Square Designs",
     "url": "{{ url('/') }}"
   }
 }
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="flex justify-between text-xs text-slate-500 pt-3 font-medium">
-                        <span>Four Square Designs</span>
+                        <span>Four Square Designss</span>
                         <span>Multi-Family Design Sample</span>
                     </div>
                 </div>

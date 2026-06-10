@@ -1,9 +1,9 @@
 @extends('layouts.frontend')
 
-@section('title', 'Start Your Design Project | Request a Quote | Four Square Design')
-@section('meta_description', 'Ready to redesign your kitchen or bath? Submit your project details to Four Square Design. Serving residential and multi-family clients with 2020 Design layouts, 3D renderings, and elevation drawings.')
+@section('title', 'Start Your Design Project | Request a Quote | Four Square Designs')
+@section('meta_description', 'Ready to redesign your kitchen or bath? Submit your project details to Four Square Designs. Serving residential and multi-family clients with 2020 Design layouts, 3D renderings, and elevation drawings.')
 @section('meta_keywords', 'start kitchen design project, request interior design quote, kitchen remodel estimate India, cabinet design request Ahmedabad, hire kitchen designer')
-@section('og_title', 'Start Your Design Project | Four Square Design')
+@section('og_title', 'Start Your Design Project | Four Square Designs')
 @section('og_description', 'Submit your kitchen or bath project details and our design team in Ahmedabad will get back to you with a tailored proposal.')
 @section('meta_robots', 'noindex, follow')
 @section('canonical', url('/request'))

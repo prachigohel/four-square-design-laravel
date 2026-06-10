@@ -17,6 +17,7 @@
             </div>
             <div class="header-actions">
                 <span class="status-badge" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700;">● {{ $request->status }}</span>
+                @if(!in_array(auth()->user()->role->name ?? '', ['Designer', 'Client']))
                 <form action="{{ route('portal.requests.prioritize', $request->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @if($request->is_prioritized)
@@ -29,6 +30,7 @@
                         </button>
                     @endif
                 </form>
+                @endif
             </div>
         </div>
         <div class="header-dates">
@@ -361,7 +363,7 @@
                             </div>
                             <div class="asset-info">
                                 <span class="asset-name">{{ $file['name'] }}</span>
-                                <a href="{{ asset('storage/' . $file['path']) }}" target="_blank" class="asset-download"><i class="fas fa-download"></i></a>
+                                <a href="{{ route('portal.download', ['path' => $file['path'], 'name' => $file['name']]) }}" class="asset-download"><i class="fas fa-download"></i></a>
                             </div>
                         </div>
                     @endforeach
@@ -534,7 +536,7 @@
                         @if(!empty($comment->attachments))
                         <div class="timeline-attachments">
                             @foreach($comment->attachments as $file)
-                                <a href="{{ asset('storage/' . $file['path']) }}" target="_blank" class="attachment-chip">
+                                <a href="{{ route('portal.download', ['path' => $file['path'], 'name' => $file['name']]) }}" class="attachment-chip">
                                     <i class="fas fa-paperclip"></i> {{ $file['name'] }}
                                 </a>
                             @endforeach
@@ -912,6 +914,9 @@
         border-left: 4px solid var(--primary-color);
         font-size: 0.9rem;
         line-height: 1.6;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
     }
 
     .communications-section {

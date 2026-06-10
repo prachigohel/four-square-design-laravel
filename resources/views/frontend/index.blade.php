@@ -1,9 +1,9 @@
 @extends('layouts.frontend')
 
-@section('title', 'Four Square Design | Bespoke Kitchen & Interior Artistry in Ahmedabad')
-@section('meta_description', 'Four Square Design is Ahmedabad\'s premier kitchen & interior design studio. Expert in 2020 Design layouts, photorealistic 3D renderings, cabinet design, and luxury bath artistry for residential and multi-family projects.')
+@section('title', 'Four Square Designs | Bespoke Kitchen & Interior Artistry in Ahmedabad')
+@section('meta_description', 'Four Square Designs is Ahmedabad\'s premier kitchen & interior design studio. Expert in 2020 Design layouts, photorealistic 3D renderings, cabinet design, and luxury bath artistry for residential and multi-family projects.')
 @section('meta_keywords', 'kitchen design Ahmedabad, cabinet design India, 2020 Design rendering, luxury kitchen remodel, interior design studio Gujarat, 3D kitchen visualization')
-@section('og_title', 'Four Square Design | Bespoke Kitchen & Interior Artistry in Ahmedabad')
+@section('og_title', 'Four Square Designs | Bespoke Kitchen & Interior Artistry in Ahmedabad')
 @section('og_description', 'Ahmedabad\'s premier kitchen & interior design studio. Expert in 2020 Design layouts, 3D renderings, and luxury cabinet artistry for residential & multi-family projects.')
 @section('og_image', asset('images/kitchen-hero.png'))
 @section('canonical', url('/'))
@@ -16,7 +16,7 @@
     {
       "@type": "Organization",
       "@id": "{{ url('/') }}/#organization",
-      "name": "Four Square Design",
+      "name": "Four Square Designs",
       "url": "{{ url('/') }}",
       "logo": {
         "@type": "ImageObject",
@@ -37,7 +37,7 @@
     {
       "@type": "LocalBusiness",
       "@id": "{{ url('/') }}/#localbusiness",
-      "name": "Four Square Design",
+      "name": "Four Square Designs",
       "url": "{{ url('/') }}",
       "email": "foursquaredesigns.fsd@gmail.com",
       "description": "Bespoke kitchen and interior design studio in Ahmedabad specializing in 2020 Design layouts, photorealistic 3D renderings, and luxury cabinet artistry.",
@@ -68,7 +68,7 @@
       "@type": "WebSite",
       "@id": "{{ url('/') }}/#website",
       "url": "{{ url('/') }}",
-      "name": "Four Square Design",
+      "name": "Four Square Designs",
       "description": "Bespoke Kitchen & Interior Artistry",
       "potentialAction": {
         "@type": "SearchAction",

@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', 'Dashboard - Four Square Design Portal')
+@section('title', 'Dashboard - Four Square Designs Portal')
 
 @section('styles')
 <style>

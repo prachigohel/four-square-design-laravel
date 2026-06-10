@@ -25,6 +25,7 @@ class User extends Authenticatable
         'role_id',
         'phone',
         'company_name',
+        'company_role',
         'manager_id',
     ];
 

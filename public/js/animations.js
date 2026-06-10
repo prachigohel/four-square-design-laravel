@@ -1,5 +1,5 @@
 /* =============================================================
-   Four Square Design — 3D Animation System
+   Four Square Designs — 3D Animation System
    Requires: GSAP 3 + ScrollTrigger, Three.js (CDN in layout)
    ============================================================= */
 

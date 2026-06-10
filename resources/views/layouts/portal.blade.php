@@ -19,7 +19,7 @@
         @if(!request()->routeIs(['portal.login', 'portal.signup', 'portal.forgot-password']))
         <aside id="sidebar" class="portal-sidebar">
             <div class="sidebar-brand">
-                <span class="brand-full">Four Square Design</span>
+                <span class="brand-full">Four Square Designs</span>
                 <span class="brand-short">FSD</span>
             </div>
             <nav class="sidebar-nav">

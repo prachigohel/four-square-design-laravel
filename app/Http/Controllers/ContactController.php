@@ -20,7 +20,7 @@ class ContactController extends Controller
 
         $contact = Contact::create($request->only(['name', 'email', 'message']));
 
-        $recipients = User::whereHas('role', fn($q) => $q->whereIn('name', ['Admin', 'Manager']))
+        $recipients = User::whereHas('role', fn($q) => $q->where('name', 'Manager'))
             ->get()
             ->unique('email');
 

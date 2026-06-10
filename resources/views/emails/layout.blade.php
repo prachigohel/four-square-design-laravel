@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $subject ?? 'Four Square Design' }}</title>
+<title>{{ $subject ?? 'Four Square Designs' }}</title>
 <style>
     body { margin: 0; padding: 0; background: #f8fafc; font-family: 'Inter', Arial, sans-serif; color: #020617; }
     .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
@@ -33,7 +33,7 @@
 <body>
 <div class="wrapper">
     <div class="header">
-        <div class="header-brand">Four Square Design</div>
+        <div class="header-brand">Four Square Designs</div>
         <div class="header-tagline">Design Portal Notification</div>
     </div>
     <div class="banner"></div>
@@ -41,7 +41,7 @@
         @yield('email-body')
     </div>
     <div class="footer">
-        <p>© {{ date('Y') }} Four Square Design. All rights reserved.</p>
+        <p>© {{ date('Y') }} Four Square Designs. All rights reserved.</p>
         <p style="margin-top: 6px;">This is an automated notification from the Four Square Design Portal.</p>
         <p style="margin-top: 6px;"><a href="{{ url('/portal/dashboard') }}">Visit Portal</a></p>
     </div>

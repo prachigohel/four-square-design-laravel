@@ -62,7 +62,7 @@
 
         <!-- Bottom Bar -->
         <div class="pt-10 md:pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
-            <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">&copy; {{ date('Y') }} FOUR SQUARE DESIGN. CRAFTED WITH PRECISION.</p>
+            <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">&copy; {{ date('Y') }} FOUR SQUARE DESIGNS. CRAFTED WITH PRECISION.</p>
             <div class="flex flex-wrap justify-center items-center gap-8">
                 <span class="text-slate-500 text-[9px] font-black uppercase tracking-[0.3em] px-4 py-2 bg-white/5 rounded-full border border-white/5">NKBA COMPLIANT</span>
                 <span class="text-slate-500 text-[9px] font-black uppercase tracking-[0.3em] px-4 py-2 bg-white/5 rounded-full border border-white/5">ADA STANDARDS</span>

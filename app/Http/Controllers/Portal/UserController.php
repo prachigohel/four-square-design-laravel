@@ -35,12 +35,13 @@ class UserController extends Controller
         $this->adminOnly();
 
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255|unique:users,email',
-            'password' => ['required', 'confirmed', Password::min(8)],
-            'role_id'  => 'required|exists:roles,id',
-            'phone'    => 'nullable|string|max:20',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|max:255|unique:users,email',
+            'password'     => ['required', 'confirmed', Password::min(8)],
+            'role_id'      => 'required|exists:roles,id',
+            'phone'        => 'nullable|string|max:20',
             'company_name' => 'nullable|string|max:255',
+            'company_role' => 'nullable|in:manager,employee',
             'manager_id'   => 'nullable|exists:users,id',
         ]);
 
@@ -51,6 +52,7 @@ class UserController extends Controller
             'role_id'      => $request->role_id,
             'phone'        => $request->phone,
             'company_name' => $request->company_name,
+            'company_role' => $request->company_role,
             'manager_id'   => $request->manager_id,
         ]);
 
@@ -67,6 +69,7 @@ class UserController extends Controller
             'role_id'      => 'required|exists:roles,id',
             'phone'        => 'nullable|string|max:20',
             'company_name' => 'nullable|string|max:255',
+            'company_role' => 'nullable|in:manager,employee',
             'manager_id'   => 'nullable|exists:users,id',
             'password'     => ['nullable', 'confirmed', Password::min(8)],
         ]);
@@ -77,6 +80,7 @@ class UserController extends Controller
             'role_id'      => $request->role_id,
             'phone'        => $request->phone,
             'company_name' => $request->company_name,
+            'company_role' => $request->company_role,
             'manager_id'   => $request->manager_id,
         ];
 

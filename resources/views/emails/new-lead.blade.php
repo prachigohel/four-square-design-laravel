@@ -3,7 +3,7 @@
 @section('email-body')
 <p class="greeting">New Lead from Website</p>
 <p class="message">
-    Someone has submitted a contact form on the Four Square Design website. Please follow up with them promptly.
+    Someone has submitted a contact form on the Four Square Designs website. Please follow up with them promptly.
 </p>
 
 <div class="info-box">

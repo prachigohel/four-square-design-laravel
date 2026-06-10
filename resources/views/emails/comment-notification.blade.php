@@ -39,6 +39,6 @@
 
 <hr class="divider">
 <p class="message" style="margin-bottom: 0; font-size: 0.85rem; color: #94a3b8;">
-    You are receiving this because you are involved in this project on the Four Square Design Portal.
+    You are receiving this because you are involved in this project on the Four Square Designs Portal.
 </p>
 @endsection

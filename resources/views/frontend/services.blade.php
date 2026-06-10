@@ -1,9 +1,9 @@
 @extends('layouts.frontend')
 
-@section('title', 'Kitchen & Interior Design Services | Four Square Design Ahmedabad')
-@section('meta_description', 'Explore Four Square Design\'s full range of services: kitchen cabinet design, 2020 Design floor plans, photorealistic 3D renderings, elevation drawings, multi-family layouts, and luxury bath design — based in Ahmedabad, India.')
+@section('title', 'Kitchen & Interior Design Services | Four Square Designs Ahmedabad')
+@section('meta_description', 'Explore Four Square Designs\'s full range of services: kitchen cabinet design, 2020 Design floor plans, photorealistic 3D renderings, elevation drawings, multi-family layouts, and luxury bath design — based in Ahmedabad, India.')
 @section('meta_keywords', 'kitchen design services Ahmedabad, 2020 Design floor plan, 3D rendering service, cabinet elevation drawing, multi-family unit design, bath design India, interior design packages')
-@section('og_title', 'Kitchen & Interior Design Services | Four Square Design')
+@section('og_title', 'Kitchen & Interior Design Services | Four Square Designs')
 @section('og_description', 'Cabinet layouts, 3D renderings, elevation drawings, multi-family plans & luxury bath design. Full-service interior design studio based in Ahmedabad.')
 @section('canonical', url('/services'))
 
@@ -12,28 +12,28 @@
 {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "name": "Four Square Design – Services",
+  "name": "Four Square Designs – Services",
   "url": "{{ url('/services') }}",
   "itemListElement": [
     {
       "@type": "ListItem", "position": 1,
-      "item": { "@type": "Service", "name": "Kitchen Cabinet Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Design" }, "description": "Complete 2020 Design kitchen cabinet layouts tailored to your space and style." }
+      "item": { "@type": "Service", "name": "Kitchen Cabinet Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Designs" }, "description": "Complete 2020 Design kitchen cabinet layouts tailored to your space and style." }
     },
     {
       "@type": "ListItem", "position": 2,
-      "item": { "@type": "Service", "name": "3D Photorealistic Rendering", "provider": { "@type": "LocalBusiness", "name": "Four Square Design" }, "description": "4K-quality photorealistic 3D renderings that bring your kitchen and bath designs to life before construction." }
+      "item": { "@type": "Service", "name": "3D Photorealistic Rendering", "provider": { "@type": "LocalBusiness", "name": "Four Square Designs" }, "description": "4K-quality photorealistic 3D renderings that bring your kitchen and bath designs to life before construction." }
     },
     {
       "@type": "ListItem", "position": 3,
-      "item": { "@type": "Service", "name": "Elevation Drawings", "provider": { "@type": "LocalBusiness", "name": "Four Square Design" }, "description": "Detailed wall elevation drawings for kitchen and bath spaces, ready for contractor use." }
+      "item": { "@type": "Service", "name": "Elevation Drawings", "provider": { "@type": "LocalBusiness", "name": "Four Square Designs" }, "description": "Detailed wall elevation drawings for kitchen and bath spaces, ready for contractor use." }
     },
     {
       "@type": "ListItem", "position": 4,
-      "item": { "@type": "Service", "name": "Multi-Family Unit Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Design" }, "description": "Scalable design solutions for apartment complexes and multi-family residential developments." }
+      "item": { "@type": "Service", "name": "Multi-Family Unit Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Designs" }, "description": "Scalable design solutions for apartment complexes and multi-family residential developments." }
     },
     {
       "@type": "ListItem", "position": 5,
-      "item": { "@type": "Service", "name": "Bath Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Design" }, "description": "Luxury bath design with precise cabinet and vanity layouts, tailored to your space." }
+      "item": { "@type": "Service", "name": "Bath Design", "provider": { "@type": "LocalBusiness", "name": "Four Square Designs" }, "description": "Luxury bath design with precise cabinet and vanity layouts, tailored to your space." }
     }
   ]
 }

@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', 'Submit New Request - Four Square Design Portal')
+@section('title', 'Submit New Request - Four Square Designs Portal')
 
 @section('content')
 <form class="submit-request-container" method="POST" action="{{ route('portal.submit-request.store') }}" enctype="multipart/form-data">

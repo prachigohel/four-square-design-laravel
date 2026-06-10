@@ -54,6 +54,7 @@ class StatusController extends Controller
         }
 
         $designRequest = DesignRequest::with('client', 'designer')->findOrFail($id);
+        $this->authorizeClientRequest($designRequest);
         $oldStatus     = $designRequest->status;
 
         // Designer and Manager cannot change status while awaiting client approval
@@ -93,7 +94,7 @@ class StatusController extends Controller
         $clientEmail   = $designRequest->client->email ?? $designRequest->email ?? null;
         $designerEmail = $designRequest->designer->email ?? null;
 
-        $managers = User::whereHas('role', fn($q) => $q->whereIn('name', ['Admin', 'Manager']))
+        $managers = User::whereHas('role', fn($q) => $q->where('name', 'Manager'))
             ->get()
             ->unique('email');
 
@@ -186,6 +187,22 @@ class StatusController extends Controller
                     $this->send($clientEmail, new RequestClosedMail($designRequest));
                 }
                 break;
+        }
+    }
+
+    private function authorizeClientRequest(DesignRequest $designRequest): void
+    {
+        $user = Auth::user();
+        if (($user->role->name ?? '') !== 'Client') {
+            return;
+        }
+        if ($user->company_role === 'manager' && $user->company_name) {
+            abort_unless(
+                $designRequest->client && $designRequest->client->company_name === $user->company_name,
+                403
+            );
+        } else {
+            abort_unless($designRequest->client_id === $user->id, 403);
         }
     }
 

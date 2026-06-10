@@ -45,6 +45,17 @@ Route::get('/contact', function () {
 
 Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
+if (!function_exists('applyClientScope')) {
+    function applyClientScope(\Illuminate\Database\Eloquent\Builder $query, \App\Models\User $user): void {
+        if ($user->company_role === 'manager' && $user->company_name) {
+            $companyName = $user->company_name;
+            $query->whereHas('client', fn($q) => $q->where('company_name', $companyName));
+        } else {
+            $query->where('client_id', $user->id);
+        }
+    }
+}
+
 if (!function_exists('applyPortalRequestFilters')) {
     function applyPortalRequestFilters(\Illuminate\Database\Eloquent\Builder $query): void {
         if (request()->filled('title')) {
@@ -123,7 +134,8 @@ Route::prefix('portal')->group(function () {
                 $stats['recent']          = (clone $base)->with('client', 'designer')->orderBy('created_at', 'desc')->limit(8)->get();
                 $stats['overdue']         = (clone $base)->whereNotIn('status', ['Project Completed'])->whereDate('expected_date', '<', now())->count();
             } elseif ($role === 'Client') {
-                $base = \App\Models\DesignRequest::where('client_id', $user->id);
+                $base = \App\Models\DesignRequest::query();
+                applyClientScope($base, $user);
                 $stats['total']           = (clone $base)->count();
                 $stats['open']            = (clone $base)->where('status', 'Queued')->count();
                 $stats['wip']             = (clone $base)->where('status', 'In Progress')->count();
@@ -143,7 +155,7 @@ Route::prefix('portal')->group(function () {
             $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
 
             if ($role === 'Client') {
-                $query->where('client_id', $user->id);
+                applyClientScope($query, $user);
             } elseif ($role === 'Designer') {
                 $query->where('designer_id', $user->id);
             } elseif ($role === 'Manager') {
@@ -169,7 +181,7 @@ Route::prefix('portal')->group(function () {
             $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
 
             if ($role === 'Client') {
-                $query->where('client_id', $user->id);
+                applyClientScope($query, $user);
             } elseif ($role === 'Designer') {
                 $query->where('designer_id', $user->id);
             } elseif ($role === 'Manager') {
@@ -192,7 +204,7 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
             $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'In Progress')->orderBy('created_at', 'desc');
-            if ($role === 'Client') $query->where('client_id', $user->id);
+            if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
                 $query->whereHas('client', function ($q) use ($user) { $q->where('manager_id', $user->id); });
@@ -207,7 +219,7 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
             $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Needs Information')->orderBy('created_at', 'desc');
-            if ($role === 'Client') $query->where('client_id', $user->id);
+            if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
                 $query->whereHas('client', function ($q) use ($user) { $q->where('manager_id', $user->id)->orWhereNull('manager_id'); });
@@ -222,7 +234,7 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
             $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Needs Approval')->orderBy('created_at', 'desc');
-            if ($role === 'Client') $query->where('client_id', $user->id);
+            if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
                 $query->whereHas('client', function ($q) use ($user) { $q->where('manager_id', $user->id)->orWhereNull('manager_id'); });
@@ -237,7 +249,7 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
             $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Project Completed')->orderBy('created_at', 'desc');
-            if ($role === 'Client') $query->where('client_id', $user->id);
+            if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
                 $query->whereHas('client', function ($q) use ($user) { $q->where('manager_id', $user->id)->orWhereNull('manager_id'); });
@@ -266,7 +278,7 @@ Route::prefix('portal')->group(function () {
             $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
 
             if ($role === 'Client') {
-                $query->where('client_id', $user->id);
+                applyClientScope($query, $user);
             } elseif ($role === 'Designer') {
                 $query->where('designer_id', $user->id);
             } elseif ($role === 'Manager') {
@@ -332,7 +344,21 @@ Route::prefix('portal')->group(function () {
         Route::post('/requests/{id}/prioritize', [\App\Http\Controllers\DesignRequestController::class, 'prioritize'])->name('portal.requests.prioritize');
 
         Route::get('/view-request/{id}', function ($id) {
+            $user      = Auth::user();
+            $role      = $user->role->name ?? '';
             $request   = \App\Models\DesignRequest::with(['client', 'designer', 'comments.user'])->findOrFail($id);
+
+            if ($role === 'Client') {
+                if ($user->company_role === 'manager' && $user->company_name) {
+                    abort_unless(
+                        $request->client && $request->client->company_name === $user->company_name,
+                        403
+                    );
+                } else {
+                    abort_unless($request->client_id === $user->id, 403);
+                }
+            }
+
             $designers = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->orderBy('name')->get();
             return view('admin.view-request', compact('request', 'designers'));
         })->name('portal.view-request');
@@ -340,6 +366,14 @@ Route::prefix('portal')->group(function () {
         Route::post('/requests/{id}/comments', [\App\Http\Controllers\Portal\CommentController::class, 'store'])->name('portal.comments.store');
 
         Route::post('/requests/{id}/status', [\App\Http\Controllers\Portal\StatusController::class, 'update'])->name('portal.requests.status');
+
+        Route::get('/download', function (\Illuminate\Http\Request $req) {
+            $path = $req->query('path');
+            $name = $req->query('name', basename($path));
+            abort_if(empty($path), 400);
+            abort_unless(\Illuminate\Support\Facades\Storage::disk('public')->exists($path), 404);
+            return \Illuminate\Support\Facades\Storage::disk('public')->download($path, $name);
+        })->name('portal.download');
 
     });
 });

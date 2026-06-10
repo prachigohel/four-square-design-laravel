@@ -1,10 +1,10 @@
 @extends('layouts.frontend')
 
-@section('title', 'Contact Us | Four Square Design Ahmedabad')
-@section('meta_description', 'Get in touch with Four Square Design in Ahmedabad. Located at E-601, Iscon Platinum, Bopal — reach us for kitchen design, 3D rendering, and cabinet layout enquiries.')
-@section('meta_keywords', 'contact Four Square Design, kitchen design Ahmedabad contact, interior design studio Bopal, design enquiry Gujarat')
-@section('og_title', 'Contact Us | Four Square Design Ahmedabad')
-@section('og_description', 'Reach out to Four Square Design at E-601, Iscon Platinum, Bopal, Ahmedabad. We\'d love to discuss your next kitchen or bath design project.')
+@section('title', 'Contact Us | Four Square Designs Ahmedabad')
+@section('meta_description', 'Get in touch with Four Square Designs in Ahmedabad. Located at E-601, Iscon Platinum, Bopal — reach us for kitchen design, 3D rendering, and cabinet layout enquiries.')
+@section('meta_keywords', 'contact Four Square Designs, kitchen design Ahmedabad contact, interior design studio Bopal, design enquiry Gujarat')
+@section('og_title', 'Contact Us | Four Square Designs Ahmedabad')
+@section('og_description', 'Reach out to Four Square Designs at E-601, Iscon Platinum, Bopal, Ahmedabad. We\'d love to discuss your next kitchen or bath design project.')
 @section('canonical', url('/contact'))
 
 @push('schema')
@@ -12,12 +12,12 @@
 {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  "name": "Contact Four Square Design",
+  "name": "Contact Four Square Designs",
   "url": "{{ url('/contact') }}",
-  "description": "Contact page for Four Square Design — kitchen and interior design studio in Ahmedabad.",
+  "description": "Contact page for Four Square Designs — kitchen and interior design studio in Ahmedabad.",
   "mainEntity": {
     "@type": "LocalBusiness",
-    "name": "Four Square Design",
+    "name": "Four Square Designs",
     "email": "foursquaredesigns.fsd@gmail.com",
     "address": {
       "@type": "PostalAddress",

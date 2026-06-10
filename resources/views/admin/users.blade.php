@@ -1,5 +1,5 @@
 @extends('layouts.portal')
-@section('title', 'User Management - Four Square Design Portal')
+@section('title', 'User Management - Four Square Desigsn Portal')
 
 @section('styles')
 <style>
@@ -61,6 +61,13 @@
     .role-designer { background: #eff6ff; color: #1d4ed8; }
     .role-client   { background: #f0fdf4; color: #166534; }
     .role-default  { background: #f1f5f9; color: #475569; }
+
+    .company-role-badge {
+        display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px;
+        font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; margin-left: 0.3rem;
+    }
+    .crole-manager  { background: #fef9ec; color: #92400e; border: 1px solid #fde68a; }
+    .crole-employee { background: #f0f9ff; color: #075985; border: 1px solid #bae6fd; }
 
     /* ── Action buttons ── */
     .btn-edit, .btn-delete {
@@ -213,12 +220,19 @@
                             </div>
                         </div>
                     </td>
-                    <td><span class="role-badge {{ $roleClass }}">{{ $roleName }}</span></td>
+                    <td>
+                        <span class="role-badge {{ $roleClass }}">{{ $roleName }}</span>
+                        @if($roleName === 'Client' && $u->company_role)
+                            <span class="company-role-badge {{ $u->company_role === 'manager' ? 'crole-manager' : 'crole-employee' }}">
+                                {{ ucfirst($u->company_role) }}
+                            </span>
+                        @endif
+                    </td>
                     <td>{{ $u->phone ?? '—' }}</td>
                     <td>{{ $u->company_name ?? '—' }}</td>
                     <td style="color:#94a3b8; font-size:0.78rem;">{{ $u->created_at->format('d M Y') }}</td>
                     <td style="text-align:right; white-space:nowrap;">
-                        <button class="btn-edit" onclick="openEdit({{ $u->id }}, '{{ addslashes($u->name) }}', '{{ $u->email }}', {{ $u->role_id }}, '{{ $u->phone ?? '' }}', '{{ addslashes($u->company_name ?? '') }}', {{ $u->manager_id ?? 'null' }})">
+                        <button class="btn-edit" onclick="openEdit({{ $u->id }}, '{{ addslashes($u->name) }}', '{{ $u->email }}', {{ $u->role_id }}, '{{ $u->phone ?? '' }}', '{{ addslashes($u->company_name ?? '') }}', {{ $u->manager_id ?? 'null' }}, '{{ $u->company_role ?? '' }}')">
                             <i class="fas fa-pen"></i> Edit
                         </button>
                         @if($u->id !== auth()->id())
@@ -274,7 +288,7 @@
                 <div class="mform-row">
                     <div class="mform-group">
                         <label>Role <span class="req">*</span></label>
-                        <select name="role_id" class="mform-input" required id="addRoleSelect" onchange="toggleManagerField('add', this.value)">
+                        <select name="role_id" class="mform-input" required id="addRoleSelect" onchange="toggleManagerField('add', this.value)" >
                             <option value="">Select role…</option>
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
@@ -291,14 +305,24 @@
                     <label>Company / Organisation</label>
                     <input type="text" name="company_name" class="mform-input" placeholder="Company name (optional)" value="{{ old('company_name') }}">
                 </div>
-                <div class="mform-group" id="addManagerField" style="display:none;">
-                    <label>Assign Manager <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(for Client role)</span></label>
-                    <select name="manager_id" class="mform-input">
-                        <option value="">No Manager</option>
-                        @foreach($managers as $mgr)
-                            <option value="{{ $mgr->id }}">{{ $mgr->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="mform-row" id="addClientFields" style="display:none;">
+                    <div class="mform-group">
+                        <label>Company Role <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(for Client role)</span></label>
+                        <select name="company_role" class="mform-input">
+                            <option value="">Not set</option>
+                            <option value="manager" {{ old('company_role') === 'manager' ? 'selected' : '' }}>Manager</option>
+                            <option value="employee" {{ old('company_role') === 'employee' ? 'selected' : '' }}>Employee</option>
+                        </select>
+                    </div>
+                    <div class="mform-group">
+                        <label>Assign Manager <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(optional)</span></label>
+                        <select name="manager_id" class="mform-input">
+                            <option value="">No Manager</option>
+                            @foreach($managers as $mgr)
+                                <option value="{{ $mgr->id }}">{{ $mgr->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -357,14 +381,24 @@
                     <label>Company / Organisation</label>
                     <input type="text" name="company_name" id="editCompany" class="mform-input" placeholder="Company name (optional)">
                 </div>
-                <div class="mform-group" id="editManagerField" style="display:none;">
-                    <label>Assign Manager <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(for Client role)</span></label>
-                    <select name="manager_id" id="editManager" class="mform-input">
-                        <option value="">No Manager</option>
-                        @foreach($managers as $mgr)
-                            <option value="{{ $mgr->id }}">{{ $mgr->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="mform-row" id="editClientFields" style="display:none;">
+                    <div class="mform-group">
+                        <label>Company Role <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(for Client role)</span></label>
+                        <select name="company_role" id="editCompanyRole" class="mform-input">
+                            <option value="">Not set</option>
+                            <option value="manager">Manager</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                    </div>
+                    <div class="mform-group">
+                        <label>Assign Manager <span style="font-weight:400;text-transform:none;font-size:0.7rem;">(optional)</span></label>
+                        <select name="manager_id" id="editManager" class="mform-input">
+                            <option value="">No Manager</option>
+                            @foreach($managers as $mgr)
+                                <option value="{{ $mgr->id }}">{{ $mgr->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -377,7 +411,6 @@
 
 @section('scripts')
 <script>
-    // ── Role-to-ID map for manager field toggle ──
     const clientRoleId = {{ $roles->firstWhere('name', 'Client')?->id ?? 'null' }};
 
     function openModal(id) {
@@ -389,14 +422,12 @@
         document.body.style.overflow = '';
     }
 
-    // Close on backdrop click
     document.querySelectorAll('.modal-overlay').forEach(el => {
         el.addEventListener('click', function(e) {
             if (e.target === this) closeModal(this.id);
         });
     });
 
-    // ── Tab filtering ──
     function filterRole(role, btn) {
         document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
@@ -405,29 +436,27 @@
         });
     }
 
-    // ── Show/hide manager field based on role ──
     function toggleManagerField(prefix, roleId) {
-        const field = document.getElementById(prefix + 'ManagerField');
-        if (!field) return;
-        field.style.display = (parseInt(roleId) === clientRoleId) ? 'block' : 'none';
+        const isClient = parseInt(roleId) === clientRoleId;
+        const fields = document.getElementById(prefix + 'ClientFields');
+        if (fields) fields.style.display = isClient ? 'grid' : 'none';
     }
 
-    // ── Open edit modal ──
-    function openEdit(id, name, email, roleId, phone, company, managerId) {
+    function openEdit(id, name, email, roleId, phone, company, managerId, companyRole) {
         document.getElementById('editUserForm').action = '/portal/users/' + id;
         document.getElementById('editName').value    = name;
         document.getElementById('editEmail').value   = email;
         document.getElementById('editRole').value    = roleId;
         document.getElementById('editPhone').value   = phone;
         document.getElementById('editCompany').value = company;
-        // set manager
         const mgSel = document.getElementById('editManager');
         if (mgSel) mgSel.value = managerId ?? '';
+        const crSel = document.getElementById('editCompanyRole');
+        if (crSel) crSel.value = companyRole ?? '';
         toggleManagerField('edit', roleId);
         openModal('editUserModal');
     }
 
-    // ── Auto-open Add modal if validation errors ──
     @if($errors->any() && old('_method') === null)
         openModal('addUserModal');
     @endif

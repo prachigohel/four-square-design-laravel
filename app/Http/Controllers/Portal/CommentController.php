@@ -17,7 +17,7 @@ class CommentController extends Controller
     {
         $request->validate([
             'message'       => 'nullable|string',
-            'attachments.*' => 'nullable|file|max:10240',
+            'attachments.*' => 'nullable|file|max:102400',
         ]);
 
         if (empty(trim($request->message ?? '')) && !$request->hasFile('attachments')) {
@@ -25,6 +25,7 @@ class CommentController extends Controller
         }
 
         $designRequest = DesignRequest::with('client', 'designer')->findOrFail($requestId);
+        $this->authorizeClientRequest($designRequest);
 
         $attachments = [];
         if ($request->hasFile('attachments')) {
@@ -54,7 +55,7 @@ class CommentController extends Controller
                     Mail::to($designRequest->designer->email)
                         ->send(new CommentNotificationMail($designRequest, $comment, $designRequest->designer->name));
                 } catch (\Exception $e) {
-                    \Log::error('CommentNotificationMail to designer failed: ' . $e->getMessage());
+                    Log::error('CommentNotificationMail to designer failed: ' . $e->getMessage());
                 }
             }
         } else {
@@ -66,11 +67,27 @@ class CommentController extends Controller
                     Mail::to($clientEmail)
                         ->send(new CommentNotificationMail($designRequest, $comment, $clientName));
                 } catch (\Exception $e) {
-                    \Log::error('CommentNotificationMail to client failed: ' . $e->getMessage());
+                    Log::error('CommentNotificationMail to client failed: ' . $e->getMessage());
                 }
             }
         }
 
         return back()->with('success', 'Comment posted successfully.');
+    }
+
+    private function authorizeClientRequest(DesignRequest $designRequest): void
+    {
+        $user = Auth::user();
+        if (($user->role->name ?? '') !== 'Client') {
+            return;
+        }
+        if ($user->company_role === 'manager' && $user->company_name) {
+            abort_unless(
+                $designRequest->client && $designRequest->client->company_name === $user->company_name,
+                403
+            );
+        } else {
+            abort_unless($designRequest->client_id === $user->id, 403);
+        }
     }
 }

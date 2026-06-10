@@ -23,7 +23,7 @@ class DesignRequestController extends Controller
             'door_style'     => 'required|string|max:255',
             'finish'         => 'required|string|max:255',
             'attachments'    => 'nullable|array',
-            'attachments.*'  => 'file|max:10240', // 10 MB per file
+            'attachments.*'  => 'file|max:102400',
         ]);
 
         $attachments = [];
@@ -56,17 +56,12 @@ class DesignRequestController extends Controller
         // Load relationships for email
         $designRequest->load('client');
 
-        // Notify admins and the client's manager
-        $recipients = User::whereHas('role', fn($q) => $q->where('name', 'Admin'))->get();
-
+        // Notify the client's manager only (not admins)
         if ($designRequest->client && $designRequest->client->manager_id) {
             $manager = User::find($designRequest->client->manager_id);
-            if ($manager) {
-                $recipients = $recipients->push($manager)->unique('email');
-            }
+            $recipients = $manager ? collect([$manager]) : collect();
         } else {
-            $managers = User::whereHas('role', fn($q) => $q->where('name', 'Manager'))->get();
-            $recipients = $recipients->merge($managers)->unique('email');
+            $recipients = User::whereHas('role', fn($q) => $q->where('name', 'Manager'))->get();
         }
 
         foreach ($recipients as $recipient) {
@@ -125,6 +120,11 @@ class DesignRequestController extends Controller
 
     public function prioritize(string $id)
     {
+        $userRole = Auth::user()->role->name ?? '';
+        if (in_array($userRole, ['Designer', 'Client'])) {
+            abort(403);
+        }
+
         $designRequest = DesignRequest::findOrFail($id);
         $designRequest->update(['is_prioritized' => !$designRequest->is_prioritized]);
 
