@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const MAX_TOTAL_MB  = 100;
-    const MAX_SINGLE_MB = 10;
+    const MAX_SINGLE_MB = 100;
 
     function totalSizeMB() {
         return accFiles.reduce((sum, f) => sum + f.size, 0) / (1024 * 1024);
