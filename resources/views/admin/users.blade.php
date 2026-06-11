@@ -230,7 +230,7 @@
                     </td>
                     <td>{{ $u->phone ?? '—' }}</td>
                     <td>{{ $u->company_name ?? '—' }}</td>
-                    <td style="color:#94a3b8; font-size:0.78rem;">{{ $u->created_at->format('d M Y') }}</td>
+                    <td style="color:#94a3b8; font-size:0.78rem;">{{ $u->created_at ? $u->created_at->format('d M Y') : '—' }}</td>
                     <td style="text-align:right; white-space:nowrap;">
                         <button class="btn-edit" onclick="openEdit({{ $u->id }}, '{{ addslashes($u->name) }}', '{{ $u->email }}', {{ $u->role_id }}, '{{ $u->phone ?? '' }}', '{{ addslashes($u->company_name ?? '') }}', {{ $u->manager_id ?? 'null' }}, '{{ $u->company_role ?? '' }}')">
                             <i class="fas fa-pen"></i> Edit

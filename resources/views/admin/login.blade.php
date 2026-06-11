@@ -9,7 +9,7 @@
         <div class="login-card" style="background: #fff; padding: 2.5rem; border-radius: 8px; width: 100%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);">
             <div style="text-align: center; margin-bottom: 2rem;">
                 <div class="sidebar-brand" style="display: inline-flex; background: transparent; padding: 0; color: #020617; font-size: 1rem;">
-                    <span class="brand-full" style="font-size: 1.1rem; letter-spacing: 0.08em;">FOUR SQUARE<span style="color: var(--primary-color);"> DESIGN</span></span>
+                    <span class="brand-full" style="font-size: 1.1rem; letter-spacing: 0.08em;">FOUR SQUARE<span style="color: var(--primary-color);"> DESIGNS</span></span>
                 </div>
                 <p style="margin: 0.5rem 0 0; font-size: 0.82rem; color: #64748b; letter-spacing: 0.04em;">Client Portal</p>
             </div>

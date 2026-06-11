@@ -17,7 +17,7 @@
             </div>
             <div class="header-actions">
                 <span class="status-badge" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700;">● {{ $request->status }}</span>
-                @if(!in_array(auth()->user()->role->name ?? '', ['Designer', 'Client']))
+                @if(!in_array(auth()->user()->role->name ?? '', ['Designer', 'Client', 'Manager']))
                 <form action="{{ route('portal.requests.prioritize', $request->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @if($request->is_prioritized)
