@@ -81,7 +81,9 @@
         ];
         $sm = $statusMeta[$request->status] ?? ['label' => $request->status, 'bg' => '#f3f4f6', 'color' => '#6b7280'];
         $userRole = Auth::user()->role->name ?? '';
-        $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin', 'Client']);
+        $isClosedOrApproved = in_array($request->status, ['Approved', 'Closed']);
+        $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin', 'Client'])
+            && !($isClosedOrApproved && in_array($userRole, ['Designer', 'Manager', 'Client']));
     @endphp
 
     @if($canChangeStatus)
@@ -149,10 +151,6 @@
                     </div>
                 @elseif($request->status === 'Approved')
                     <div class="client-action-buttons">
-                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
-                            @csrf <input type="hidden" name="status" value="Revision Requested">
-                            <button type="submit" class="btn-action btn-revision"><i class="fas fa-redo"></i> Request Revision</button>
-                        </form>
                         <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
                             @csrf <input type="hidden" name="status" value="Closed">
                             <button type="submit" class="btn-action btn-close" onclick="return confirm('Are you sure you want to close this request?')"><i class="fas fa-times-circle"></i> Close Request</button>
