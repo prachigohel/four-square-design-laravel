@@ -210,7 +210,7 @@ class StatusController extends Controller
     {
         try {
             Mail::to($email)->send($mailable);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error(get_class($mailable) . ' failed to ' . $email . ': ' . $e->getMessage());
         }
     }

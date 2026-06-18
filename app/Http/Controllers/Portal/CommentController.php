@@ -54,7 +54,7 @@ class CommentController extends Controller
                 try {
                     Mail::to($designRequest->designer->email)
                         ->send(new CommentNotificationMail($designRequest, $comment, $designRequest->designer->name));
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     Log::error('CommentNotificationMail to designer failed: ' . $e->getMessage());
                 }
             }
@@ -66,7 +66,7 @@ class CommentController extends Controller
                 try {
                     Mail::to($clientEmail)
                         ->send(new CommentNotificationMail($designRequest, $comment, $clientName));
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     Log::error('CommentNotificationMail to client failed: ' . $e->getMessage());
                 }
             }

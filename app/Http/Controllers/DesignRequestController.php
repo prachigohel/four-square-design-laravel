@@ -67,7 +67,7 @@ class DesignRequestController extends Controller
         foreach ($recipients as $recipient) {
             try {
                 Mail::to($recipient->email)->send(new NewRequestMail($designRequest));
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::error('NewRequestMail failed to ' . $recipient->email . ': ' . $e->getMessage());
             }
         }
@@ -102,7 +102,7 @@ class DesignRequestController extends Controller
 
         try {
             Mail::to($designer->email)->send(new DesignerAssignedMail($designRequest, $designer));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('DesignerAssignedMail failed to ' . $designer->email . ': ' . $e->getMessage());
         }
 
@@ -110,7 +110,7 @@ class DesignRequestController extends Controller
         if ($clientEmail) {
             try {
                 Mail::to($clientEmail)->send(new ClientProjectAssignedMail($designRequest));
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::error('ClientProjectAssignedMail failed to ' . $clientEmail . ': ' . $e->getMessage());
             }
         }
