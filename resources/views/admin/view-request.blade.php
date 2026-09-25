@@ -489,11 +489,8 @@
         $statusHistory = $request->comments->where('type', 'status_change');
     @endphp
 
-    <!-- Comments + Status History — two columns -->
-    <div class="comments-grid">
-
-    <!-- Comments Section -->
-    <div class="communications-section">
+    <!-- Comments Section (Full Width) -->
+    <div class="communications-section" style="margin-top: 2rem;">
         <div class="card-header">
             <h3><i class="fas fa-comments"></i> Comments</h3>
         </div>
@@ -557,51 +554,6 @@
         </div>
     </div>
 
-    <!-- Status History Section -->
-    <div class="communications-section">
-        <div class="card-header">
-            <h3><i class="fas fa-history"></i> Status History</h3>
-        </div>
-        <div class="timeline">
-            <!-- Created entry -->
-            <div class="timeline-item">
-                <div class="timeline-icon" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0;">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header">
-                        <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
-                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
-                    </div>
-                    <div class="timeline-body">
-                        <p>Request created with status <strong>Queued</strong>.</p>
-                    </div>
-                </div>
-            </div>
-
-            @forelse($statusHistory as $entry)
-            <div class="timeline-item">
-                <div class="timeline-icon" style="background:#ede9fe;color:#7c3aed;border-color:#ddd6fe;">
-                    <i class="fas fa-arrow-right-arrow-left" style="font-size:0.7rem;"></i>
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header">
-                        <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
-                        <span class="timestamp" data-utc="{{ $entry->created_at->toISOString() }}">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
-                    </div>
-                    <div class="timeline-body">
-                        <p>{!! nl2br(e($entry->message)) !!}</p>
-                    </div>
-                </div>
-            </div>
-            @empty
-                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No status changes yet.</p>
-            @endforelse
-        </div>
-    </div>
-
-    </div>{{-- end two-column grid --}}
-
     <!-- Add Comment Section -->
     <form action="{{ route('portal.comments.store', $request->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -626,6 +578,57 @@
             </div>
         </div>
     </form>
+
+    <!-- Status History Section (Full Width below Comment Card) -->
+    <div class="communications-section" style="margin-top: 2rem;">
+        <div class="card-header">
+            <h3><i class="fas fa-history"></i> Status History</h3>
+        </div>
+        <div class="timeline">
+            <!-- Created entry -->
+            <div class="timeline-item">
+                <div class="timeline-icon" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0;">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
+                            <span style="font-size: 0.68rem; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">Client</span>
+                        </div>
+                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p>Request created with status <strong>Queued</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            @forelse($statusHistory as $entry)
+            <div class="timeline-item">
+                <div class="timeline-icon" style="background:#ede9fe;color:#7c3aed;border-color:#ddd6fe;">
+                    <i class="fas fa-arrow-right-arrow-left" style="font-size:0.7rem;"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
+                            @if($entry->user && $entry->user->role)
+                                <span style="font-size: 0.68rem; font-weight: 700; background: #ede9fe; color: #6d28d9; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">{{ $entry->user->role->name }}</span>
+                            @endif
+                        </div>
+                        <span class="timestamp" data-utc="{{ $entry->created_at->toISOString() }}">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
+                    </div>
+                    <div class="timeline-body">
+                        <p>{!! nl2br(e($entry->message)) !!}</p>
+                    </div>
+                </div>
+            </div>
+            @empty
+                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No status changes yet.</p>
+            @endforelse
+        </div>
+    </div>
 
     @php $currentRole = Auth::user()->role->name ?? ''; @endphp
 
