@@ -254,12 +254,30 @@ Route::prefix('portal')->group(function () {
             return view('admin.open-requests', compact('requests', 'designers', 'role'));
         })->name('portal.needs-approval');
 
+        Route::get('/approved', function () {
+            $user = Auth::user();
+            $role = $user->role->name ?? '';
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')
+                ->where('status', 'Approved')
+                ->orderBy($sortCol, 'desc');
+            if ($role === 'Client') applyClientScope($query, $user);
+            elseif ($role === 'Designer') $query->where('designer_id', $user->id);
+            elseif ($role === 'Manager') {
+                $query->whereHas('client', function ($q) use ($user) { $q->where('manager_id', $user->id)->orWhereNull('manager_id'); });
+            }
+            applyPortalRequestFilters($query);
+            $requests = $query->get();
+            $designers = \App\Models\User::whereHas('role', function ($q) { $q->where('name', 'Designer'); })->get();
+            return view('admin.open-requests', compact('requests', 'designers', 'role'));
+        })->name('portal.approved');
+
         Route::get('/closed', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
             $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
             $query = \App\Models\DesignRequest::with('client', 'designer')
-                ->whereIn('status', ['Project Completed', 'Approved', 'Closed'])
+                ->whereIn('status', ['Project Completed', 'Closed'])
                 ->orderBy($sortCol, 'desc');
             if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);

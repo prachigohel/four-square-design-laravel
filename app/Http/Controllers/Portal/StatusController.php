@@ -102,7 +102,10 @@ class StatusController extends Controller
         $this->dispatchEmails($newStatus, $designRequest, $clientEmail, $designerEmail, $managers);
 
         if ($userRole === 'Client') {
-            if (in_array($newStatus, ['Approved', 'Project Completed', 'Closed'])) {
+            if ($newStatus === 'Approved') {
+                return redirect()->route('portal.approved')->with('success', "Status updated to \"{$newStatus}\" successfully.");
+            }
+            if (in_array($newStatus, ['Project Completed', 'Closed'])) {
                 return redirect()->route('portal.closed')->with('success', "Status updated to \"{$newStatus}\" successfully.");
             }
             return redirect()->route('portal.open-requests')->with('success', "Status updated to \"{$newStatus}\" successfully.");

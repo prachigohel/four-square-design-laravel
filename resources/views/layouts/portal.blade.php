@@ -48,6 +48,9 @@
                 <a href="{{ route('portal.needs-approval') }}" class="sidebar-link {{ request()->routeIs('portal.needs-approval') ? 'active' : '' }}" title="Needs Approval">
                     <i class="fas fa-check-circle"></i> <span class="link-label">Needs Approval</span>
                 </a>
+                <a href="{{ route('portal.approved') }}" class="sidebar-link {{ request()->routeIs('portal.approved') ? 'active' : '' }}" title="Approved">
+                    <i class="fas fa-thumbs-up"></i> <span class="link-label">Approved</span>
+                </a>
                 <a href="{{ route('portal.closed') }}" class="sidebar-link {{ request()->routeIs('portal.closed') ? 'active' : '' }}" title="Project Completed">
                     <i class="fas fa-archive"></i> <span class="link-label">Project Completed</span>
                 </a>
