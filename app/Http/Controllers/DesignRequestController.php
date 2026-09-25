@@ -97,6 +97,7 @@ class DesignRequestController extends Controller
             'designer_id' => $designer->id,
             'status' => 'Assigned',
         ]);
+        $designRequest->touch();
 
         $designRequest->refresh()->load('designer');
 
@@ -120,12 +121,22 @@ class DesignRequestController extends Controller
 
     public function prioritize(string $id)
     {
-        $userRole = Auth::user()->role->name ?? '';
-        if (in_array($userRole, ['Designer', 'Client'])) {
+        $user = Auth::user();
+        $userRole = $user->role->name ?? '';
+        if ($userRole === 'Designer') {
             abort(403);
         }
 
         $designRequest = DesignRequest::findOrFail($id);
+
+        if ($userRole === 'Client') {
+            if ($user->company_role === 'manager' && $user->company_name) {
+                abort_unless($designRequest->client && $designRequest->client->company_name === $user->company_name, 403);
+            } else {
+                abort_unless($designRequest->client_id === $user->id, 403);
+            }
+        }
+
         $designRequest->update(['is_prioritized' => !$designRequest->is_prioritized]);
 
         $message = $designRequest->is_prioritized

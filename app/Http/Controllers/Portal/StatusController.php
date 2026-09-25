@@ -82,6 +82,7 @@ class StatusController extends Controller
         }
 
         $designRequest->update(['status' => $newStatus]);
+        $designRequest->touch();
 
         Comment::create([
             'design_request_id' => $id,
@@ -99,6 +100,13 @@ class StatusController extends Controller
             ->unique('email');
 
         $this->dispatchEmails($newStatus, $designRequest, $clientEmail, $designerEmail, $managers);
+
+        if ($userRole === 'Client') {
+            if (in_array($newStatus, ['Approved', 'Project Completed', 'Closed'])) {
+                return redirect()->route('portal.closed')->with('success', "Status updated to \"{$newStatus}\" successfully.");
+            }
+            return redirect()->route('portal.open-requests')->with('success', "Status updated to \"{$newStatus}\" successfully.");
+        }
 
         return back()->with('success', "Status updated to \"{$newStatus}\" successfully.");
     }

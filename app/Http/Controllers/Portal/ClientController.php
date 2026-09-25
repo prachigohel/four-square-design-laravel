@@ -79,7 +79,7 @@ class ClientController extends Controller
 
         $requests = \App\Models\DesignRequest::with(['client', 'designer', 'comments'])
             ->whereIn('client_id', $companyUserIds)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         // Use a plain object so the view can show company name + contact list

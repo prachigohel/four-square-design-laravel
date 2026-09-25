@@ -17,7 +17,7 @@
             </div>
             <div class="header-actions">
                 <span class="status-badge" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700;">● {{ $request->status }}</span>
-                @if(!in_array(auth()->user()->role->name ?? '', ['Designer', 'Client', 'Manager']))
+                @if(in_array(auth()->user()->role->name ?? '', ['Client', 'Admin', 'Manager']))
                 <form action="{{ route('portal.requests.prioritize', $request->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @if($request->is_prioritized)
@@ -81,9 +81,9 @@
         ];
         $sm = $statusMeta[$request->status] ?? ['label' => $request->status, 'bg' => '#f3f4f6', 'color' => '#6b7280'];
         $userRole = Auth::user()->role->name ?? '';
-        $isClosedOrApproved = in_array($request->status, ['Approved', 'Closed']);
+        $isClosed = in_array($request->status, ['Project Completed', 'Closed']);
         $canChangeStatus = in_array($userRole, ['Designer', 'Manager', 'Admin', 'Client'])
-            && !($isClosedOrApproved && in_array($userRole, ['Designer', 'Manager', 'Client']));
+            && !($isClosed && in_array($userRole, ['Designer', 'Manager', 'Client']));
     @endphp
 
     @if($canChangeStatus)
@@ -152,8 +152,16 @@
                 @elseif($request->status === 'Approved')
                     <div class="client-action-buttons">
                         <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
-                            @csrf <input type="hidden" name="status" value="Closed">
-                            <button type="submit" class="btn-action btn-close" onclick="return confirm('Are you sure you want to close this request?')"><i class="fas fa-times-circle"></i> Close Request</button>
+                            @csrf <input type="hidden" name="status" value="Revision Requested">
+                            <button type="submit" class="btn-action btn-revision"><i class="fas fa-redo"></i> Request Revision</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Design Error">
+                            <button type="submit" class="btn-action btn-error"><i class="fas fa-exclamation-triangle"></i> Design Error</button>
+                        </form>
+                        <form action="{{ route('portal.requests.status', $request->id) }}" method="POST" style="display:inline;">
+                            @csrf <input type="hidden" name="status" value="Project Completed">
+                            <button type="submit" class="btn-action btn-approve" onclick="return confirm('Are you sure you want to mark this request as completed?')"><i class="fas fa-check-circle"></i> Project Completed</button>
                         </form>
                     </div>
                 @else
@@ -991,25 +999,30 @@
 
     .timeline-header {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+        margin-bottom: 0.4rem;
     }
 
     .sender-name {
         font-weight: 800;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         color: var(--secondary-color);
+        line-height: 1.3;
     }
 
     .timestamp {
-        font-size: 0.8rem;
-        color: var(--text-muted);
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
     }
 
     .timeline-body {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--text-main);
         line-height: 1.5;
+        margin-top: 0.25rem;
     }
 
     .timeline-attachments {

@@ -131,7 +131,7 @@ Route::prefix('portal')->group(function () {
                 $stats['closed']          = (clone $base)->where('status', 'Project Completed')->count();
                 $stats['clients']         = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Client'))->count();
                 $stats['designers']       = \App\Models\User::whereHas('role', fn($q) => $q->where('name', 'Designer'))->count();
-                $stats['recent']          = (clone $base)->with('client', 'designer')->orderBy('created_at', 'desc')->limit(8)->get();
+                $stats['recent']          = (clone $base)->with('client', 'designer')->orderBy('updated_at', 'desc')->limit(8)->get();
                 $stats['overdue']         = (clone $base)->whereNotIn('status', ['Project Completed'])->whereDate('expected_date', '<', now())->count();
             } elseif ($role === 'Client') {
                 $base = \App\Models\DesignRequest::query();
@@ -142,7 +142,7 @@ Route::prefix('portal')->group(function () {
                 $stats['needs_approval']  = (clone $base)->where('status', 'Needs Approval')->count();
                 $stats['needs_info']      = (clone $base)->where('status', 'Needs Information')->count();
                 $stats['closed']          = (clone $base)->where('status', 'Project Completed')->count();
-                $stats['recent']          = (clone $base)->with('designer')->orderBy('created_at', 'desc')->limit(5)->get();
+                $stats['recent']          = (clone $base)->with('designer')->orderBy('updated_at', 'desc')->limit(5)->get();
             }
 
             return view('admin.dashboard-placeholder', compact('role', 'stats', 'user'));
@@ -152,7 +152,8 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
 
-            $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy($sortCol, 'desc');
 
             if ($role === 'Client') {
                 applyClientScope($query, $user);
@@ -178,7 +179,10 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
 
-            $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')
+                ->whereNotIn('status', ['Approved', 'Needs Approval', 'Project Completed', 'Closed'])
+                ->orderBy($sortCol, 'desc');
 
             if ($role === 'Client') {
                 applyClientScope($query, $user);
@@ -203,7 +207,8 @@ Route::prefix('portal')->group(function () {
         Route::get('/wip', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'In Progress')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'In Progress')->orderBy($sortCol, 'desc');
             if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -218,7 +223,10 @@ Route::prefix('portal')->group(function () {
         Route::get('/needs-information', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Needs Information')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')
+                ->whereIn('status', ['Needs Information', 'Information Submitted'])
+                ->orderBy($sortCol, 'desc');
             if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -233,7 +241,8 @@ Route::prefix('portal')->group(function () {
         Route::get('/needs-approval', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Needs Approval')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Needs Approval')->orderBy($sortCol, 'desc');
             if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -248,7 +257,10 @@ Route::prefix('portal')->group(function () {
         Route::get('/closed', function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
-            $query = \App\Models\DesignRequest::with('client', 'designer')->where('status', 'Project Completed')->orderBy('created_at', 'desc');
+            $sortCol = request('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')
+                ->whereIn('status', ['Project Completed', 'Approved', 'Closed'])
+                ->orderBy($sortCol, 'desc');
             if ($role === 'Client') applyClientScope($query, $user);
             elseif ($role === 'Designer') $query->where('designer_id', $user->id);
             elseif ($role === 'Manager') {
@@ -275,7 +287,8 @@ Route::prefix('portal')->group(function () {
             $user = Auth::user();
             $role = $user->role->name ?? '';
 
-            $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy('created_at', 'desc');
+            $sortCol = $request->input('sort') === 'created_at' ? 'created_at' : 'updated_at';
+            $query = \App\Models\DesignRequest::with('client', 'designer')->orderBy($sortCol, 'desc');
 
             if ($role === 'Client') {
                 applyClientScope($query, $user);

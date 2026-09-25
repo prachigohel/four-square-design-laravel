@@ -10,7 +10,10 @@
     <div class="filters-bar" style="margin: 0;">
         <div class="sort-group">
             <label>Sort By:</label>
-            <select class="select-input"><option>Created Date</option></select>
+            <select class="select-input" onchange="const url = new URL(window.location.href); url.searchParams.set('sort', this.value); window.location.href = url.toString();">
+                <option value="updated_at" {{ request('sort') === 'updated_at' || !request('sort') ? 'selected' : '' }}>Last Updated</option>
+                <option value="created_at" {{ request('sort') === 'created_at' ? 'selected' : '' }}>Created Date</option>
+            </select>
             <i class="fas fa-arrow-down-long"></i>
         </div>
         <button class="filter-btn"><i class="fas fa-sliders"></i> Filter & Refine</button>
