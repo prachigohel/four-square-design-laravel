@@ -402,8 +402,14 @@ Route::prefix('portal')->group(function () {
             $path = $req->query('path');
             $name = $req->query('name', basename($path));
             abort_if(empty($path), 400);
-            abort_unless(\Illuminate\Support\Facades\Storage::disk('public')->exists($path), 404);
-            return \Illuminate\Support\Facades\Storage::disk('public')->download($path, $name);
+
+            // Prevent directory traversal
+            $cleanPath = ltrim(str_replace(['../', '..\\'], '', $path), '/\\');
+            $fullPath  = storage_path('app/public/' . $cleanPath);
+
+            abort_unless(file_exists($fullPath) && is_file($fullPath), 404);
+
+            return response()->download($fullPath, $name);
         })->name('portal.download');
 
     });
