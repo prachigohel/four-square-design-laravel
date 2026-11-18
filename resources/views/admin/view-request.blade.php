@@ -489,144 +489,162 @@
         $statusHistory = $request->comments->where('type', 'status_change');
     @endphp
 
-    <!-- Comments Section (Full Width) -->
-    <div class="communications-section" style="margin-top: 2rem;">
-        <div class="card-header">
-            <h3><i class="fas fa-comments"></i> Comments</h3>
+    <!-- Tabbed Communication Container (Comments & Status History) -->
+    <div class="comm-tab-container" style="background: #fff; border-radius: 16px; border: 1px solid var(--border-color); padding: 1.75rem; margin-top: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        {{-- Tab Headers --}}
+        <div class="comm-tabs" style="display: flex; gap: 1rem; border-bottom: 2px solid #f1f5f9; margin-bottom: 1.5rem;">
+            <button type="button" class="comm-tab-btn active" onclick="switchCommTab('commentsTab', this)" style="padding: 0.75rem 1.25rem; font-size: 0.95rem; font-weight: 800; border: none; background: none; cursor: pointer; color: var(--primary-color); border-bottom: 3px solid var(--primary-color); margin-bottom: -2px; display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-body); transition: color 0.15s, border-color 0.15s;">
+                <i class="fas fa-comments"></i> Comments <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 999px;">{{ $userComments->count() + 1 }}</span>
+            </button>
+            <button type="button" class="comm-tab-btn" onclick="switchCommTab('statusHistoryTab', this)" style="padding: 0.75rem 1.25rem; font-size: 0.95rem; font-weight: 800; border: none; background: none; cursor: pointer; color: #64748b; border-bottom: 3px solid transparent; margin-bottom: -2px; display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-body); transition: color 0.15s, border-color 0.15s;">
+                <i class="fas fa-history"></i> Status History <span style="background: #f1f5f9; color: #475569; font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 999px;">{{ $statusHistory->count() + 1 }}</span>
+            </button>
         </div>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-icon user-icon">
-                    @php
-                        $names = explode(' ', $request->client->name ?? 'U');
-                        $initials = '';
-                        foreach ($names as $n) { $initials .= strtoupper(substr($n, 0, 1)); }
-                        echo substr($initials, 0, 2);
-                    @endphp
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header">
-                        <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
-                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
-                    </div>
-                    <div class="timeline-body">
-                        <p><strong>Initial Request Submitted:</strong> {{ $request->title }}</p>
-                    </div>
-                </div>
-            </div>
 
-            @forelse($userComments as $comment)
-            <div class="timeline-item {{ $comment->type === 'revision' ? 'revision-item' : '' }}">
-                <div class="timeline-icon user-icon" style="{{ $comment->type === 'revision' ? 'background:#fef3c7;color:#92400e;border-color:#fde68a;' : 'background:#3b82f6;color:#fff;border-color:#3b82f6;' }}">
-                    @if($comment->type === 'revision')
-                        <i class="fas fa-sync-alt"></i>
-                    @else
+        {{-- Tab 1: Comments --}}
+        <div id="commentsTab" class="comm-tab-pane" style="display: block;">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon user-icon">
                         @php
-                            $names = explode(' ', $comment->user->name ?? 'U');
+                            $names = explode(' ', $request->client->name ?? 'U');
                             $initials = '';
                             foreach ($names as $n) { $initials .= strtoupper(substr($n, 0, 1)); }
                             echo substr($initials, 0, 2);
                         @endphp
-                    @endif
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header">
-                        <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
-                        <span class="timestamp" data-utc="{{ $comment->created_at->toISOString() }}">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
                     </div>
-                    <div class="timeline-body">
-                        <p>{!! nl2br(e($comment->message)) !!}</p>
-                        @if(!empty($comment->attachments))
-                        <div class="timeline-attachments">
-                            @foreach($comment->attachments as $file)
-                                <a href="{{ route('portal.download', ['path' => $file['path'], 'name' => $file['name']]) }}" class="attachment-chip">
-                                    <i class="fas fa-paperclip"></i> {{ $file['name'] }}
-                                </a>
-                            @endforeach
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
+                            <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
                         </div>
+                        <div class="timeline-body">
+                            <p><strong>Initial Request Submitted:</strong> {{ $request->title }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                @forelse($userComments as $comment)
+                <div class="timeline-item {{ $comment->type === 'revision' ? 'revision-item' : '' }}">
+                    <div class="timeline-icon user-icon" style="{{ $comment->type === 'revision' ? 'background:#fef3c7;color:#92400e;border-color:#fde68a;' : 'background:#3b82f6;color:#fff;border-color:#3b82f6;' }}">
+                        @if($comment->type === 'revision')
+                            <i class="fas fa-sync-alt"></i>
+                        @else
+                            @php
+                                $names = explode(' ', $comment->user->name ?? 'U');
+                                $initials = '';
+                                foreach ($names as $n) { $initials .= strtoupper(substr($n, 0, 1)); }
+                                echo substr($initials, 0, 2);
+                            @endphp
                         @endif
                     </div>
-                </div>
-            </div>
-            @empty
-                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No comments yet.</p>
-            @endforelse
-        </div>
-    </div>
-
-    <!-- Add Comment Section -->
-    <form action="{{ route('portal.comments.store', $request->id) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="add-comment-section">
-            <div class="card-header">
-                <h3><i class="fas fa-plus"></i> Add Comment</h3>
-            </div>
-            <div class="comment-input-wrapper">
-                <textarea name="message" placeholder="Write your comment here..." rows="4" class="form-input"></textarea>
-                <div class="comment-actions">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <label class="attachment-btn" style="margin: 0;">
-                            <i class="fas fa-paperclip"></i> ATTACH FILE
-                            <input type="file" name="attachments[]" multiple style="display: none;">
-                        </label>
-                        <span id="file-count" style="font-size: 0.8rem; color: var(--text-muted);"></span>
-                    </div>
-                    <div class="comment-meta-switches">
-                        <button type="submit" class="btn btn-save" style="border-radius: 6px; padding: 0.6rem 1.5rem;">POST COMMENT</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <!-- Status History Section (Full Width below Comment Card) -->
-    <div class="communications-section" style="margin-top: 2rem;">
-        <div class="card-header">
-            <h3><i class="fas fa-history"></i> Status History</h3>
-        </div>
-        <div class="timeline">
-            <!-- Created entry -->
-            <div class="timeline-item">
-                <div class="timeline-icon" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0;">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
-                            <span style="font-size: 0.68rem; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">Client</span>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
+                            <span class="timestamp" data-utc="{{ $comment->created_at->toISOString() }}">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
                         </div>
-                        <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
-                    </div>
-                    <div class="timeline-body">
-                        <p>Request created with status <strong>Queued</strong>.</p>
-                    </div>
-                </div>
-            </div>
-
-            @forelse($statusHistory as $entry)
-            <div class="timeline-item">
-                <div class="timeline-icon" style="background:#ede9fe;color:#7c3aed;border-color:#ddd6fe;">
-                    <i class="fas fa-arrow-right-arrow-left" style="font-size:0.7rem;"></i>
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
-                            @if($entry->user && $entry->user->role)
-                                <span style="font-size: 0.68rem; font-weight: 700; background: #ede9fe; color: #6d28d9; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">{{ $entry->user->role->name }}</span>
+                        <div class="timeline-body">
+                            <p>{!! nl2br(e($comment->message)) !!}</p>
+                            @if(!empty($comment->attachments))
+                            <div class="timeline-attachments">
+                                @foreach($comment->attachments as $file)
+                                    @php
+                                        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                                        $icon = match($ext) {
+                                            'pdf' => 'fa-file-pdf',
+                                            'xls', 'xlsx', 'csv', 'tsv' => 'fa-file-excel',
+                                            'doc', 'docx', 'txt' => 'fa-file-word',
+                                            'jpg', 'jpeg', 'png', 'webp', 'heic' => 'fa-file-image',
+                                            'zip', 'rar', '7z' => 'fa-file-zipper',
+                                            default => 'fa-file',
+                                        };
+                                    @endphp
+                                    <a href="{{ route('portal.download', ['path' => $file['path'], 'name' => $file['name']]) }}" class="attachment-chip" title="{{ $file['name'] }}">
+                                        <i class="fas {{ $icon }} file-icon"></i>
+                                        <span class="chip-name">{{ $file['name'] }}</span>
+                                        <i class="fas fa-download download-icon"></i>
+                                    </a>
+                                @endforeach
+                            </div>
                             @endif
                         </div>
-                        <span class="timestamp" data-utc="{{ $entry->created_at->toISOString() }}">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
-                    </div>
-                    <div class="timeline-body">
-                        <p>{!! nl2br(e($entry->message)) !!}</p>
                     </div>
                 </div>
+                @empty
+                    <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No comments yet.</p>
+                @endforelse
             </div>
-            @empty
-                <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No status changes yet.</p>
-            @endforelse
+
+            <!-- Add Comment Form (inside Comments Tab) -->
+            <form action="{{ route('portal.comments.store', $request->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1.5rem;">
+                @csrf
+                <div class="add-comment-section" style="background: none; padding: 0; border: none; box-shadow: none; margin: 0;">
+                    <h4 style="font-size: 0.95rem; font-weight: 800; color: #020617; margin-bottom: 0.75rem;"><i class="fas fa-plus-circle" style="color: var(--primary-color);"></i> Add Comment</h4>
+                    <div class="comment-input-wrapper">
+                        <textarea name="message" placeholder="Write your comment here..." rows="4" class="form-input"></textarea>
+                        <div class="comment-actions">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <label class="attachment-btn" style="margin: 0;">
+                                    <i class="fas fa-paperclip"></i> ATTACH FILE
+                                    <input type="file" name="attachments[]" multiple style="display: none;">
+                                </label>
+                                <span id="file-count" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+                            </div>
+                            <div class="comment-meta-switches">
+                                <button type="submit" class="btn btn-save" style="border-radius: 6px; padding: 0.6rem 1.5rem;">POST COMMENT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {{-- Tab 2: Status History --}}
+        <div id="statusHistoryTab" class="comm-tab-pane" style="display: none;">
+            <div class="timeline">
+                <!-- Created entry -->
+                <div class="timeline-item">
+                    <div class="timeline-icon" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0;">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="sender-name">{{ $request->client->name ?? 'Client' }}</span>
+                                <span style="font-size: 0.68rem; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">Client</span>
+                            </div>
+                            <span class="timestamp" data-utc="{{ $request->created_at->toISOString() }}">{{ $request->created_at->format('d M, Y h:i A') }}</span>
+                        </div>
+                        <div class="timeline-body">
+                            <p>Request created with status <strong>Queued</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                @forelse($statusHistory as $entry)
+                <div class="timeline-item">
+                    <div class="timeline-icon" style="background:#ede9fe;color:#7c3aed;border-color:#ddd6fe;">
+                        <i class="fas fa-arrow-right-arrow-left" style="font-size:0.7rem;"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span class="sender-name">{{ $entry->user->name ?? 'System' }}</span>
+                                @if($entry->user && $entry->user->role)
+                                    <span style="font-size: 0.68rem; font-weight: 700; background: #ede9fe; color: #6d28d9; padding: 0.1rem 0.5rem; border-radius: 4px; text-transform: uppercase;">{{ $entry->user->role->name }}</span>
+                                @endif
+                            </div>
+                            <span class="timestamp" data-utc="{{ $entry->created_at->toISOString() }}">{{ $entry->created_at->format('d M, Y h:i A') }}</span>
+                        </div>
+                        <div class="timeline-body">
+                            <p>{!! nl2br(e($entry->message)) !!}</p>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                    <p style="font-size:0.9rem;color:var(--text-muted);padding:0.5rem 0;">No status changes yet.</p>
+                @endforelse
+            </div>
         </div>
     </div>
 
@@ -652,6 +670,19 @@
 
 @section('scripts')
 <script>
+    function switchCommTab(paneId, btn) {
+        document.querySelectorAll('.comm-tab-pane').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.comm-tab-btn').forEach(function(b) {
+            b.style.color = '#64748b';
+            b.style.borderBottomColor = 'transparent';
+            b.classList.remove('active');
+        });
+        document.getElementById(paneId).style.display = 'block';
+        btn.style.color = 'var(--primary-color)';
+        btn.style.borderBottomColor = 'var(--primary-color)';
+        btn.classList.add('active');
+    }
+
     document.querySelector('input[name="attachments[]"]').addEventListener('change', function(e) {
         const count = e.target.files.length;
         document.getElementById('file-count').textContent = count > 0 ? `${count} file(s) selected` : '';
@@ -1031,25 +1062,58 @@
     .timeline-attachments {
         margin-top: 1rem;
         display: flex;
-        gap: 0.75rem;
+        flex-wrap: wrap;
+        gap: 0.6rem;
     }
 
     .attachment-chip {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: #eff6ff;
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #1e40af;
+        background: #f8fafc;
+        color: #1e293b;
+        padding: 0.5rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
         text-decoration: none;
-        border: 1px solid #dbeafe;
+        border: 1px solid #e2e8f0;
+        max-width: 280px;
+        white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
-    .attachment-chip i {
-        font-size: 1rem;
+    .attachment-chip:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+        color: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .attachment-chip .chip-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 200px;
+    }
+
+    .attachment-chip i.file-icon {
+        font-size: 0.95rem;
+        color: #3b82f6;
+        flex-shrink: 0;
+    }
+
+    .attachment-chip i.download-icon {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-left: 0.2rem;
+        flex-shrink: 0;
+        transition: color 0.15s;
+    }
+
+    .attachment-chip:hover i.download-icon {
+        color: #1d4ed8;
     }
 
     .revision-item .timeline-icon {
