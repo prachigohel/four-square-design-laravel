@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class CommentController extends Controller
 {
@@ -30,7 +31,9 @@ class CommentController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('comments', 'public');
+                $extension = $file->getClientOriginalExtension() ?: 'bin';
+                $filename = Str::random(40) . '.' . $extension;
+                $path = $file->storeAs('comments', $filename, 'public');
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,

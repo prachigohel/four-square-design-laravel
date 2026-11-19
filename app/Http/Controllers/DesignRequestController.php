@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class DesignRequestController extends Controller
 {
@@ -29,7 +30,9 @@ class DesignRequestController extends Controller
         $attachments = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('attachments', 'public');
+                $extension = $file->getClientOriginalExtension() ?: 'bin';
+                $filename = Str::random(40) . '.' . $extension;
+                $path = $file->storeAs('attachments', $filename, 'public');
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
