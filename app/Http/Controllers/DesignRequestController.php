@@ -29,10 +29,16 @@ class DesignRequestController extends Controller
 
         $attachments = [];
         if ($request->hasFile('attachments')) {
+            $destinationDir = storage_path('app/public/attachments');
+            if (!file_exists($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
+            }
+
             foreach ($request->file('attachments') as $file) {
                 $extension = $file->getClientOriginalExtension() ?: 'bin';
                 $filename = Str::random(40) . '.' . $extension;
-                $path = $file->storeAs('attachments', $filename, 'public');
+                $file->move($destinationDir, $filename);
+                $path = 'attachments/' . $filename;
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,

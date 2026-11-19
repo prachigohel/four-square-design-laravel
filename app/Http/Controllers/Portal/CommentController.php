@@ -30,10 +30,16 @@ class CommentController extends Controller
 
         $attachments = [];
         if ($request->hasFile('attachments')) {
+            $destinationDir = storage_path('app/public/comments');
+            if (!file_exists($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
+            }
+
             foreach ($request->file('attachments') as $file) {
                 $extension = $file->getClientOriginalExtension() ?: 'bin';
                 $filename = Str::random(40) . '.' . $extension;
-                $path = $file->storeAs('comments', $filename, 'public');
+                $file->move($destinationDir, $filename);
+                $path = 'comments/' . $filename;
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
@@ -76,6 +82,44 @@ class CommentController extends Controller
         }
 
         return back()->with('success', 'Comment posted successfully.');
+    }
+
+    public function destroy(string $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        $user = Auth::user();
+        $userRole = $user->role->name ?? '';
+
+        // Allow deletion if the user is the author OR is Admin / Manager
+        $isAuthor = (int)$comment->user_id === (int)$user->id;
+        $isStaff  = in_array($userRole, ['Admin', 'Manager']);
+
+        if (!$isAuthor && !$isStaff) {
+            abort(403, 'You do not have permission to delete this comment.');
+        }
+
+        // Prevent non-admins from deleting status changes
+        if ($comment->type === 'status_change' && $userRole !== 'Admin') {
+            abort(403, 'System status records cannot be deleted.');
+        }
+
+        // Delete physical attachment files if they exist
+        if (!empty($comment->attachments) && is_array($comment->attachments)) {
+            foreach ($comment->attachments as $file) {
+                if (!empty($file['path'])) {
+                    $cleanPath = ltrim(str_replace(['../', '..\\'], '', $file['path']), '/\\');
+                    $fullPath  = storage_path('app/public/' . $cleanPath);
+                    if (file_exists($fullPath) && is_file($fullPath)) {
+                        @unlink($fullPath);
+                    }
+                }
+            }
+        }
+
+        $comment->delete();
+
+        return back()->with('success', 'Comment deleted successfully.');
     }
 
     private function authorizeClientRequest(DesignRequest $designRequest): void
