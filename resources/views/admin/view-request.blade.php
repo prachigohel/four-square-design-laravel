@@ -550,13 +550,9 @@
                                 $canDelete = Auth::check() && ($comment->user_id === $authUser->id || in_array($authRole, ['Admin', 'Manager']));
                             @endphp
                             @if($canDelete)
-                            <form action="{{ route('portal.comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');" style="margin: 0;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-comment-delete" title="Delete comment">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </button>
-                            </form>
+                            <button type="button" class="btn-comment-delete" onclick="openDeleteCommentModal('{{ route('portal.comments.destroy', $comment->id) }}')" title="Delete comment">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
                             @endif
                         </div>
                         <div class="timeline-body">
@@ -686,8 +682,57 @@
     </div>
 </div>
 
+<!-- Custom Delete Comment Confirmation Modal -->
+<div id="deleteConfirmModal" class="delete-modal-overlay">
+    <div class="delete-modal-card">
+        <div class="delete-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <h3 class="delete-modal-title">Delete Comment?</h3>
+        <p class="delete-modal-text">Are you sure you want to delete this comment? This action cannot be undone and any attached files will be deleted.</p>
+        <div class="delete-modal-actions">
+            <button type="button" class="delete-modal-btn btn-cancel" onclick="closeDeleteCommentModal()">Cancel</button>
+            <form id="deleteCommentForm" method="POST" style="margin: 0; flex: 1; display: flex;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="delete-modal-btn btn-confirm-delete" style="width: 100%;">
+                    <i class="fas fa-trash-alt"></i> Yes, Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section('scripts')
 <script>
+    function openDeleteCommentModal(actionUrl) {
+        const modal = document.getElementById('deleteConfirmModal');
+        const form  = document.getElementById('deleteCommentForm');
+        if (form && modal) {
+            form.action = actionUrl;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeDeleteCommentModal() {
+        const modal = document.getElementById('deleteConfirmModal');
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    document.getElementById('deleteConfirmModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteCommentModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('deleteConfirmModal')?.classList.contains('active')) {
+            closeDeleteCommentModal();
+        }
+    });
+
     function switchCommTab(paneId, btn) {
         document.querySelectorAll('.comm-tab-pane').forEach(function(el) { el.style.display = 'none'; });
         document.querySelectorAll('.comm-tab-btn').forEach(function(b) {
@@ -1090,6 +1135,116 @@
         background: #dc2626;
         color: #ffffff;
         border-color: #dc2626;
+    }
+
+    /* ── Custom Delete Confirmation Modal ── */
+    .delete-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        padding: 1rem;
+    }
+
+    .delete-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .delete-modal-card {
+        background: #ffffff;
+        border-radius: 18px;
+        width: 100%;
+        max-width: 440px;
+        padding: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transform: scale(0.92) translateY(10px);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .delete-modal-overlay.active .delete-modal-card {
+        transform: scale(1) translateY(0);
+    }
+
+    .delete-modal-icon {
+        width: 58px;
+        height: 58px;
+        background: #fee2e2;
+        color: #ef4444;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 0 0 8px #fef2f2;
+    }
+
+    .delete-modal-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 0.5rem 0;
+        letter-spacing: -0.02em;
+    }
+
+    .delete-modal-text {
+        font-size: 0.92rem;
+        color: #64748b;
+        line-height: 1.55;
+        margin: 0 0 1.75rem 0;
+    }
+
+    .delete-modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .delete-modal-btn {
+        flex: 1;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    .delete-modal-btn.btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .delete-modal-btn.btn-cancel:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .delete-modal-btn.btn-confirm-delete {
+        background: #dc2626;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    .delete-modal-btn.btn-confirm-delete:hover {
+        background: #b91c1c;
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+        transform: translateY(-1px);
     }
 
     .timeline-body {
