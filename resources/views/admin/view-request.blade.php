@@ -539,12 +539,30 @@
                         @endif
                     </div>
                     <div class="timeline-content">
-                        <div class="timeline-header">
-                            <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
-                            <span class="timestamp" data-utc="{{ $comment->created_at->toISOString() }}">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
+                        <div class="timeline-header" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0.5rem;">
+                            <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+                                <span class="sender-name">{{ $comment->type === 'revision' ? 'Revision Requested' : ($comment->user->name ?? 'User') }}</span>
+                                <span class="timestamp" data-utc="{{ $comment->created_at->toISOString() }}">{{ $comment->created_at->format('d M, Y h:i A') }}</span>
+                            </div>
+                            @php
+                                $authUser = Auth::user();
+                                $authRole = $authUser->role->name ?? '';
+                                $canDelete = Auth::check() && ($comment->user_id === $authUser->id || in_array($authRole, ['Admin', 'Manager']));
+                            @endphp
+                            @if($canDelete)
+                            <form action="{{ route('portal.comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');" style="margin: 0;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-comment-delete" title="Delete comment">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                            @endif
                         </div>
                         <div class="timeline-body">
-                            <p>{!! nl2br(e($comment->message)) !!}</p>
+                            @if(!empty(trim($comment->message ?? '')))
+                                <p>{!! nl2br(e($comment->message)) !!}</p>
+                            @endif
                             @if(!empty($comment->attachments))
                             <div class="timeline-attachments">
                                 @foreach($comment->attachments as $file)
@@ -1050,6 +1068,28 @@
         font-size: 0.75rem;
         color: #64748b;
         font-weight: 500;
+    }
+
+    .btn-comment-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fee2e2;
+        border-radius: 6px;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        line-height: 1.2;
+        transition: all 0.15s ease;
+    }
+
+    .btn-comment-delete:hover {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
     }
 
     .timeline-body {

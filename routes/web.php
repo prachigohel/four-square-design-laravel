@@ -395,6 +395,7 @@ Route::prefix('portal')->group(function () {
         })->name('portal.view-request');
 
         Route::post('/requests/{id}/comments', [\App\Http\Controllers\Portal\CommentController::class, 'store'])->name('portal.comments.store');
+        Route::delete('/comments/{id}', [\App\Http\Controllers\Portal\CommentController::class, 'destroy'])->name('portal.comments.destroy');
 
         Route::post('/requests/{id}/status', [\App\Http\Controllers\Portal\StatusController::class, 'update'])->name('portal.requests.status');
 
