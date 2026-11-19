@@ -91,12 +91,9 @@ class CommentController extends Controller
         $user = Auth::user();
         $userRole = $user->role->name ?? '';
 
-        // Allow deletion if the user is the author OR is Admin / Manager
-        $isAuthor = (int)$comment->user_id === (int)$user->id;
-        $isStaff  = in_array($userRole, ['Admin', 'Manager']);
-
-        if (!$isAuthor && !$isStaff) {
-            abort(403, 'You do not have permission to delete this comment.');
+        // Only Admin and Designer are allowed to delete comments
+        if (!in_array($userRole, ['Admin', 'Designer'])) {
+            abort(403, 'Only Admins and Designers are authorized to delete comments.');
         }
 
         // Prevent non-admins from deleting status changes

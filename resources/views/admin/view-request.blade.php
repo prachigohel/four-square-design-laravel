@@ -547,7 +547,7 @@
                             @php
                                 $authUser = Auth::user();
                                 $authRole = $authUser->role->name ?? '';
-                                $canDelete = Auth::check() && ($comment->user_id === $authUser->id || in_array($authRole, ['Admin', 'Manager']));
+                                $canDelete = Auth::check() && in_array($authRole, ['Admin', 'Designer']);
                             @endphp
                             @if($canDelete)
                             <button type="button" class="btn-comment-delete" onclick="openDeleteCommentModal('{{ route('portal.comments.destroy', $comment->id) }}')" title="Delete comment">
